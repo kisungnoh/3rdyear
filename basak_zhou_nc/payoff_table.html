@@ -1,0 +1,34 @@
+<table class='table'>
+  <tr>
+    <th>Bank Fundamental</th>
+    <th>Both Withdraw Early</th>
+    <th>Both Withdraw Late</th>
+    <th>Both Stay</th>
+    <th>One Early, One Late</th>
+    <th>One Withdraws, One Stays</th>
+  </tr>
+  <tr>
+    <td><b>Bad</b></td>
+    <td>({{ C.ENDOWMENT }}, {{ C.ENDOWMENT }})</td>
+    <td>({{ C.LATE_WITHDRAWAL_PAYOFF }}, {{ C.LATE_WITHDRAWAL_PAYOFF }})</td>
+    <td>(0, 0)</td>
+    <td>({{ C.ENDOWMENT }}, {{ C.LATE_WITHDRAWAL_PAYOFF }})</td>
+    <td>({{ C.ENDOWMENT }}, 0)</td>
+  </tr>
+  <tr>
+    <td><b>Medium</b></td>
+    <td>({{ C.ENDOWMENT }}, {{ C.ENDOWMENT }})</td>
+    <td>({{ C.LATE_WITHDRAWAL_PAYOFF }}, {{ C.LATE_WITHDRAWAL_PAYOFF }})</td>
+    <td>({{ C.BOTH_STAY_PAYOFF }}, {{ C.BOTH_STAY_PAYOFF }})</td>
+    <td>({{ C.ENDOWMENT }}, {{ C.LATE_WITHDRAWAL_PAYOFF }})</td>
+    <td>({{ C.ENDOWMENT }}, 0)</td>
+  </tr>
+  <tr>
+    <td><b>Good</b></td>
+    <td>({{ C.ENDOWMENT }}, {{ C.ENDOWMENT }})</td>
+    <td>({{ C.ENDOWMENT }}, {{ C.ENDOWMENT }})</td>
+    <td>({{ C.BOTH_STAY_PAYOFF }}, {{ C.BOTH_STAY_PAYOFF }})</td>
+    <td>({{ C.ENDOWMENT }}, {{ C.ENDOWMENT }})</td>
+    <td>({{ C.ENDOWMENT }}, {{ C.STAYER_PAYOFF_IF_OTHER_WITHDRAWS_GOOD }})</td>
+  </tr>
+</table>

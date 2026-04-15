@@ -1,0 +1,44 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Part 1 Instructions (3 of 3){{ endblock }}
+
+{{ block content }}
+
+<br>
+<h5>Earnings</h5>
+<p>After both depositors made their decisions, they received feedback on how many points they earned and what action the other depositor chose. This concluded a match.</p>
+<p>Particiapnts made these decisions over a number of matches and received payment at the end of the experiment.</p>
+
+<br>
+<h5>Summary</h5>
+<ol style="line-height: 1.6;">
+    <li style="margin-bottom: 8px;">A depositor started a match with a randomly paired depositor, who was likely to change from match to match.</li>
+    <li style="margin-bottom: 8px;">The bank state was randomly determined and revealed at the start of each match:
+        <ul>
+            <li>Medium state with 70% probability</li>
+            <li>Low or High state with 15% probability each</li>
+        </ul>
+    </li>
+    <li style="margin-bottom: 8px;">A depositor made decisions across two stages.
+        <ul>
+            <li>If a depositor chose <strong>action A</strong> in Stage 1, no further decision was needed.</li>
+            <li>If a depositor chose <strong>action B</strong> in Stage 1, they proceeded to Stage 2 and chose again between action A and action B.</li>
+        </ul>
+    </li>
+    <li style="margin-bottom: 8px;">A depositor did not know in Stage 2 whether the other depositor chose action A or action B in Stage 1.</li>
+    <li style="margin-bottom: 8px;">At the end of each match, depositors were told how many points they received and the other depositor's action.</li>
+</ol>
+
+<br>
+<hr>
+<p>Please be reminded that these instructions are meant to help you understand the previous experiment, which is similar and related to today's experiment.</p>
+<p>On the next page, you will go through three practice matches of the previous experiment and receive feedback on your decisions. Your decisions in these practice matches do not affect today's experiment.</p>
+<p>Instructions for today's experiment will be given afterward.</p>
+
+
+{{ include 'bank2_instruction_part1/Match_process.html' }}
+
+<div style="text-align:center; padding-top:30px;">
+    {{ next_button }}
+</div>
+
+{{ endblock }}

@@ -1,0 +1,386 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Part 3 Instructions{{ endblock }}
+
+{{ block content }}
+
+<style>
+.demo-row {
+    border: 1px solid #dde1e7;
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 0 auto 20px;
+    max-width: 480px;
+}
+
+/* Binary slider (same as bank1_game/Part2Intro.html) */
+.demo-slider-section-title { font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.demo-slider-wrap          { margin: 18px 0 24px; }
+.demo-labels-row           { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+.demo-end                  { min-width: 60px; }
+.demo-end.left             { text-align: left; }
+.demo-end.right            { text-align: right; }
+.demo-h-label              { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+.demo-h-pct                { font-size: 26px; font-weight: 600; min-height: 32px; }
+.demo-track-wrap           { position: relative; height: 20px; }
+.demo-track-bg             { position: absolute; top: 50%; left: 0; right: 0; height: 12px; transform: translateY(-50%); border-radius: 6px; pointer-events: none; background: #e8eaed; }
+input.demo-range           { position: absolute; top: 50%; left: 0; width: 100%; transform: translateY(-50%); -webkit-appearance: none; appearance: none; background: transparent; outline: none; margin: 0; height: 20px; cursor: pointer; }
+input.demo-range::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; background: #37474f; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+input.demo-range::-moz-range-thumb     { width: 24px; height: 24px; border-radius: 50%; background: #37474f; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+.demo-caption              { font-size: 14px; color: #888; text-align: center; margin-top: 10px; }
+.knob-hidden::-webkit-slider-thumb { opacity: 0 !important; }
+.knob-hidden::-moz-range-thumb     { opacity: 0 !important; }
+
+/* Tri-region state belief demo */
+.tri-demo-labels    { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+.tri-demo-col       { text-align: center; min-width: 60px; }
+.tri-demo-name      { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+.tri-demo-pct       { font-size: 26px; font-weight: 600; min-height: 32px; }
+.tri-demo-track-wrap { position: relative; height: 20px; cursor: pointer; user-select: none; margin-bottom: 4px; }
+.tri-demo-track-bg  { position: absolute; top: 50%; left: 0; right: 0; height: 12px; transform: translateY(-50%); border-radius: 6px; background: #e8eaed; }
+.tri-demo-knob      { position: absolute; top: 50%; width: 24px; height: 24px; border-radius: 50%; background: #37474f; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); transform: translate(-50%, -50%); cursor: grab; }
+.tri-demo-knob.knob-hidden { opacity: 0; }
+
+/* Step indicator */
+.step-indicator { display: flex; align-items: center; gap: 4px; margin-bottom: 10px; }
+.step           { display: flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 20px; font-size: 14px; font-weight: 600; }
+.step.active    { background: #e1f5fe; color: #0277bd; }
+.step.inactive  { color: #b0b8c4; }
+.step-num       { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+.step.active  .step-num  { background: #0277bd; color: #fff; }
+.step.inactive .step-num { background: #e0e0e0; color: #9aa0a8; }
+.step-arrow { color: #c8cdd4; font-size: 14px; }
+
+/* Collapsible payment rule */
+.payment-rule-toggle    { display: inline-block; margin-top: 12px; color: #1976D2; cursor: pointer; text-decoration: underline; user-select: none; }
+.payment-rule-box       { display: none; border-left: 4px solid #1976D2; background: #f5f9ff; padding: 14px 18px; margin-top: 10px; line-height: 1.6; }
+.payment-rule-box h6    { margin: 0 0 8px; font-size: 14px; color: #37474f; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.payment-rule-box ul    { margin: 8px 0 8px 20px; padding: 0; }
+.payment-rule-box li    { margin-bottom: 6px; }
+.payment-rule-highlight { background: #e3f0fb; font-size: 18px; border-radius: 4px; padding: 8px 12px; margin-top: 20px; }
+</style>
+
+<p>
+    This part consists of <strong>{{ part3_rounds }} matches.</strong> In this part, you will continue to make the same decisions, but you will now have <strong>three more tasks</strong> across two stages.
+</p>
+<ul>
+    <li>In <strong>Stage 1</strong>, you will be asked to submit your beliefs about
+        <ul>
+            <li>the other depositor's action in Stage 1 <strong>(Task 1)</strong></li>
+            <li>the state of your bank <strong>(Task 2)</strong></li>
+        </ul>
+    </li>
+    <li style="margin-top: 8px;">
+        If you choose action B in Stage 1 and move to <strong>Stage 2</strong>, you will be asked to submit your beliefs about
+        <ul>
+            <li>the other depositor's action in Stage 2 <strong>(Task 3)</strong></li>
+        </ul>
+    </li>
+</ul>
+
+<p>To indicate your beliefs, you will use sliders.</p>
+
+<hr style="border: none; border-top: 1px solid; margin: 24px 0;">
+
+<h5>Belief Task 1 &mdash; The Other's Stage 1 Action</h5>
+<p>Using the slider below, you will assess the likelihood that the person you are paired with (the other depositor) chooses action A or action B in Stage 1.
+
+<div class="demo-row">
+    <div class="step-indicator">
+        <div class="step active"><div class="step-num">1</div>Stage 1</div>
+        <div class="step-arrow">›</div>
+        <div class="step inactive"><div class="step-num">2</div>Stage 2</div>
+    </div>
+    <div class="demo-slider-section-title">How likely do you think the other depositor will choose action A or action B in Stage 1?</div>
+    <div class="demo-slider-wrap">
+        <div class="demo-labels-row">
+            <div class="demo-end left">
+                <div class="demo-h-label" style="color:#5e35b1;">Action A</div>
+                <div class="demo-h-pct" id="s1_pct_a" style="color:#5e35b1;">&nbsp;</div>
+            </div>
+            <div class="demo-end right">
+                <div class="demo-h-label" style="color:#00838f;">Action B</div>
+                <div class="demo-h-pct" id="s1_pct_b" style="color:#00838f;">&nbsp;</div>
+            </div>
+        </div>
+        <div class="demo-track-wrap">
+            <div class="demo-track-bg" id="s1_track"></div>
+            <input type="range" class="demo-range knob-hidden" id="s1_slider" min="0" max="100" step="1" value="40">
+        </div>
+        <div class="demo-caption">This is an example slider. Click the track and move the slider.</div>
+    </div>
+</div>
+
+<h5 style="padding-top: 24px;">Belief Task 2 &mdash; The State of Your Bank</h5>
+<p>
+    Using the slider below, you will assess the likelihood that your bank is in a <strong>Low</strong>, <strong>Medium</strong>, or <strong>High</strong> state.
+</p>
+<p>
+    The first time you move the slider, a value that reflects your belief about the Low state will appear.
+    The second time you move it, two additional values for the Medium and High states will appear.
+    Once all three values are displayed, you can freely move either knob to adjust your beliefs for each state.
+</p>
+<div class="demo-row">
+    <div class="step-indicator">
+        <div class="step active"><div class="step-num">1</div>Stage 1</div>
+        <div class="step-arrow">›</div>
+        <div class="step inactive"><div class="step-num">2</div>Stage 2</div>
+    </div>
+    <div class="demo-slider-section-title">How likely do you think your bank is in each state?</div>
+    <div class="demo-slider-wrap">
+        <div class="tri-demo-labels">
+            <div class="tri-demo-col">
+                <div class="tri-demo-name" style="color:#C62828;">Low</div>
+                <div class="tri-demo-pct" id="tri_pct_low" style="color:#C62828;">&nbsp;</div>
+            </div>
+            <div class="tri-demo-col">
+                <div class="tri-demo-name" style="color:#E65100;">Medium</div>
+                <div class="tri-demo-pct" id="tri_pct_med" style="color:#E65100;">&nbsp;</div>
+            </div>
+            <div class="tri-demo-col">
+                <div class="tri-demo-name" style="color:#2E7D32;">High</div>
+                <div class="tri-demo-pct" id="tri_pct_high" style="color:#2E7D32;">&nbsp;</div>
+            </div>
+        </div>
+        <div class="tri-demo-track-wrap" id="tri_track">
+            <div class="tri-demo-track-bg" id="tri_track_bg"></div>
+            <div class="tri-demo-knob knob-hidden" id="tri_knob_low"></div>
+            <div class="tri-demo-knob knob-hidden" id="tri_knob_high"></div>
+        </div>
+        <div class="demo-caption">This is an example slider. Click the track and move the slider twice to see all three values.</div>
+    </div>
+</div>
+
+
+<h5 style="padding-top: 24px;">Belief Task 3 &mdash; The Other's Stage 2 Action</h5>
+<p>
+    Similar to the first task, you will assess the likelihood that the person you are paired with (the other depositor) chooses action A or action B in Stage 2.
+</p>
+
+<p>
+    <strong>NOTE:</strong> you will only see this slider if you choose action B in Stage 1 and move to Stage 2. In addition, you are asked to report your belief <strong>regardless of whether the other depositor is actually in Stage 2 or not.</strong>
+</p>
+<div class="demo-row">
+    <div class="step-indicator">
+        <div class="step inactive"><div class="step-num">1</div>Stage 1</div>
+        <div class="step-arrow">›</div>
+        <div class="step active"><div class="step-num">2</div>Stage 2</div>
+    </div>
+    <div>
+        <p><em><b>Suppose</b></em> the other depositor chose action B in Stage 1 and is now in <b>Stage 2</b>.</p>
+        <p>How likely do you think this depositor would choose <b>action A</b> or <b>action B</b> in Stage 2?</p>
+    </div>
+    <div class="demo-slider-wrap">
+        <div class="demo-labels-row">
+            <div class="demo-end left">
+                <div class="demo-h-label" style="color:#5e35b1;">Action A</div>
+                <div class="demo-h-pct" id="s3_pct_a" style="color:#5e35b1;">&nbsp;</div>
+            </div>
+            <div class="demo-end right">
+                <div class="demo-h-label" style="color:#00838f;">Action B</div>
+                <div class="demo-h-pct" id="s3_pct_b" style="color:#00838f;">&nbsp;</div>
+            </div>
+        </div>
+        <div class="demo-track-wrap">
+            <div class="demo-track-bg" id="s3_track"></div>
+            <input type="range" class="demo-range knob-hidden" id="s3_slider" min="0" max="100" step="1" value="40">
+        </div>
+        <div class="demo-caption">This is an example slider — try moving it.</div>
+    </div>
+</div>
+
+
+<hr style="border: none; border-top: 1px solid; margin: 24px 0;">
+
+
+<h5>Earnings</h5>
+<p>This part lasts for <strong>{{ part3_rounds }} matches.</strong>
+At the end of today's experiment, the computer will randomly select three matches for payment.</p>
+<ul>
+    <li>In one match, you will earn points from the decision you make, as in Part 2.</li>
+    <li>In a second match, you will earn either <strong>0 or 4 points</strong>, based on your belief about the other's Stage 1 action (Task 1 above).</li>
+    <li>In a third match, you will earn either <strong>0 or 4 points</strong>, based on your belief about the state of your bank (Task 2 above).</li>
+</ul>
+<p>
+    Your Task 3 report is not used for payment. It is collected for research purposes only.
+</p>
+<p>
+    Your payoffs from the selected matches will be displayed and converted to dollars at the rate of
+    <strong>1 point = {{C.REAL_WORLD_CURRENCY_PER_POINT}} dollar</strong>.
+</p>
+<p>
+    The payment rule for belief reporting is designed in a way that
+    <strong style="color: #1976D2; font-size: 18px;">honestly reporting your true assessment always maximizes your chance of winning 4 points.</strong>
+</p>
+<p>
+    Here's why: your earnings from belief reporting will depend on the actual outcome (the other depositor's action for Task 1, and the actual bank state for Task 2). This means that reporting a higher likelihood for an outcome increases your chance of earning points if that outcome actually occurs, but decreases your chance if it does not.
+</p>
+<p>
+    Since you do not know which match will be selected for payment, it is in your best interest to <strong>report your beliefs truthfully in every match.</strong>
+</p>
+
+<p>If you'd like to know more about how payments are calculated, <span class="payment-rule-toggle" id="rule_toggle">click here.</span></p>
+
+<div class="payment-rule-box" id="rule_box">
+    <div style="margin-bottom: 40px;">
+        <h6>Payment Rule for Belief Task 1 (the Other's Stage 1 Action)</h6>
+        <p>To determine your payment, the computer will randomly draw two numbers.
+        Each number is between 0 and 100, and all numbers in this range are equally likely to be drawn.
+        The two draws are independent, meaning that the outcome of one draw does not influence the other.</p>
+        <ul>
+            <li>If the other depositor chose <strong>action A</strong> in Stage 1: you will be rewarded if the likelihood you reported for action A is larger than either one of the two draws.</li>
+            <li>If the other depositor chose <strong>action B</strong> in Stage 1: you will be rewarded if the likelihood you reported for action B is larger than either one of the two draws.</li>
+        </ul>
+        <p>If this rule sounds confusing,</p>
+        <div class="payment-rule-highlight" style="color: #1565C0; font-weight: 700;">
+            Simply remember: submitting your belief truthfully will maximize your chance of winning 4 points.
+        </div>
+    </div>
+    <div style="margin-top: 40px;">
+        <h6>Payment Rule for Belief Task 2 (the Bank State)</h6>
+        <p>To determine your payment, the computer will first randomly pick one of the three states: <strong>Low, Medium, or High</strong>. 
+        Then, the computer will randomly draw two numbers. Each number is between 0 and 100, and all numbers in this range are equally likely to be drawn. The two draws are independent, meaning that the outcome of one draw does not influence the other.</p>
+        <p>Suppose the computer picks the Low state, and you submitted 29% as the likelihood of Low, which means 71% for NOT Low (i.e., Medium or High).</p>
+        <ul>
+            <li>If the actual state was Low in the selected match: you will get rewarded if the likelihood you reported for Low state (29%) is larger than either one of the two draws.</li>
+            <li>If the actual state was Medium or High in that match: you will get rewarded if the likelihood you reported for your bank NOT in Low state (71%) is larger than either one of the two draws.</li>
+        </ul>
+        <p>The same logic applies when the computer picksthe Medium or High state.</p>
+        <p>If this rule sounds confusing,</p>
+        <div class="payment-rule-highlight" style="color: #1565C0; font-weight: 700;">
+            Simply remember: submitting your belief truthfully will maximize your chance of winning 4 points.
+        </div>
+    </div>
+</div>
+
+<div style="margin-top: 30px;">{{ next_button }}</div>
+
+<script>
+(function () {
+    /* ── Binary slider: Other's Stage 1 action ── */
+    var s1Slider  = document.getElementById('s1_slider');
+    var s1Track   = document.getElementById('s1_track');
+    var s1PctA    = document.getElementById('s1_pct_a');
+    var s1PctB    = document.getElementById('s1_pct_b');
+    var s1Touched = false;
+
+    function updateS1(v) {
+        s1Track.style.background =
+            'linear-gradient(to right, #5e35b1 ' + v + '%, #00838f ' + v + '%)';
+        s1PctA.textContent = v + '%';
+        s1PctB.textContent = (100 - v) + '%';
+    }
+    function onS1FirstTouch() {
+        if (!s1Touched) {
+            s1Touched = true;
+            s1Slider.classList.remove('knob-hidden');
+            updateS1(parseInt(s1Slider.value));
+        }
+    }
+    s1Slider.addEventListener('mousedown', onS1FirstTouch);
+    s1Slider.addEventListener('touchstart', onS1FirstTouch);
+    s1Slider.addEventListener('input', function () { updateS1(parseInt(this.value)); });
+
+    /* ── Binary slider: Other's Stage 2 action ── */
+    var s3Slider  = document.getElementById('s3_slider');
+    var s3Track   = document.getElementById('s3_track');
+    var s3PctA    = document.getElementById('s3_pct_a');
+    var s3PctB    = document.getElementById('s3_pct_b');
+    var s3Touched = false;
+
+    function updateS3(v) {
+        s3Track.style.background =
+            'linear-gradient(to right, #5e35b1 ' + v + '%, #00838f ' + v + '%)';
+        s3PctA.textContent = v + '%';
+        s3PctB.textContent = (100 - v) + '%';
+    }
+    function onS3FirstTouch() {
+        if (!s3Touched) {
+            s3Touched = true;
+            s3Slider.classList.remove('knob-hidden');
+            updateS3(parseInt(s3Slider.value));
+        }
+    }
+    s3Slider.addEventListener('mousedown', onS3FirstTouch);
+    s3Slider.addEventListener('touchstart', onS3FirstTouch);
+    s3Slider.addEventListener('input', function () { updateS3(parseInt(this.value)); });
+
+    /* ── Tri-region demo: Bank state ── */
+    var triTrack  = document.getElementById('tri_track');
+    var triTrackBg = document.getElementById('tri_track_bg');
+    var knobLow   = document.getElementById('tri_knob_low');
+    var knobHigh  = document.getElementById('tri_knob_high');
+    var pctLowEl  = document.getElementById('tri_pct_low');
+    var pctMedEl  = document.getElementById('tri_pct_med');
+    var pctHighEl = document.getElementById('tri_pct_high');
+
+    var lowPct = null, highPct = null, phase = 0, dragging = null;
+
+    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+    function pctFromEvent(e) {
+        var rect = triTrack.getBoundingClientRect();
+        var clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        return clamp(Math.round((clientX - rect.left) / rect.width * 100), 0, 100);
+    }
+
+    function updateTri() {
+        if (lowPct === null) return;
+        knobLow.style.left = lowPct + '%';
+        pctLowEl.textContent = lowPct + '%';
+
+        if (highPct !== null) {
+            knobHigh.style.left = highPct + '%';
+            var med  = highPct - lowPct;
+            var high = 100 - highPct;
+            pctMedEl.textContent  = med  + '%';
+            pctHighEl.textContent = high + '%';
+            triTrackBg.style.background =
+                'linear-gradient(to right, #C62828 0%, #C62828 ' + lowPct + '%, #E65100 ' + lowPct + '%, #E65100 ' + highPct + '%, #2E7D32 ' + highPct + '%, #2E7D32 100%)';
+        } else {
+            triTrackBg.style.background =
+                'linear-gradient(to right, #C62828 0%, #C62828 ' + lowPct + '%, #e8eaed ' + lowPct + '%, #e8eaed 100%)';
+        }
+    }
+
+    function onTrackDown(e) {
+        var p = pctFromEvent(e);
+        if (phase === 0) {
+            lowPct = p; phase = 1;
+            knobLow.classList.remove('knob-hidden'); dragging = 'low';
+        } else if (phase === 1) {
+            highPct = clamp(p, lowPct, 100); phase = 2;
+            knobHigh.classList.remove('knob-hidden'); dragging = 'high';
+        } else {
+            dragging = Math.abs(p - lowPct) <= Math.abs(p - highPct) ? 'low' : 'high';
+        }
+        updateTri();
+        e.preventDefault();
+    }
+
+    function onTrackMove(e) {
+        if (!dragging) return;
+        var p = pctFromEvent(e);
+        if (dragging === 'low')  lowPct  = clamp(p, 0, highPct !== null ? highPct : 100);
+        if (dragging === 'high') highPct = clamp(p, lowPct, 100);
+        updateTri();
+        e.preventDefault();
+    }
+
+    function onTrackUp() { dragging = null; }
+
+    triTrack.addEventListener('mousedown',  onTrackDown);
+    triTrack.addEventListener('touchstart', onTrackDown, { passive: false });
+    document.addEventListener('mousemove',  onTrackMove);
+    document.addEventListener('touchmove',  onTrackMove, { passive: false });
+    document.addEventListener('mouseup',    onTrackUp);
+    document.addEventListener('touchend',   onTrackUp);
+
+    /* ── Collapsible payment rule ── */
+    document.getElementById('rule_toggle').addEventListener('click', function () {
+        var box = document.getElementById('rule_box');
+        box.style.display = (box.style.display === 'block') ? 'none' : 'block';
+    });
+}());
+</script>
+
+{{ endblock }}

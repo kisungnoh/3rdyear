@@ -1,0 +1,310 @@
+{{ extends "global/Page.html" }}
+{{ block title }}  {{ endblock }}
+
+{{ block content }}
+
+<style>
+:root {
+    --low-color:      #C62828;
+    --med-color:      #E65100;
+    --high-color:     #2E7D32;
+    --accent:         #37474f;
+    --card-bg:        #ffffff;
+    --page-bg:        #f4f5f7;
+    --border:         #dde1e7;
+    --text:           #1a1f2e;
+    --muted:          #6b7280;
+    --radius:         10px;
+    --shadow:         0 2px 8px rgba(0,0,0,0.08);
+}
+
+body, .otree-body {
+    background: var(--page-bg) !important;
+    font-family: sans-serif;
+    font-size: 16px;
+    color: var(--text);
+}
+
+.card-panel {
+    background: var(--card-bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 16px;
+}
+.card-panel-header {
+    background: #f8f9fb;
+    border-bottom: 0.5px solid var(--border);
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.card-panel-body { padding: 16px; }
+
+/* ── Context bar ── */
+.context-bar {
+    background: var(--card-bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 18px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--shadow);
+}
+.ctx-badge {
+    background: var(--accent);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+/* ── Payoff table ── */
+.payoff-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    table-layout: fixed;
+}
+.payoff-table th, .payoff-table td {
+    border: 0.5px solid var(--border);
+    padding: 9px 8px;
+    text-align: center;
+}
+.payoff-table thead th {
+    background: #f8f9fb;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+}
+.payoff-table .row-header {
+    background: #f8f9fb;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text);
+    text-align: center;
+    padding-left: 8px;
+    width: 50px;
+}
+.payoff-table td.highlight {
+    background: #fff9c4;
+    font-weight: 700;
+    border: 2px solid #f9a825;
+}
+
+/* ── Summary grid ── */
+.summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.summary-item {
+    background: var(--card-bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 14px 16px;
+    text-align: center;
+}
+.summary-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    margin-bottom: 6px;
+}
+.summary-value {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--text);
+}
+.summary-value.payoff {
+    font-size: 22px;
+    color: #000000;
+}
+.summary-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 6px;
+}
+
+.payoff-legend {
+    padding: 6px 0;
+    border-top: 0.5px solid var(--border);
+    background: #ffffff;
+    font-size: 12px;
+    color: var(--muted);
+    display: grid;
+    grid-template-columns: auto auto auto auto;
+    justify-content: center;
+    gap: 20px;
+}
+</style>
+
+<!-- Context bar -->
+<div class="context-bar">
+    <div class="ctx-badge">Match {{ round_number }} — Results</div>
+</div>
+
+<!-- Summary -->
+<div class="summary-grid">
+
+    <!-- Bank state -->
+    <div class="summary-item">
+        <div class="summary-label">Your Bank's State</div>
+        <div class="summary-value"
+             style="color:{{if your_state == 'Low'}}var(--low-color){{elif your_state == 'Medium'}}var(--med-color){{else}}var(--high-color){{endif}};">
+            {{ your_state }}
+        </div>
+        <div><span class="summary-label">Pre-Bank:</span> <span class="summary-value" style="color: #000000; font-size: 14px;">{{ prebank_state }}</span></div>
+    </div>
+
+    <!-- Your choice -->
+    <div class="summary-item">
+        <div class="summary-label">Your Choice</div>
+        <div class="summary-value" style="font-size:16px; padding-top:4px;">
+            Stage 1: <b>{{if player.first_decision == 'action_a'}}Action A{{else}}Action B{{endif}}</b><br>
+            {{if player.first_decision == 'action_b'}}
+            Stage 2: <b>{{if player.second_decision == 'action_a'}}Action A{{else}}Action B{{endif}}</b>
+            {{endif}}
+        </div>
+    </div>
+
+    <!-- Other's choice -->
+    <div class="summary-item">
+        <div class="summary-label">Other's Choice</div>
+        <div class="summary-value" style="font-size:16px; padding-top:4px;">
+            Stage 1: <b>{{if other.first_decision == 'action_a'}}Action A{{else}}Action B{{endif}}</b><br>
+            {{if other.first_decision == 'action_b'}}
+            Stage 2: <b>{{if other.second_decision == 'action_a'}}Action A{{else}}Action B{{endif}}</b>
+            {{endif}}
+        </div>
+    </div>
+
+</div>
+
+<!-- Earnings -->
+<div class="summary-grid" style="grid-template-columns: 1fr;">
+    <div class="summary-item">
+        <div class="summary-label">Your Earnings This Match</div>
+        <div class="summary-value" style="font-size: 18px; font-weight: 500;">You received &nbsp;<span class="summary-value payoff" style="font-weight: 700;">{{ payoff_value }} points</span>&nbsp; in this match.</div>
+    </div>
+</div>
+
+<!-- Payoff table -->
+<div class="card-panel">
+    <div class="card-panel-header">
+        Payoff Table —
+        <span style="color:{{if your_state == 'Low'}}var(--low-color){{elif your_state == 'Medium'}}var(--med-color){{else}}var(--high-color){{endif}};">
+            {{ your_state }} state
+        </span>
+        (Your payoff, Other's payoff)
+    </div>
+    <div class="card-panel-body" style="overflow-x:auto;">
+
+        {{if your_state == 'Low'}}
+        <table class="payoff-table">
+            <thead>
+                <tr><th class="row-header"></th><th>A</th><th>BA</th><th>BB</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="row-header">A</td>
+                    <td {{if player.first_decision == 'action_a' and other.first_decision == 'action_a'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_a'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{delayed_a}})</td>
+                    <td {{if player.first_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_b'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.FAIL_PAYOFF}})</td>
+                </tr>
+                <tr>
+                    <td class="row-header">BA</td>
+                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_a' and other.first_decision == 'action_a'}}class="highlight"{{endif}}>({{delayed_a}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_a'}}class="highlight"{{endif}}>({{delayed_a}}, {{delayed_a}})</td>
+                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_b'}}class="highlight"{{endif}}>({{delayed_a}}, {{C.FAIL_PAYOFF}})</td>
+                </tr>
+                <tr>
+                    <td class="row-header">BB</td>
+                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_b' and other.first_decision == 'action_a'}}class="highlight"{{endif}}>({{C.FAIL_PAYOFF}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_b' and other.first_decision == 'action_b' and other.second_decision == 'action_a'}}class="highlight"{{endif}}>({{C.FAIL_PAYOFF}}, {{delayed_a}})</td>
+                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_b' and other.first_decision == 'action_b' and other.second_decision == 'action_b'}}class="highlight"{{endif}}>({{C.FAIL_PAYOFF}}, {{C.FAIL_PAYOFF}})</td>
+                </tr>
+            </tbody>
+        </table>
+
+        {{elif your_state == 'Medium'}}
+        <table class="payoff-table">
+            <thead>
+                <tr><th class="row-header"></th><th>A</th><th>BA</th><th>BB</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="row-header">A</td>
+                    <td {{if player.first_decision == 'action_a' and other.first_decision == 'action_a'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_a'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{delayed_a}})</td>
+                    <td {{if player.first_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_b'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.FAIL_PAYOFF}})</td>
+                </tr>
+                <tr>
+                    <td class="row-header">BA</td>
+                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_a' and other.first_decision == 'action_a'}}class="highlight"{{endif}}>({{delayed_a}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_a'}}class="highlight"{{endif}}>({{delayed_a}}, {{delayed_a}})</td>
+                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_b'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.FAIL_PAYOFF}})</td>
+                </tr>
+                <tr>
+                    <td class="row-header">BB</td>
+                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_b' and other.first_decision == 'action_a'}}class="highlight"{{endif}}>({{C.FAIL_PAYOFF}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_b' and other.first_decision == 'action_b' and other.second_decision == 'action_a'}}class="highlight"{{endif}}>({{C.FAIL_PAYOFF}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_b' and other.first_decision == 'action_b' and other.second_decision == 'action_b'}}class="highlight"{{endif}}>({{C.SUCCESS_PAYOFF}}, {{C.SUCCESS_PAYOFF}})</td>
+                </tr>
+            </tbody>
+        </table>
+
+        {{else}}
+        <table class="payoff-table">
+            <thead>
+                <tr><th class="row-header"></th><th>A</th><th>BA</th><th>BB</th></tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="row-header">A</td>
+                    <td {{if player.first_decision == 'action_a' and other.first_decision == 'action_a'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_a'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_b'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.SUCCESS_PAYOFF}})</td>
+                </tr>
+                <tr>
+                    <td class="row-header">BA</td>
+                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_a' and other.first_decision == 'action_a'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_a'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_b'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.SUCCESS_PAYOFF}})</td>
+                </tr>
+                <tr>
+                    <td class="row-header">BB</td>
+                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_b' and other.first_decision == 'action_a'}}class="highlight"{{endif}}>({{C.SUCCESS_PAYOFF}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_b' and other.first_decision == 'action_b' and other.second_decision == 'action_a'}}class="highlight"{{endif}}>({{C.SUCCESS_PAYOFF}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_b' and other.first_decision == 'action_b' and other.second_decision == 'action_b'}}class="highlight"{{endif}}>({{C.SUCCESS_PAYOFF}}, {{C.SUCCESS_PAYOFF}})</td>
+                </tr>
+            </tbody>
+        </table>
+        {{endif}}
+
+    </div>
+    <div class="payoff-legend">
+        <span><b>A</b> = Action A (Stage 1)</span>
+        <span><b>BA</b> = Action B (Stage 1) → Action A (Stage 2)</span>
+        <span><b>BB</b> = Action B (Stage 1) → Action B (Stage 2)</span>
+        <span>Highlighted cell = outcome in this game</span>
+    </div>
+</div>
+
+<div style="text-align:center; margin-top:16px;">
+    {{ next_button }}
+</div>
+
+{{ endblock }}

@@ -1,0 +1,280 @@
+{{ extends "global/Page.html" }}
+{{ block title }}New Task for the Next Match{{ endblock }}
+
+{{ block content }}
+
+<style>
+.demo-row {
+    border: 1px solid #dde1e7;
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 0 auto 20px;
+    max-width: 460px;
+}
+
+/* ── Demo horizontal slider ── */
+.demo-slider-section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text, #1a1f2e);
+    margin-bottom: 6px;
+}
+.demo-slider-hint {
+    font-size: 13px;
+    color: var(--muted, #6b7280);
+    margin-bottom: 12px;
+}
+.demo-labels-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+.demo-end { min-width: 60px; }
+.demo-end.left  { text-align: left; }
+.demo-end.right { text-align: right; }
+.demo-h-label { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+.demo-h-pct   { font-size: 26px; font-weight: 600; min-height: 32px; }
+.demo-track-wrap { position: relative; height: 20px; }
+.demo-track-bg {
+    position: absolute; top: 50%; left: 0; right: 0;
+    height: 12px; transform: translateY(-50%);
+    border-radius: 6px; pointer-events: none; background: #e8eaed;
+}
+input.demo-range {
+    position: absolute; top: 50%; left: 0; width: 100%;
+    transform: translateY(-50%);
+    -webkit-appearance: none; appearance: none;
+    background: transparent; outline: none; margin: 0; height: 20px; cursor: pointer;
+}
+input.demo-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: #37474f; border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+input.demo-range::-moz-range-thumb {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: #37474f; border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.demo-caption { font-size: 14px; color: #888; text-align: center; margin-top: 10px; }
+.knob-hidden::-webkit-slider-thumb { opacity: 0 !important; }
+.knob-hidden::-moz-range-thumb     { opacity: 0 !important; }
+
+/* ── Demo tri-region slider ── */
+.demo-tri-labels-row {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 8px;
+}
+.demo-tri-side { min-width: 44px; }
+.demo-tri-side.left  { text-align: left; }
+.demo-tri-side.right { text-align: right; }
+.demo-tri-center     { text-align: center; flex: 1; }
+.demo-tri-name { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+.demo-tri-pct  { font-size: 26px; font-weight: 600; min-height: 32px; }
+.demo-tri-track-outer {
+    position: relative; height: 12px; border-radius: 6px;
+    background: #e8eaed; cursor: pointer; user-select: none;
+}
+.demo-tri-fill {
+    position: absolute; inset: 0; border-radius: 6px;
+    pointer-events: none; background: #e8eaed;
+}
+.demo-tri-knob {
+    position: absolute; top: 50%;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: #37474f; border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    transform: translate(-50%, -50%); cursor: grab; z-index: 2;
+}
+.demo-tri-knob.knob-hidden { opacity: 0; pointer-events: none; }
+.demo-tri-feedback { min-height: 20px; margin-top: 10px; font-size: 14px; color: #888; text-align: center; }
+
+.beliefs-divider { border: none; border-top: 1px solid #dde1e7; margin: 20px 0; }
+</style>
+
+<p>
+    You have completed the first two matches. In the next match you will have one additional task.
+</p>
+<p>
+    Along with your Stage 1 decision, you will be asked to submit <strong>two beliefs</strong>:
+</p>
+<ol>
+    <li>How likely the other depositor will choose <strong>Action A or Action B</strong> in Stage 1.</li>
+    <li>How likely your bank is in each <strong>state (Low / Medium / High)</strong>.</li>
+</ol>
+
+<hr class="beliefs-divider">
+
+<h5>Belief 1 — Other depositor's action</h5>
+<p>Use a slider to split the probability between Action A and Action B.</p>
+
+<div class="demo-row">
+    <div class="demo-slider-section-title">How likely do you think the other depositor will choose Action A or Action B?</div>
+    <div class="demo-labels-row">
+        <div class="demo-end left">
+            <div class="demo-h-label" style="color:#5e35b1;">Action A</div>
+            <div class="demo-h-pct" id="demo_pct_a" style="color:#5e35b1;">&nbsp;</div>
+        </div>
+        <div class="demo-end right">
+            <div class="demo-h-label" style="color:#00838f;">Action B</div>
+            <div class="demo-h-pct" id="demo_pct_b" style="color:#00838f;">&nbsp;</div>
+        </div>
+    </div>
+    <div class="demo-track-wrap">
+        <div class="demo-track-bg" id="demo_track_h"></div>
+        <input type="range" class="demo-range knob-hidden" id="demo_slider_h" min="0" max="100" step="1" value="40">
+    </div>
+    <div class="demo-caption">Try moving this slider.</div>
+</div>
+
+<hr class="beliefs-divider">
+
+<h5>Belief 2 — Bank state</h5>
+<p>
+    Use a two-knob slider to split the probability among the three states.
+    Click once to place the boundary between <strong style="color:#5e35b1;">Low</strong> and <strong style="color:#e65100;">Medium</strong>,
+    then click again to place the boundary between <strong style="color:#e65100;">Medium</strong> and <strong style="color:#00838f;">High</strong>.
+</p>
+
+<div class="demo-row">
+    <div class="demo-slider-section-title">How likely do you think your bank is in each state?</div>
+    <div class="demo-tri-labels-row">
+        <div class="demo-tri-side left">
+            <div class="demo-tri-name" style="color:#5e35b1;">Low</div>
+            <div class="demo-tri-pct" id="demo_pct_low" style="color:#5e35b1;">&nbsp;</div>
+        </div>
+        <div class="demo-tri-center">
+            <div class="demo-tri-name" style="color:#e65100;">Medium</div>
+            <div class="demo-tri-pct" id="demo_pct_med" style="color:#e65100;">&nbsp;</div>
+        </div>
+        <div class="demo-tri-side right">
+            <div class="demo-tri-name" style="color:#00838f;">High</div>
+            <div class="demo-tri-pct" id="demo_pct_high" style="color:#00838f;">&nbsp;</div>
+        </div>
+    </div>
+    <div class="demo-tri-track-outer" id="demo_tri_track">
+        <div class="demo-tri-fill" id="demo_tri_fill"></div>
+        <div class="demo-tri-knob knob-hidden" id="demo_knob_low"></div>
+        <div class="demo-tri-knob knob-hidden" id="demo_knob_high"></div>
+    </div>
+    <div class="demo-tri-feedback" id="demo_tri_feedback">Click the bar to place the first boundary.</div>
+</div>
+
+<div style="margin-top: 30px;">{{ next_button }}</div>
+
+<script>
+(function () {
+
+    /* ── Demo horizontal slider ── */
+    var hSlider  = document.getElementById('demo_slider_h');
+    var hTrack   = document.getElementById('demo_track_h');
+    var pctA     = document.getElementById('demo_pct_a');
+    var pctB     = document.getElementById('demo_pct_b');
+    var hTouched = false;
+
+    function updateH(v) {
+        hTrack.style.background =
+            'linear-gradient(to right, #5e35b1 ' + v + '%, #00838f ' + v + '%)';
+        pctA.textContent = v + '%';
+        pctB.textContent = (100 - v) + '%';
+    }
+    function onHFirst() {
+        if (!hTouched) {
+            hTouched = true;
+            hSlider.classList.remove('knob-hidden');
+            updateH(parseInt(hSlider.value));
+        }
+    }
+    hSlider.addEventListener('mousedown', onHFirst);
+    hSlider.addEventListener('touchstart', onHFirst);
+    hSlider.addEventListener('input', function () { updateH(parseInt(this.value)); });
+
+    /* ── Demo tri-region slider ── */
+    var trackEl     = document.getElementById('demo_tri_track');
+    var fillEl      = document.getElementById('demo_tri_fill');
+    var knobLowEl   = document.getElementById('demo_knob_low');
+    var knobHighEl  = document.getElementById('demo_knob_high');
+    var pctLowEl    = document.getElementById('demo_pct_low');
+    var pctMedEl    = document.getElementById('demo_pct_med');
+    var pctHighEl   = document.getElementById('demo_pct_high');
+    var triFeedback = document.getElementById('demo_tri_feedback');
+
+    var lowPct = null, highPct = null, phase = 0, dragging = null;
+
+    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+    function pctFromEvent(e) {
+        var rect = trackEl.getBoundingClientRect();
+        var cx = e.touches ? e.touches[0].clientX : e.clientX;
+        return clamp(Math.round((cx - rect.left) / rect.width * 100), 0, 100);
+    }
+
+    function updateTri() {
+        if (lowPct === null) return;
+        knobLowEl.style.left = lowPct + '%';
+        if (highPct !== null) knobHighEl.style.left = highPct + '%';
+
+        var low  = lowPct;
+        var high = highPct !== null ? 100 - highPct : null;
+        var med  = highPct !== null ? highPct - lowPct : null;
+
+        if (highPct !== null) {
+            fillEl.style.background =
+                'linear-gradient(to right,' +
+                ' #5e35b1 0%, #5e35b1 ' + low + '%,' +
+                ' #e65100 ' + low + '%, #e65100 ' + highPct + '%,' +
+                ' #00838f ' + highPct + '%, #00838f 100%)';
+            pctHighEl.textContent = high + '%';
+            pctMedEl.textContent  = med  + '%';
+            triFeedback.textContent = 'Low ' + low + '% · Medium ' + med + '% · High ' + high + '%';
+        } else {
+            fillEl.style.background =
+                'linear-gradient(to right,' +
+                ' #5e35b1 0%, #5e35b1 ' + low + '%,' +
+                ' #e8eaed ' + low + '%, #e8eaed 100%)';
+            triFeedback.textContent = 'Now click again to place the Medium / High boundary.';
+        }
+        pctLowEl.textContent = low + '%';
+    }
+
+    trackEl.addEventListener('mousedown', function (e) {
+        var p = pctFromEvent(e);
+        if (phase === 0) {
+            lowPct = p; phase = 1; knobLowEl.classList.remove('knob-hidden'); dragging = 'low';
+        } else if (phase === 1) {
+            highPct = clamp(p, lowPct, 100); phase = 2; knobHighEl.classList.remove('knob-hidden'); dragging = 'high';
+        } else {
+            dragging = Math.abs(p - lowPct) <= Math.abs(p - highPct) ? 'low' : 'high';
+        }
+        updateTri();
+    });
+    document.addEventListener('mousemove', function (e) {
+        if (!dragging) return;
+        var p = pctFromEvent(e);
+        if (dragging === 'low') lowPct  = clamp(p, 0, highPct !== null ? highPct : 100);
+        else                    highPct = clamp(p, lowPct, 100);
+        updateTri();
+    });
+    document.addEventListener('mouseup', function () { dragging = null; });
+
+    trackEl.addEventListener('touchstart', function (e) {
+        e.preventDefault();
+        var p = pctFromEvent(e);
+        if (phase === 0) {
+            lowPct = p; phase = 1; knobLowEl.classList.remove('knob-hidden'); dragging = 'low';
+        } else if (phase === 1) {
+            highPct = clamp(p, lowPct, 100); phase = 2; knobHighEl.classList.remove('knob-hidden'); dragging = 'high';
+        } else {
+            dragging = Math.abs(p - lowPct) <= Math.abs(p - highPct) ? 'low' : 'high';
+        }
+        updateTri();
+    }, { passive: false });
+    document.addEventListener('touchmove', function (e) {
+        if (!dragging) return; e.preventDefault();
+        var p = pctFromEvent(e);
+        if (dragging === 'low') lowPct  = clamp(p, 0, highPct !== null ? highPct : 100);
+        else                    highPct = clamp(p, lowPct, 100);
+        updateTri();
+    }, { passive: false });
+    document.addEventListener('touchend', function () { dragging = null; });
+
+}());
+</script>
+
+{{ endblock }}

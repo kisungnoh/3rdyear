@@ -1,0 +1,227 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Your Payment{{ endblock }}
+
+{{ block content }}
+
+<style>
+:root {
+    --low-color:      #5e35b1;
+    --med-color:      #e65100;
+    --high-color:     #00838f;
+    --action-a-color: #5e35b1;
+    --action-b-color: #00838f;
+    --accent:         #37474f;
+    --card-bg:        #ffffff;
+    --page-bg:        #f4f5f7;
+    --border:         #dde1e7;
+    --text:           #1a1f2e;
+    --muted:          #6b7280;
+    --radius:         10px;
+    --shadow:         0 2px 8px rgba(0,0,0,0.08);
+}
+.card-panel {
+    border: 1px solid #dde1e7;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+.card-panel-header {
+    background: #0277bd;
+    padding: 8px 16px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+}
+.card-panel-body { padding: 16px; }
+
+.pay-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 6px;
+}
+.pay-key { min-width: 240px; flex-shrink: 0; color: var(--muted); }
+.pay-val { color: #000000; }
+
+.pay-earned {
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #dde1e7;
+    font-weight: 600;
+}
+
+details.pay-rule { margin-top: 12px; }
+details.pay-rule summary {
+    cursor: pointer;
+    font-weight: normal;
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+details.pay-rule summary::-webkit-details-marker { display: none; }
+details.pay-rule summary::before { content: '▶'; font-size: 10px; }
+details.pay-rule[open] summary::before { content: '▼'; }
+.pay-rule-body {
+    margin-top: 8px;
+    padding: 12px 14px;
+    background: #f8f9fb;
+    border-left: 3px solid var(--muted);
+    line-height: 1.8;
+}
+.pay-rule-step { margin: 4px 0; }
+.tag-yes { color: #2e7d32; font-weight: 700; }
+.tag-no  { color: #c62828; font-weight: 700; }
+</style>
+
+<p>The following details your earnings from the three matches that were randomly selected for payment.</p>
+<p>The conversion rate is <strong>1 point = ${{ C.REAL_WORLD_CURRENCY_PER_POINT }}</strong>.</p>
+
+<!-- Part 2: Choice (matches 1–2) -->
+<div class="card-panel">
+    <div class="card-panel-header">Part 2: Your Action</div>
+    <div class="card-panel-body">
+        <div class="pay-row"><span class="pay-key">Selected match</span><span class="pay-val">Match {{ p2_round }}</span></div>
+        <div class="pay-row"><span class="pay-key">State</span><span class="pay-val">{{ p2_state }}</span></div>
+        <div class="pay-row"><span class="pay-key">Your action</span><span class="pay-val">{{ p2_action }}</span></div>
+        <div class="pay-row"><span class="pay-key">Other depositor's action</span><span class="pay-val">{{ p2_other_action }}</span></div>
+        <div class="pay-earned">Earnings: {{ p2_payoff }} points (${{ p2_payoff_usd }})</div>
+    </div>
+</div>
+
+<!-- Part 3: Choice (matches 3–5) -->
+<div class="card-panel">
+    <div class="card-panel-header">Part 3: Your Action</div>
+    <div class="card-panel-body">
+        <div class="pay-row"><span class="pay-key">Selected match</span><span class="pay-val">Match {{ p3_round }}</span></div>
+        <div class="pay-row"><span class="pay-key">State</span><span class="pay-val">{{ p3_state }}</span></div>
+        <div class="pay-row"><span class="pay-key">Your action</span><span class="pay-val">{{ p3_action }}</span></div>
+        <div class="pay-row"><span class="pay-key">Other depositor's action</span><span class="pay-val">{{ p3_other_action }}</span></div>
+        <div class="pay-earned">Earnings: {{ p3_payoff }} points (${{ p3_payoff_usd }})</div>
+    </div>
+</div>
+
+<!-- Part 3: Belief — other's Stage 1 action -->
+<div class="card-panel">
+    <div class="card-panel-header">Part 3: Your Belief (Other's Action)</div>
+    <div class="card-panel-body">
+        <div class="pay-row"><span class="pay-key">Selected match</span><span class="pay-val">Match {{ bel_s1_round }}</span></div>
+        <div class="pay-row"><span class="pay-key">Your reported belief</span><span class="pay-val">Action A: {{ bel_s1_a }}% / Action B: {{ bel_s1_b }}%</span></div>
+        <div class="pay-row"><span class="pay-key">Other depositor actually chose</span><span class="pay-val">{{ if bel_s1_other_action == 'action_a' }}Action A{{ else }}Action B{{ endif }} in Stage 1</span></div>
+        <div class="pay-earned">Earnings: {{ bel_s1_payoff }} points (${{ bel_s1_payoff_usd }})</div>
+
+        <details class="pay-rule">
+            <summary>How was this determined?</summary>
+            <div class="pay-rule-body">
+                <p>The computer randomly picked two numbers between 0 and 100, <strong>{{ bel_s1_draw1 }}</strong> and <strong>{{ bel_s1_draw2 }}</strong>.</p>
+                {{ if bel_s1_other_action == 'action_a' }}
+                <p>The other depositor chose <strong>action A</strong> in Stage 1. You are rewarded if your reported <strong>belief for action A ({{ bel_s1_a }}%)</strong> is larger than at least one of the two numbers.</p>
+                {{ else }}
+                <p>The other depositor chose <strong>action B</strong> in Stage 1. You are rewarded if your reported <strong>belief for action B ({{ bel_s1_b }}%)</strong> is larger than at least one of the two numbers.</p>
+                {{ endif }}
+                <p>
+                {{ if bel_s1_rewarded }}
+                    The condition was met,
+                {{ else }}
+                    The condition was not met,
+                {{ endif }}
+                    so you earned <strong>{{ bel_s1_payoff }} points (${{ bel_s1_payoff_usd }})</strong>.
+                </p>
+            </div>
+        </details>
+    </div>
+</div>
+
+<!-- Part 3: Belief — state -->
+<div class="card-panel">
+    <div class="card-panel-header">Part 3: Your Belief (Bank State)</div>
+    <div class="card-panel-body">
+        <div class="pay-row"><span class="pay-key">Selected match</span><span class="pay-val">Match {{ bel_state_round }}</span></div>
+        <div class="pay-row"><span class="pay-key">Randomly picked state</span><span class="pay-val">{{ bel_picked_state }}</span></div>
+        <div class="pay-row"><span class="pay-key">Your reported probability for {{ bel_picked_state }}</span><span class="pay-val">{{ bel_state_rep }}%</span></div>
+        <div class="pay-row"><span class="pay-key">Actual state</span><span class="pay-val">{{ bel_act_state }}</span></div>
+        <div class="pay-earned">Earnings: {{ bel_state_payoff }} points (${{ bel_state_payoff_usd }})</div>
+
+        <details class="pay-rule">
+            <summary>How was this determined?</summary>
+            <div class="pay-rule-body">
+                <p>The computer randomly picked a state, <strong>{{ bel_picked_state }}</strong>, and two numbers between 0 and 100, <strong>{{ bel_state_draw1 }}</strong> and <strong>{{ bel_state_draw2 }}</strong>.</p>
+                {{ if bel_act_state == bel_picked_state }}
+                <p>Since the actual state matches the picked state, you are rewarded if your reported probability for <strong>{{ bel_picked_state }} ({{ bel_state_rep }}%)</strong> is larger than at least one of the two numbers.</p>
+                {{ else }}
+                <p>The actual state <strong>({{ bel_act_state }})</strong> does not match the picked state. You are rewarded if your reported probability for non-{{ bel_picked_state }} states <strong>({{ bel_state_comp }}%)</strong> is larger than at least one of the two numbers.</p>
+                {{ endif }}
+                <p>
+                {{ if bel_state_rewarded }}
+                    The condition was met,
+                {{ else }}
+                    The condition was not met,
+                {{ endif }}
+                    so you earned <strong>{{ bel_state_payoff }} points (${{ bel_state_payoff_usd }})</strong>.
+                </p>
+            </div>
+        </details>
+    </div>
+</div>
+
+<!-- BRET -->
+<div class="card-panel">
+    <div class="card-panel-header">Part 4: Collecting Boxes</div>
+    <div class="card-panel-body">
+        <div class="pay-row"><span class="pay-key">Boxes collected</span><span class="pay-val">{{ bret_boxes_collected }}</span></div>
+        <div class="pay-row"><span class="pay-key">Bomb collected</span><span class="pay-val">{{ if bret_bomb }}<span class="tag-no">Yes</span>{{ else }}<span class="tag-yes">No</span>{{ endif }}</span></div>
+        <div class="pay-earned">Earnings: ${{ bret_payoff_usd }}</div>
+    </div>
+</div>
+
+<!-- Total -->
+<div class="card-panel">
+    <div class="card-panel-header">Total Payment</div>
+    <div class="card-panel-body">
+        <div class="pay-row"><span class="pay-key">Total earnings</span><span class="pay-val">${{ p2_payoff_usd }} + ${{ p3_payoff_usd }} + ${{ bel_s1_payoff_usd }} + ${{ bel_state_payoff_usd }} + ${{ bret_payoff_usd }} = ${{ total_earnings_usd }}</span></div>
+        <div class="pay-row"><span class="pay-key">Participation fee</span><span class="pay-val">${{ C.PARTICIPATION_FEE }}</span></div>
+        <div class="pay-earned">Total payment: ${{ total_payment }}</div>
+    </div>
+</div>
+
+<hr style="margin: 32px 0;">
+
+<p style="margin-top:20px;">
+    <input type="checkbox" id="confirm-check">
+    <label for="confirm-check">I confirm that my total payment from this experiment is <strong>${{ total_payment }}</strong>.</label>
+</p>
+
+<p>The experimenter will write you a receipt shortly. Thank you for participating.</p>
+
+<div id="confirm-feedback" class="confirm-feedback-box"></div>
+
+<div style="margin-top:30px;">{{ next_button }}</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const feedbackBox = document.getElementById("confirm-feedback");
+    const nextButton = document.querySelector(".otree-btn-next");
+    const checkBox = document.getElementById("confirm-check");
+
+    nextButton.addEventListener("click", function(e) {
+        if (!checkBox.checked) {
+            e.preventDefault();
+            feedbackBox.innerHTML = "Please confirm by checking the box before continuing.";
+            feedbackBox.style.display = "block";
+        }
+    });
+});
+</script>
+
+<style>
+.confirm-feedback-box {
+    background-color: #fff3cd;
+    border: 1px solid #ffeeba;
+    color: #333;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    display: none;
+}
+</style>
+
+{{ endblock }}

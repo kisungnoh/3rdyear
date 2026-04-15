@@ -1,0 +1,177 @@
+{{ extends "global/Page.html" }}
+{{ block title }} Round {{ round_number }} - Stage 1 Decision {{ endblock }}
+
+{{ block content }}
+
+<div class="row">
+    <!-- Left Column -->
+    <div class="col-md-5" style="padding-right: 20px;">
+        <div style="padding: 20px; border-radius: 5px;">
+            <p style="font-size: 16px; line-height: 1.6;">
+                You have <b>{{ C.ENDOWMENT }} ECU</b> in the bank.
+            </p>
+            <p style="font-size: 16px; line-height: 1.6;">
+                You have the option to withdraw your money or stay in the bank.
+            </p>
+            <p style="font-size: 16px; line-height: 1.6;">
+                If you stay in the bank, you will have the option to withdraw or not in period 2 again.
+            </p>
+        <hr>
+        {{ formfields }}    
+        </div>
+        
+    </div>
+        
+    <!-- Right Column -->
+    <div class="col-md-7">
+        <!-- BAD State Table -->
+        <div style="margin-bottom: 30px;">
+            <table class="table table-bordered table-sm" style="table-layout: fixed; width: 100%;">
+                <colgroup>
+                    <col style="width: 12%;">
+                    <col style="width: 40%;">
+                    <col style="width: 16%;">
+                    <col style="width: 16%;">
+                    <col style="width: 16%;">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th rowspan="2" colspan="2" style="background-color: #f0f0f0; font-weight: normal; vertical-align: middle; text-align: center;">
+                        With <strong>{{C.BAD_PROB}}%</strong> probability,<br>
+                        your bank fundamental is <b>BAD</b>
+                        </th>
+                        <th colspan="3" class="text-center" style="background-color: #f0f0f0; font-weight: normal;">Other's choice</th>
+                    </tr>
+                    <tr>
+                        <th class="text-center" style="background-color: #f0f0f0; font-weight: normal;"><strong>W</strong></th>
+                        <th class="text-center" style="background-color: #f0f0f0; font-weight: normal;"><strong>SW</strong></th>
+                        <th class="text-center" style="background-color: #f0f0f0; font-weight: normal;"><strong>SS</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="3" style="background-color: #f0f0f0; vertical-align: middle;">Your choice:</td>
+                        <td style="background-color: #f0f0f0;"> <strong>Withdraw (W)</strong></td>
+                        <td class="text-center">({{C.ENDOWMENT}},{{C.ENDOWMENT}})</td>
+                        <td class="text-center">({{C.ENDOWMENT}},{{delayed_withdraw}})</td>
+                        <td class="text-center">({{C.ENDOWMENT}},{{C.FAIL_PAYOFF}})</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #f0f0f0;"> <strong>Stay & Withdraw (SW)</strong></td>
+                        <td class="text-center">({{delayed_withdraw}},{{C.ENDOWMENT}})</td>
+                        <td class="text-center">({{delayed_withdraw}},{{delayed_withdraw}})</td>
+                        <td class="text-center">({{delayed_withdraw}},{{C.FAIL_PAYOFF}})</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #f0f0f0;"> <strong>Stay & Stay (SS)</strong></td>
+                        <td class="text-center">({{C.FAIL_PAYOFF}},{{C.ENDOWMENT}})</td>
+                        <td class="text-center">({{C.FAIL_PAYOFF}},{{delayed_withdraw}})</td>
+                        <td class="text-center">({{C.FAIL_PAYOFF}},{{C.FAIL_PAYOFF}})</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+                
+        <!-- MEDIUM State Table -->
+        <div style="margin-bottom: 30px;">      
+            <table class="table table-bordered table-sm" style="table-layout: fixed; width: 100%;">
+                <colgroup>
+                    <col style="width: 12%;">
+                    <col style="width: 40%;">
+                    <col style="width: 16%;">
+                    <col style="width: 16%;">
+                    <col style="width: 16%;">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th rowspan="2" colspan="2" style="background-color: #f0f0f0; font-weight: normal; vertical-align: middle; text-align: center;">
+                        With <strong>{{C.MEDIUM_PROB}}%</strong> probability,<br>
+                        your bank fundamental is <b>MEDIUM</b>
+                        </th>
+                        <th colspan="3" class="text-center" style="background-color: #f0f0f0; font-weight: normal;">Other's choice</th>
+                    </tr>
+                    <tr>
+                        <th class="text-center" style="background-color: #f0f0f0; font-weight: normal;"><strong>W</strong></th>
+                        <th class="text-center" style="background-color: #f0f0f0; font-weight: normal;"><strong>SW</strong></th>
+                        <th class="text-center" style="background-color: #f0f0f0; font-weight: normal;"><strong>SS</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="3" style="background-color: #f0f0f0; vertical-align: middle;">Your choice:</td>
+                        <td style="background-color: #f0f0f0;"> <strong>Withdraw (W)</strong></td>
+                        <td class="text-center">({{C.ENDOWMENT}},{{C.ENDOWMENT}})</td>
+                        <td class="text-center">({{C.ENDOWMENT}},{{delayed_withdraw}})</td>
+                        <td class="text-center">({{C.ENDOWMENT}},{{C.FAIL_PAYOFF}})</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #f0f0f0;"> <strong>Stay & Withdraw (SW)</strong></td>
+                        <td class="text-center">({{delayed_withdraw}},{{C.ENDOWMENT}})</td>
+                        <td class="text-center">({{delayed_withdraw}},{{delayed_withdraw}})</td>
+                        <td class="text-center">({{C.ENDOWMENT}},{{C.FAIL_PAYOFF}})</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #f0f0f0;"> <strong>Stay & Stay (SS)</strong></td>
+                        <td class="text-center">({{C.FAIL_PAYOFF}},{{C.ENDOWMENT}})</td>
+                        <td class="text-center">({{C.FAIL_PAYOFF}},{{C.ENDOWMENT}})</td>
+                        <td class="text-center">({{C.SUCCESS_PAYOFF}},{{C.SUCCESS_PAYOFF}})</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- GOOD State Table -->
+        <div style="margin-bottom: 30px;">        
+        <div>
+            <table class="table table-bordered table-sm" style="table-layout: fixed; width: 100%;">
+                <colgroup>
+                    <col style="width: 12%;">
+                    <col style="width: 40%;">
+                    <col style="width: 16%;">
+                    <col style="width: 16%;">
+                    <col style="width: 16%;">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th rowspan="2" colspan="2" style="background-color: #f0f0f0; font-weight: normal; vertical-align: middle; text-align: center;">
+                        With <strong>{{C.GOOD_PROB}}%</strong> probability,<br>
+                        Your bank fundamental is <b>GOOD</b>
+                        </th>
+                        <th colspan="3" class="text-center" style="background-color: #f0f0f0; font-weight: normal;">Other's choice</th>
+                    </tr>
+                    <tr>
+                        <th class="text-center" style="background-color: #f0f0f0; font-weight: normal;"><strong>W</strong></th>
+                        <th class="text-center" style="background-color: #f0f0f0; font-weight: normal;"><strong>SW</strong></th>
+                        <th class="text-center" style="background-color: #f0f0f0; font-weight: normal;"><strong>SS</strong></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td rowspan="3" style="background-color: #f0f0f0; vertical-align: middle;">Your choice:</td>
+                        <td style="background-color: #f0f0f0;"> <strong>Withdraw (W)</strong></td>
+                        <td class="text-center">({{C.ENDOWMENT}},{{C.ENDOWMENT}})</td>
+                        <td class="text-center">({{C.ENDOWMENT}},{{C.ENDOWMENT}})</td>
+                        <td class="text-center">({{C.ENDOWMENT}},{{C.SUCCESS_PAYOFF}})</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #f0f0f0;"> <strong>Stay & Withdraw (SW)</strong></td>
+                        <td class="text-center">({{C.ENDOWMENT}},{{C.ENDOWMENT}})</td>
+                        <td class="text-center">({{C.ENDOWMENT}},{{C.ENDOWMENT}})</td>
+                        <td class="text-center">({{C.ENDOWMENT}},{{C.SUCCESS_PAYOFF}})</td>
+                    </tr>
+                    <tr>
+                        <td style="background-color: #f0f0f0;"> <strong>Stay & Stay (SS)</strong></td>
+                        <td class="text-center">({{C.SUCCESS_PAYOFF}},{{C.ENDOWMENT}})</td>
+                        <td class="text-center">({{C.SUCCESS_PAYOFF}},{{C.ENDOWMENT}})</td>
+                        <td class="text-center">({{C.SUCCESS_PAYOFF}},{{C.SUCCESS_PAYOFF}})</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{{ next_button }}
+
+
+{{ endblock }}

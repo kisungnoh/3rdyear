@@ -1,0 +1,116 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Post_Experiment Survey{{ endblock }}
+
+{{ block content }}
+
+<style>
+.cert-block { margin-bottom: 28px; }
+.cert-question { font-size: 16px; margin-bottom: 30px; }
+.cert-slider-inner { width: 700px; margin: 0 auto; }
+.cert-ends { display: flex; justify-content: space-between; margin-bottom: 5px; }
+.cert-end-label { font-size: 15px; font-weight: 600; letter-spacing: 0.04em; }
+.cert-ticks { display: flex; justify-content: space-between; font-size: 14px; color: #666; margin-bottom: 4px; padding: 0 12px; }
+.cert-track-wrap { position: relative; height: 20px; }
+.cert-track-bg { position: absolute; top: 50%; left: 0; right: 0; height: 14px; transform: translateY(-50%); border-radius: 8px; pointer-events: none; background: #e8eaed; }
+input.cert-range { position: absolute; top: 50%; left: 0; width: 100%; transform: translateY(-50%); -webkit-appearance: none; appearance: none; background: transparent; outline: none; margin: 0; height: 20px; cursor: pointer; }
+input.cert-range::-webkit-slider-thumb { -webkit-appearance: none; width: 28px; height: 28px; border-radius: 50%; background: #1976D2; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+input.cert-range::-moz-range-thumb { width: 28px; height: 28px; border-radius: 50%; background: #1976D2; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+.knob-hidden::-webkit-slider-thumb { opacity: 0 !important; }
+.knob-hidden::-moz-range-thumb     { opacity: 0 !important; }
+/* Value display: centered below slider, blue */
+.cert-val-below { text-align: center; font-size: 24px; font-weight: 600; min-height: 30px; margin-top: 8px; color: #1976D2; }
+.cert-feedback { min-height: 18px; margin-top: 4px; font-size: 13px; color: #888; text-align: center; }
+</style>
+
+<!-- Q2: Stage 2 Choice -->
+<p><strong>Q2.</strong> When the bank state was <strong>Medium</strong> and you moved to Stage 2, what was your preferred choice?</p>
+{{ formfield 'stage2_choice' }}
+
+<!-- Stage 2 Certainty — hidden until Q2 is answered -->
+<div id="q4_section" style="display: none; margin-top: 28px;">
+    <div class="cert-block">
+        <div class="cert-question">
+            <strong>How certain</strong> were you that
+            <strong><span id="choice_label_s2">your preferred choice</span></strong>
+            was your best decision, given your personal preferences and the available information?
+        </div>
+        <div class="cert-slider-inner">
+            <div class="cert-ends">
+                <span class="cert-end-label">Very uncertain</span>
+                <span class="cert-end-label">Completely certain</span>
+            </div>
+            <div class="cert-ticks">
+                <span>50%</span><span>60%</span><span>70%</span><span>80%</span><span>90%</span><span>100%</span>
+            </div>
+            <div class="cert-track-wrap">
+                <div class="cert-track-bg" id="track_s2"></div>
+                <input type="range" class="cert-range knob-hidden" id="slider_s2" min="50" max="100" step="1" value="">
+            </div>
+            <div class="cert-val-below" id="val_s2">&nbsp;</div>
+        </div>
+        <div class="cert-feedback" id="feedback_s2"></div>
+        <input type="hidden" name="stage2_certainty" id="id_stage2_certainty" value="">
+    </div>
+</div>
+
+{{ next_button }}
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    var CHOICE_LABELS = { action_a: 'Action A', action_b: 'Action B', even: 'Even' };
+    var choiceLabelEl = document.getElementById('choice_label_s2');
+    var q4Section     = document.getElementById('q4_section');
+
+    var slider   = document.getElementById('slider_s2');
+    var track    = document.getElementById('track_s2');
+    var valEl    = document.getElementById('val_s2');
+    var feedback = document.getElementById('feedback_s2');
+    var hidden   = document.getElementById('id_stage2_certainty');
+    var touched  = false;
+
+    document.querySelectorAll('input[name="stage2_choice"]').forEach(function (radio) {
+        radio.addEventListener('change', function () {
+            choiceLabelEl.textContent = CHOICE_LABELS[this.value] || 'your preferred choice';
+            q4Section.style.display = 'block';
+        });
+    });
+
+    function onFirstTouch() {
+        if (!touched) {
+            touched = true;
+            slider.classList.remove('knob-hidden');
+            hidden.value = slider.value;
+            var pct = ((parseInt(slider.value) - 50) / 50) * 100;
+            track.style.background = 'linear-gradient(to right, #1976D2 ' + pct + '%, #e8eaed ' + pct + '%)';
+            valEl.textContent = slider.value + '%';
+        }
+    }
+    slider.addEventListener('mousedown', onFirstTouch);
+    slider.addEventListener('touchstart', onFirstTouch);
+
+    slider.addEventListener('input', function () {
+        hidden.value = this.value;
+        var pct = ((parseInt(this.value) - 50) / 50) * 100;
+        track.style.background = 'linear-gradient(to right, #1976D2 ' + pct + '%, #e8eaed ' + pct + '%)';
+        valEl.textContent = this.value + '%';
+        feedback.textContent = '';
+    });
+
+    var nextBtn = document.querySelector('button[type=submit], .otree-btn-next');
+    if (nextBtn) {
+        nextBtn.addEventListener('click', function (e) {
+            var blocked = false;
+            if (!document.querySelector('input[name="stage2_choice"]:checked')) { blocked = true; }
+            if (!touched) {
+                feedback.style.color = '#c62828';
+                feedback.textContent = 'Please move the slider to indicate your certainty.';
+                blocked = true;
+            }
+            if (blocked) { e.preventDefault(); e.stopImmediatePropagation(); }
+        });
+    }
+});
+</script>
+
+{{ endblock }}

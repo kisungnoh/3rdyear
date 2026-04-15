@@ -1,0 +1,101 @@
+<div style="background:#ffffff; border:2.5px solid #7986cb; border-radius:10px; overflow:hidden; box-shadow:0 2px 8px rgba(121,134,203,0.15); margin-top:40px; max-width:800px; margin-left:auto; margin-right:auto;">
+
+    <!-- Card header -->
+    <div style="background:#f8f9fb; border-bottom:1px solid #7986cb; padding:10px 16px; font-size:11px; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; color:#7986cb;">
+        Reminder
+    </div>
+
+    <div style="padding:20px 24px;">
+
+        <p>The match proceeded as follows:</p>
+        
+        <div style="display: flex; padding-bottom: 20px; justify-content: center;">
+            <div style="border: 1px solid #ccc; padding: 20px 30px; display: inline-block;">
+            <table style="border-collapse: collapse;">
+                <thead>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td style="padding-bottom: 8px;">
+                    <span style="padding: 0 24px; text-decoration: underline; font-weight: bold;">Stage 1</span>
+                    </td>
+                    <td></td>
+                    <td style="text-align: center; padding-bottom: 8px;">
+                    <span style="text-decoration: underline; font-weight: bold;">Stage 2</span>
+                    </td>
+                    <td style="text-align: left; padding-bottom: 8px; padding-left: 16px; font-size: 0.9em;">(label for each path)</td>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Row 1: Stage 1 action A -->
+                <tr style="height: 44px;">
+                    <td rowspan="3" style="position: relative; min-width: 90px; padding-right: 12px; white-space: nowrap;">
+                    <span style="position: absolute; top: 44px; left: 0;">Depositor:</span>
+                    </td>
+            
+                    <!-- Stage 1 brace: spans 3 rows (3 × 44px = 132px)
+                        Top bullet (action A) center: y=22px, bottom bullet (action B) center: y=88px, midpoint: y=55px -->
+                    <td rowspan="3" style="padding: 0; width: 16px; position: relative;">
+                    <div style="position: absolute; top: 22px; left: 0; width: 16px; height: 22px;
+                                border-top: 1.5px solid black;
+                                border-left: 1.5px solid black;
+                                border-radius: 6px 0 0 0;"></div>
+                    <div style="position: absolute; bottom: 44px; left: 0; width: 16px; height: 44px;
+                                border-bottom: 1.5px solid black;
+                                border-left: 1.5px solid black;
+                                border-radius: 0 0 0 6px;"></div>
+                    </td>
+
+                    <td style="padding: 0 16px; vertical-align: middle; white-space: nowrap;">&#x2022; action A</td>
+                    <td></td>
+                    <td></td>
+                    <td style="padding-left: 36px; vertical-align: middle;">: <em>A</em></td>
+                </tr>
+
+                <!-- Row 2: Stage 1 action B → Stage 2 action A -->
+                <tr style="height: 44px;">
+                    <!-- "action B →" spans rows 2–3 -->
+                    <td rowspan="2" style="padding: 0 16px; vertical-align: middle; white-space: nowrap;">
+                    &#x2022; action B
+                    <span style="display: inline-flex; align-items: center; margin-left: 8px;">
+                        <span style="display: inline-block; width: 60px; height: 1.5px; background: #555;
+                                    position: relative; vertical-align: middle;">
+                        <span style="position: absolute; right: -1px; top: 50%;
+                                    transform: translateY(-50%);
+                                    border-top: 4px solid transparent;
+                                    border-bottom: 4px solid transparent;
+                                    border-left: 6px solid #555;"></span>
+                        </span>
+                    </span>
+                    </td>
+
+                    <!-- Stage 2 brace: spans rows 2–3 (2 × 44px = 88px)
+                        Top bullet center: y=22px, bottom bullet center: y=66px, midpoint: y=44px -->
+                    <td rowspan="2" style="padding: 0; width: 16px; position: relative;">
+                    <div style="position: absolute; top: 22px; left: 0; width: 16px; height: 22px;
+                                border-top: 1.5px solid black;
+                                border-left: 1.5px solid black;
+                                border-radius: 6px 0 0 0;"></div>
+                    <div style="position: absolute; bottom: 22px; left: 0; width: 16px; height: 22px;
+                                border-bottom: 1.5px solid black;
+                                border-left: 1.5px solid black;
+                                border-radius: 0 0 0 6px;"></div>
+                    </td>
+
+                    <td style="padding: 0 12px; vertical-align: middle; white-space: nowrap;">&#x2022; action A</td>
+                    <td style="padding-left: 36px; vertical-align: middle;">: <em>BA</em></td>
+                </tr>
+
+                <!-- Row 3: Stage 2 action B -->
+                <tr style="height: 44px;">
+                    <td style="padding: 0 12px; vertical-align: middle; white-space: nowrap;">&#x2022; action B</td>
+                    <td style="padding-left: 36px; vertical-align: middle;">: <em>BB</em></td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+        <p> <strong>Note:</strong> A participant could not see the other depositor's Stage 1 decision when they reached Stage 2. Namely, they did not know whether the other depositor was in Stage 2 or not.</p>
+    </div>
+</div>
+

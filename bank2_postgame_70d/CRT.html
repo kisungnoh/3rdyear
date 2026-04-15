@@ -1,0 +1,102 @@
+{{ extends 'global/Page.html' }}
+{{ block title }} Questionnaire {{ endblock }}
+
+{{ block content }}
+
+
+<br>
+<p>Please answer the following questions. You will have <strong>5 minutes</strong> to complete this questionnaire. A reminder will appear when 1 minute remains.</p>
+<br>
+
+<div id="gentle-reminder" style="display:none; background:#e8f5e9; border:1px solid #81c784; border-radius:6px; padding:12px 18px; margin-bottom:16px;">
+    Just a gentle reminder: you have about 1 minute left. Please take a moment to submit your answers when you're ready.
+</div>
+
+<p>Q1. A bat and a ball cost $1.10 in total. The bat costs $1.00 more than the ball. </p>
+<p>How much does the ball cost?</p>
+
+<p><input type="number" name="CRT1" min="0"> cents</p>
+</br>
+<p>Q2. If it takes 5 machines 5 minutes to make 5 widgets, how long would it take 100 machines to make 100 widgets?</p>
+
+<p><input type="number" name="CRT2" min="0"> minutes</p>
+</br>
+<p>Q3. In a lake, there is a patch of lily pads. Every day, the patch doubles in size. If it takes 48 days for the patch to cover the entire lake,
+how long would it take for the patch to cover half of the lake?</p>
+
+<p><input type="number" name="CRT3" min="0"> days</p>
+
+</br>
+
+{{ next_button }}
+
+<script>
+    (function () {
+        var DURATION = 5 * 60; // 5 minutes in seconds
+        var KEY = 'crt_start_time';
+
+        if (!sessionStorage.getItem(KEY)) {
+            sessionStorage.setItem(KEY, Date.now());
+        }
+
+        function getRemaining() {
+            var elapsed = Math.floor((Date.now() - parseInt(sessionStorage.getItem(KEY))) / 1000);
+            return DURATION - elapsed;
+        }
+
+        function lockForm() {
+            document.querySelectorAll('input, textarea, select').forEach(function (el) {
+                el.readOnly = true;
+                el.style.pointerEvents = 'none';
+                el.style.opacity = '0.5';
+            });
+            var banner = document.getElementById('gentle-reminder');
+            banner.style.display = 'block';
+            banner.style.background = '#fdecea';
+            banner.style.borderColor = '#e57373';
+            banner.textContent = 'The 5-minute window has now closed. Your current answers will be submitted. Please click Next to continue.';
+        }
+
+        // Enforce required fields before time expires
+        document.querySelector('form').addEventListener('submit', function (e) {
+            if (getRemaining() > 0) {
+                var empty = false;
+                document.querySelectorAll('input[name^="CRT"]').forEach(function (el) {
+                    if (el.value === '') empty = true;
+                });
+                if (empty) {
+                    e.preventDefault();
+                    e.stopImmediatePropagation();
+                    alert('Please answer all questions before proceeding.');
+                }
+            }
+        }, true);
+
+        // If already expired on load, lock immediately
+        if (getRemaining() <= 0) {
+            lockForm();
+            return;
+        }
+
+        var reminded = getRemaining() <= 60;
+        if (reminded) {
+            document.getElementById('gentle-reminder').style.display = 'block';
+        }
+
+        var interval = setInterval(function () {
+            var remaining = getRemaining();
+
+            if (remaining <= 60 && !reminded) {
+                reminded = true;
+                document.getElementById('gentle-reminder').style.display = 'block';
+            }
+
+            if (remaining <= 0) {
+                clearInterval(interval);
+                lockForm();
+            }
+        }, 1000);
+    })();
+</script>
+
+{{ endblock }}
