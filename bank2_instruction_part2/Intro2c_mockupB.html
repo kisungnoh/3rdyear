@@ -1,0 +1,82 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Part 2 Instructions (4 of 5){{ endblock }}
+
+{{ block content }}
+<style>
+:root {
+    --border: #dde1e7;
+    --muted:  #6b7280;
+}
+.msg-left  { font-weight: 700; }
+.msg-right { font-weight: 700; }
+.ref-table {
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 20px auto 24px;
+}
+.ref-table th {
+    background: #f8f9fb;
+    border: 0.5px solid var(--border);
+    padding: 9px 20px;
+    font-weight: 600;
+    text-align: center;
+}
+.ref-table td {
+    border: 0.5px solid var(--border);
+    padding: 9px 20px;
+    text-align: center;
+}
+</style>
+
+<br>
+<p>Along with the A-count, below describes the second piece of information which may help you make your decisions.</p>
+
+<br>
+<h5>Observer's Message</h5>
+<p>
+    If you choose action B in Stage 1 and move to <strong>Stage 2</strong>, a computerized agent called the <strong>Observer</strong> will send you a message —
+    <strong>"Left"</strong> or <strong>"Right"</strong> — before you make your Stage 2 decision.
+    The message depends on your bank's state and the other depositor's Stage 1 action:
+</p>
+
+<table class="ref-table">
+    <thead>
+        <tr>
+            <th>Your bank's state</th>
+            <th>Other depositor's Stage 1 action</th>
+            <th>Message you receive</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="left-row">
+            <td>Low</td>
+            <td style="color: var(--muted); font-style: italic;">any</td>
+            <td><span class="msg-left">"Left"</span></td>
+        </tr>
+        <tr class="left-row">
+            <td>Medium</td>
+            <td>Action A</td>
+            <td><span class="msg-left">"Left"</span></td>
+        </tr>
+        <tr class="right-row">
+            <td>Medium</td>
+            <td>Action B</td>
+            <td><span class="msg-right">"Right"</span></td>
+        </tr>
+        <tr class="right-row">
+            <td>High</td>
+            <td style="color: var(--muted); font-style: italic;">any</td>
+            <td><span class="msg-right">"Right"</span></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The message does not reveal which specific case triggered it. However, <strong>the Observer always tells the truth,</strong>, so you can rely on the message.</p>
+<p>The above table will be shown to you when you make decisions. You do not need to memorize the case.</p>
+<p><strong>Note:</strong> You will <strong>NOT</strong> receive the message if you chose action A in Stage 1.</p>
+
+<div style="text-align:center; padding-top:30px;">
+    {{ next_button }}
+</div>
+
+{{ endblock }}

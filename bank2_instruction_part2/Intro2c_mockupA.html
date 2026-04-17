@@ -1,0 +1,231 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Part 2 Instructions (4 of 5){{ endblock }}
+
+{{ block content }}
+<style>
+:root {
+    --border: #dde1e7;
+    --text:   #1a1f2e;
+    --muted:  #6b7280;
+}
+.card-panel {
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+.payoff-three { display: flex; gap: 0; }
+.payoff-col {
+    flex: 1;
+    border-right: 0.5px solid var(--border);
+    padding: 12px 14px;
+}
+.payoff-col:last-child { border-right: none; }
+.payoff-col-label {
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    padding-bottom: 6px;
+}
+.signal-badge {
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+    padding: 2px 0 8px;
+    letter-spacing: 0.04em;
+}
+.payoff-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    table-layout: fixed;
+}
+.payoff-table th, .payoff-table td {
+    border: 0.5px solid var(--border);
+    padding: 7px 4px;
+    text-align: center;
+}
+.payoff-table thead th {
+    background: #f8f9fb;
+    font-size: 12px;
+    font-weight: 600;
+}
+.payoff-table .row-header {
+    background: #f8f9fb;
+    font-weight: 600;
+    font-size: 12px;
+    text-align: center;
+}
+.payoff-table col.col-label  { width: 34px; }
+.payoff-table col.col-action { width: 56px; }
+.payoff-table col.col-data   { width: auto; }
+.my-payoff { font-weight: 700; color: #1565c0; }
+.payoff-legend {
+    padding: 6px 0;
+    border-top: 0.5px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    display: grid;
+    grid-template-columns: auto auto auto;
+    justify-content: center;
+    gap: 20px;
+}
+/* Signal coloring */
+.col-left-signal  { background: #e8f0fe; }
+.col-right-signal { background: #fce8e6; }
+.border-left  { border-top: 3px solid #1565c0 !important; }
+.border-right { border-top: 3px solid #c62828 !important; }
+.msg-left  { color: #1565c0; font-weight: 700; }
+.msg-right { color: #c62828; font-weight: 700; }
+</style>
+
+<br>
+<p>Along with the A-count, below describes the second piece of information which may help you make your decisions.</p>
+
+<br>
+<h5>Observer's Message</h5>
+<p>
+    If you choose action B in Stage 1, the <strong>Observer</strong> will send you a message —
+    <span class="msg-left">"Left"</span> or <span class="msg-right">"Right"</span> — before you make your Stage 2 decision.
+    The message is color-coded in the payoff tables below: <span style="background:#e8f0fe; padding:1px 6px; border-radius:3px; font-size:12px;">blue</span> = "Left" &nbsp;·&nbsp; <span style="background:#fce8e6; padding:1px 6px; border-radius:3px; font-size:12px;">pink</span> = "Right".
+</p>
+
+<div class="card-panel" style="margin-bottom: 24px;">
+    <div class="payoff-three">
+
+        <!-- LOW: always Left -->
+        <div class="payoff-col border-left" style="border-top: 3px solid #1565c0;">
+            <div class="payoff-col-label">Bank State: Low</div>
+            <div class="signal-badge msg-left">→ always "Left"</div>
+            <table class="payoff-table">
+                <colgroup>
+                    <col class="col-label"><col class="col-action">
+                    <col class="col-data"><col class="col-data"><col class="col-data">
+                </colgroup>
+                <thead>
+                    <tr><th class="row-header" rowspan="2" colspan="2"></th><th colspan="3" style="font-weight:500; font-size:12px;">Other</th></tr>
+                    <tr><th>A</th><th>BA</th><th>BB</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header" rowspan="3" style="writing-mode:vertical-rl; transform:rotate(180deg); font-size:12px; font-weight:700; color:#3949ab; white-space:nowrap; width:18px;">You</td>
+                        <td class="row-header">A</td>
+                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.ENDOWMENT}})</td>
+                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{delayed_a}})</td>
+                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.FAIL_PAYOFF}})</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">BA</td>
+                        <td>(<span class="my-payoff">{{delayed_a}}</span>, {{C.ENDOWMENT}})</td>
+                        <td>(<span class="my-payoff">{{delayed_a}}</span>, {{delayed_a}})</td>
+                        <td>(<span class="my-payoff">{{delayed_a}}</span>, {{C.FAIL_PAYOFF}})</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">BB</td>
+                        <td>(<span class="my-payoff">{{C.FAIL_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
+                        <td>(<span class="my-payoff">{{C.FAIL_PAYOFF}}</span>, {{delayed_a}})</td>
+                        <td>(<span class="my-payoff">{{C.FAIL_PAYOFF}}</span>, {{C.FAIL_PAYOFF}})</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- MEDIUM: depends on other's Stage 1 action -->
+        <div class="payoff-col" style="border-top: 3px solid #7b1fa2;">
+            <div class="payoff-col-label">Bank State: Medium</div>
+            <div class="signal-badge" style="color:#7b1fa2;">→ depends on other's Stage 1 action</div>
+            <table class="payoff-table">
+                <colgroup>
+                    <col class="col-label"><col class="col-action">
+                    <col class="col-data"><col class="col-data"><col class="col-data">
+                </colgroup>
+                <thead>
+                    <tr><th class="row-header" rowspan="2" colspan="2"></th><th colspan="3" style="font-weight:500; font-size:12px;">Other</th></tr>
+                    <tr>
+                        <th class="col-left-signal"><span class="msg-left">A</span></th>
+                        <th class="col-right-signal"><span class="msg-right">BA</span></th>
+                        <th class="col-right-signal"><span class="msg-right">BB</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header" rowspan="3" style="writing-mode:vertical-rl; transform:rotate(180deg); font-size:12px; font-weight:700; color:#3949ab; white-space:nowrap; width:18px;">You</td>
+                        <td class="row-header">A</td>
+                        <td class="col-left-signal">(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.ENDOWMENT}})</td>
+                        <td class="col-right-signal">(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{delayed_a}})</td>
+                        <td class="col-right-signal">(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.FAIL_PAYOFF}})</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">BA</td>
+                        <td class="col-left-signal">(<span class="my-payoff">{{delayed_a}}</span>, {{C.ENDOWMENT}})</td>
+                        <td class="col-right-signal">(<span class="my-payoff">{{delayed_a}}</span>, {{delayed_a}})</td>
+                        <td class="col-right-signal">(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.FAIL_PAYOFF}})</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">BB</td>
+                        <td class="col-left-signal">(<span class="my-payoff">{{C.FAIL_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
+                        <td class="col-right-signal">(<span class="my-payoff">{{C.FAIL_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
+                        <td class="col-right-signal">(<span class="my-payoff">{{C.SUCCESS_PAYOFF}}</span>, {{C.SUCCESS_PAYOFF}})</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div style="font-size: 11px; color: var(--muted); text-align: center; margin-top: 5px;">
+                <span class="col-left-signal" style="padding: 1px 5px; border-radius:3px;">A col</span> = other chose A in Stage 1
+                &nbsp;·&nbsp;
+                <span class="col-right-signal" style="padding: 1px 5px; border-radius:3px;">BA, BB cols</span> = other chose B in Stage 1
+            </div>
+        </div>
+
+        <!-- HIGH: always Right -->
+        <div class="payoff-col" style="border-top: 3px solid #c62828;">
+            <div class="payoff-col-label">Bank State: High</div>
+            <div class="signal-badge msg-right">→ always "Right"</div>
+            <table class="payoff-table">
+                <colgroup>
+                    <col class="col-label"><col class="col-action">
+                    <col class="col-data"><col class="col-data"><col class="col-data">
+                </colgroup>
+                <thead>
+                    <tr><th class="row-header" rowspan="2" colspan="2"></th><th colspan="3" style="font-weight:500; font-size:12px;">Other</th></tr>
+                    <tr><th>A</th><th>BA</th><th>BB</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="row-header" rowspan="3" style="writing-mode:vertical-rl; transform:rotate(180deg); font-size:12px; font-weight:700; color:#3949ab; white-space:nowrap; width:18px;">You</td>
+                        <td class="row-header">A</td>
+                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.ENDOWMENT}})</td>
+                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.ENDOWMENT}})</td>
+                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.SUCCESS_PAYOFF}})</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">BA</td>
+                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.ENDOWMENT}})</td>
+                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.ENDOWMENT}})</td>
+                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.SUCCESS_PAYOFF}})</td>
+                    </tr>
+                    <tr>
+                        <td class="row-header">BB</td>
+                        <td>(<span class="my-payoff">{{C.SUCCESS_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
+                        <td>(<span class="my-payoff">{{C.SUCCESS_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
+                        <td>(<span class="my-payoff">{{C.SUCCESS_PAYOFF}}</span>, {{C.SUCCESS_PAYOFF}})</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    <div class="payoff-legend">
+        <span><b>A</b>: action A (Stage 1)</span>
+        <span><b>BA</b>: action B (Stage 1) &rarr; action A (Stage 2)</span>
+        <span><b>BB</b>: action B (Stage 1) &rarr; action B (Stage 2)</span>
+    </div>
+</div>
+
+<p>The message does not reveal which specific case triggered it, but the Observer always reports truthfully.</p>
+<p><strong>Note:</strong> The message is about <em>your bank's</em> state, not the Pre-Bank's. You will only receive it if you chose action B in Stage 1.</p>
+
+<div style="text-align:center; padding-top:30px;">
+    {{ next_button }}
+</div>
+
+{{ endblock }}

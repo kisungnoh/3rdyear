@@ -4,18 +4,50 @@
 {{ block content }}
 
 <br>
-<p>In today's experiment, you will be randomly paired with another participant and make decisions as a depositor in a bank. You will receive information to help your decision-making, which relates to a similar experiment that other students recently participated in. In Part 1, you will learn about the game they played in the previous experiment. You will then be given instructions for today's experiment in Part 2.</p>
+<p>
+    Recently, <strong>[X]</strong> people participated in an experiment and played games in a pair. In each game, they acted as <strong>depositors in a bank</strong>. In today's experiment, you will also act as a depositor and play similar games. To do well on today's game, it is important to understand the previous experiment.
+</p>
+<p>
+In <strong>Part 1</strong>, you will first learn about the game other people played. Afterward, you will receive instructions for today's game.
+</p>
 
-<br>
-<h5>General Information</h5>
-<p>In the previous experiment, each participant acted as a depositor in a bank and made decisions for 40 matches. </p>
-<p>A participant was paired with another at the beginning of a match, and the two participants were the only depositors in their bank. The pair was determined randomly and was likely to change each match.</p>
+<hr style="margin: 30px 0;">
 
-<br>
+<h3>Previous Experiment</h3>
+<h5 style="margin-top: 30px;">Pairing</h5>
+<p>
+    Participants played <strong>40 games</strong> in total.
+    In each game, a participant was randomly paired with another person. Thus, the pair member was likely to change each game. 
+    The two participants in each pair were the only depositors in their bank.
+</p>
+<h5 style="margin-top: 30px;">Bank State</h5>
+<p>    
+    The bank could be in one of three states: <strong>Low</strong>, <strong>Medium</strong>, or <strong>High</strong>. The state was randomly drawn with the following probabilities:
+    <ul>
+        <li><strong>Low</strong> with 15% probability</li>
+        <li><strong>Medium</strong> with 70% probability</li>
+        <li><strong>High</strong> with 15% probability</li>
+    </ul>
+<span style="color: #0000ff; font-weight: bold;">Both depositors were informed of the bank state when the game started.</span>
+</p>
 
-<h5>How a Match Proceeded</h5>
-<div style="display: flex; padding: 20px 0px; justify-content: center;">
-    <div style="border: 1px solid #ccc; padding: 20px 30px; display: inline-block;">
+<h5 style="margin-top: 30px;">Decisions</h5>
+<p>
+Each depositor started a game with <strong>10 points</strong> in their deposit account. Then, they chose between <strong>action A</strong> and <strong>action B</strong> over two stages, which earned them different points.
+    <ul>
+        <li><strong>Stage 1</strong>: Both depositors simultaneously chose between action A and action B.
+            <ul style="margin-top: 4px;">
+                <li>Depositor who chose <strong>action A</strong> &#8594; their decision-making ended.</li>
+                <li>Depositor who chose <strong>action B</strong> &#8594; they moved to Stage 2 and chose again between action A and action B.</li>
+            </ul>
+        </li>
+    </ul>
+</p>
+
+<p>Below figure shows the decision flow.</p>
+
+<div style="display: flex; padding: 10px 0px 30px 0px; justify-content: center;">
+    <div style="border: 1px solid #ccc; padding: 20px 40px 20px 30px; display: inline-block;">
     <table style="border-collapse: collapse;">
         <thead>
         <tr>
@@ -28,7 +60,7 @@
             <td style="text-align: center; padding-bottom: 8px;">
             <span style="text-decoration: underline; font-weight: bold;">Stage 2</span>
             </td>
-            <td style="text-align: left; padding-bottom: 8px; padding-left: 16px; font-size: 0.9em;">(label for each path)</td>
+            <td style="text-align: center; padding-bottom: 8px; padding-left: 30px; font-size: 0.9em;">(labels)</td>
         </tr>
         </thead>
         <tbody>
@@ -54,7 +86,7 @@
             <td style="padding: 0 16px; vertical-align: middle; white-space: nowrap;">&#x2022; action A</td>
             <td></td>
             <td></td>
-            <td style="padding-left: 36px; vertical-align: middle;">: <em>A</em></td>
+            <td style="padding-left: 36px; vertical-align: middle;">: <b>A</b></td>
         </tr>
 
         <!-- Row 2: Stage 1 action B → Stage 2 action A -->
@@ -88,43 +120,25 @@
             </td>
 
             <td style="padding: 0 12px; vertical-align: middle; white-space: nowrap;">&#x2022; action A</td>
-            <td style="padding-left: 36px; vertical-align: middle;">: <em>BA</em></td>
+            <td style="padding-left: 36px; vertical-align: middle;">: <b>BA</b></td>
         </tr>
 
         <!-- Row 3: Stage 2 action B -->
         <tr style="height: 44px;">
             <td style="padding: 0 12px; vertical-align: middle; white-space: nowrap;">&#x2022; action B</td>
-            <td style="padding-left: 36px; vertical-align: middle;">: <em>BB</em></td>
+            <td style="padding-left: 36px; vertical-align: middle;">: <b>BB</b></td>
         </tr>
         </tbody>
     </table>
     </div>
 </div>
 
-<p>Participants started a match with <strong>10 points</strong> in their deposit account, and they could make decisions over two stages.</p>
+<p>Each combination of actions was labeled: <b>A</b> if they chose action A in Stage 1; <b>BA</b> if they chose action B in Stage 1 and then action A in Stage 2; or <b>BB</b> if they chose action B in both stages.</p>
 
-<p>In <strong>Stage 1</strong>, both depositors simultaneously chose between action A and action B.</p>
-<ul>
-  <li>If a depositor chose <strong>action A</strong>, their decisions ended: they did not proceed to Stage 2 (labeled <em>A</em>).</li>
-  <li>If a depositor chose <strong>action B</strong>, they moved to <strong>Stage 2</strong> and chose again between action A and action B.
-    <ul style="margin-top: 4px;">
-      <li>Choosing action A in Stage 2 was labeled <em>BA</em>.</li>
-      <li>Choosing action B in Stage 2 was labeled <em>BB</em>.</li>
-    </ul>
-  </li>
-</ul>
+<p><strong>IMPORTANT:</strong> <span style="color: #0000ff; font-weight: bold;">In Stage 2, a depositor could <strong>NOT</strong> observe the other's Stage 1 choice.</span> In other words, they did not know whether the person they were paired with had also proceeded to Stage 2 or not.</p>
 
-<p> <b>Observations:</b>
-    <ul>
-        <li>If both depositors chose action A in Stage 1, neither moved to Stage 2.</li>
-        <li>If both depositors chose action B in Stage 1, both moved to Stage 2 and made the second decision simultaneously again.</li>
-        <li>If only one depositor chose action B in Stage 1, only that depositor moved to Stage 2.</li>
-    </ul>
-    However, <strong>they could NOT see what the other depositor chose in Stage 1.</strong> Thus, they did not know which case applied.
-</p>
-
-<hr>
-<p>On the next page, you will see the payoff table showing how many points participants earned based on their decisions.</p>
+<hr style="margin: 30px 0;">
+<p>On the next page, you will see the payoff table showing how many points participants received based on the bank state and their decisions.</p>
 
 <div style="text-align:left; padding-top:20px;">
     {{ next_button }}

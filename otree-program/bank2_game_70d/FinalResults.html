@@ -1,0 +1,12 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Final Results{{ endblock }}
+
+{{ block content }}
+<br>
+<p>You have completed all {{ C.NUM_ROUNDS }} games.</p>
+<br> 
+<p><b>Game {{ selected_round }}</b> was randomly selected for payment.</p>
+<p>Your payoff in that game was: <b>{{ selected_payoff }}</b></p>
+
+
+{{ endblock }}

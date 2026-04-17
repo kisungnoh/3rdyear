@@ -126,7 +126,7 @@ input.demo-range::-moz-range-thumb     { width: 24px; height: 24px; border-radiu
 </style>
 
 <p>
-    This part consists of <strong>{{ part3_rounds }} matches.</strong> In this part, you will continue to make the same decisions, but you will now have <strong>three more tasks</strong> across two stages.
+    This part consists of <strong>{{ part3_rounds }} games.</strong> In this part, you will continue to make the same decisions, but you will now have <strong>three more tasks</strong> across two stages.
 </p>
 <ul>
     <li>In <strong>Stage 1</strong>, you will be asked to submit your beliefs about
@@ -290,18 +290,18 @@ input.demo-range::-moz-range-thumb     { width: 24px; height: 24px; border-radiu
 <hr style="border: none; border-top: 1px solid #dde1e7; margin: 24px 0;">
 
 <h5>Earnings</h5>
-<p>This part lasts for <strong>{{ part3_rounds }} matches.</strong>
-At the end of today's experiment, the computer will randomly select three matches for payment.</p>
+<p>This part lasts for <strong>{{ part3_rounds }} games.</strong>
+At the end of today's experiment, the computer will randomly select three games for payment.</p>
 <ul>
-    <li>In one match, you will earn points from the decision you make, as in Part 2.</li>
-    <li>In a second match, you will earn either <strong>0 or 4 points</strong>, based on your belief about the other's Stage 1 action (Task 1 above).</li>
-    <li>In a third match, you will earn either <strong>0 or 4 points</strong>, based on your belief about the state of your bank (Task 2 above).</li>
+    <li>In one game, you will earn points from the decision you make, as in Part 2.</li>
+    <li>In a second game, you will earn either <strong>0 or 4 points</strong>, based on your belief about the other's Stage 1 action (Task 1 above).</li>
+    <li>In a third game, you will earn either <strong>0 or 4 points</strong>, based on your belief about the state of your bank (Task 2 above).</li>
 </ul>
 <p>
     Your Task 3 report is not used for payment. It is collected for research purposes only.
 </p>
 <p>
-    Your payoffs from the selected matches will be displayed and converted to dollars at the rate of
+    Your payoffs from the selected games will be displayed and converted to dollars at the rate of
     <strong>1 point = {{C.REAL_WORLD_CURRENCY_PER_POINT}} dollar</strong>.
 </p>
 <p>
@@ -312,7 +312,7 @@ At the end of today's experiment, the computer will randomly select three matche
     Here's why: your earnings from belief reporting will depend on the actual outcome (the other depositor's action for Task 1, and the actual bank state for Task 2). This means that reporting a higher likelihood for an outcome increases your chance of earning points if that outcome actually occurs, but decreases your chance if it does not.
 </p>
 <p>
-    Since you do not know which match will be selected for payment, it is in your best interest to <strong>report your beliefs truthfully in every match.</strong>
+    Since you do not know which game will be selected for payment, it is in your best interest to <strong>report your beliefs truthfully in every game.</strong>
 </p>
 
 <p>If you'd like to know more about how payments are calculated, <span class="payment-rule-toggle" id="rule_toggle">click here.</span></p>
@@ -338,8 +338,8 @@ At the end of today's experiment, the computer will randomly select three matche
         Then, the computer will randomly draw two numbers. Each number is between 0 and 100, and all numbers in this range are equally likely to be drawn. The two draws are independent, meaning that the outcome of one draw does not influence the other.</p>
         <p>Suppose the computer picks the Low state, and you submitted 29% as the likelihood of Low, which means 71% for NOT Low (i.e., Medium or High).</p>
         <ul>
-            <li>If the actual state was Low in the selected match: you will get rewarded if the likelihood you reported for Low state (29%) is larger than either one of the two draws.</li>
-            <li>If the actual state was Medium or High in that match: you will get rewarded if the likelihood you reported for your bank NOT in Low state (71%) is larger than either one of the two draws.</li>
+            <li>If the actual state was Low in the selected game: you will get rewarded if the likelihood you reported for Low state (29%) is larger than either one of the two draws.</li>
+            <li>If the actual state was Medium or High in that game: you will get rewarded if the likelihood you reported for your bank NOT in Low state (71%) is larger than either one of the two draws.</li>
         </ul>
         <p>The same logic applies when the computer picksthe Medium or High state.</p>
         <p>If this rule sounds confusing,</p>

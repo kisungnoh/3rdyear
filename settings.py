@@ -15,7 +15,7 @@ SESSION_CONFIGS = [
                 dict(name='bank2_game_70d', display_name='bank2_game_70d', num_demo_participants=2, app_sequence=['bank2_game_70d']),
                 dict(name='bank2_postgame_70d', display_name='bank2_postgame_70d', num_demo_participants=2, app_sequence=['bank2_postgame_70d']),
 
-                dict(name='bank2_pilot', display_name='bank2_pilot', num_demo_participants=2, app_sequence=['bank2_instruction_part1','bank2_practice','bank2_instruction_part2','bank2_game_70d', 'bank2_postgame_70d_pilot'])
+                dict(name='bank2_pilot', display_name='bank2_pilot', num_demo_participants=2, app_sequence=['bank2_instruction_part1','bank2_instruction_part2','bank2_game_70d', 'bret', 'bank2_postgame_70d'])
                 ]
 LANGUAGE_CODE = 'en'
 REAL_WORLD_CURRENCY_CODE = 'USD'
@@ -33,9 +33,7 @@ PARTICIPANT_FIELDS = [
     'b2_bel_state_round', 'b2_bel_act_state', 'b2_bel_picked_state', 'b2_bel_state_reported', 'b2_bel_state_draw1', 'b2_bel_state_draw2', 'b2_bel_state_payoff',
     'b2_total_payment',
 
-    'bret_payoff_dollars',
-    'bret_boxes_collected',
-    'bret_bomb',
+    'bret_boxes_collected','bret_bomb','bret_payoff_dollars',
 ]
 SESSION_FIELDS = []
 THOUSAND_SEPARATOR = ''

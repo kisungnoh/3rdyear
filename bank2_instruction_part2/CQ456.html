@@ -1,0 +1,126 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Comprehension Check{{ endblock }}
+
+{{ block content }}
+
+<style>
+:root { --border: #dde1e7; --muted: #6b7280; }
+.card-panel {
+    border: 0.5px solid var(--border);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+.card-panel-header {
+    background: #f8f9fb;
+    border-bottom: 0.5px solid var(--border);
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.info-table {
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 0 auto;
+}
+.info-table th, .info-table td {
+    border: 0.5px solid var(--border);
+    padding: 8px 18px;
+    text-align: center;
+}
+.info-table thead th { background: #f8f9fb; font-size: 14px; font-weight: 600; }
+.info-table .row-header { background: #f8f9fb; font-weight: 600; font-size: 14px; }
+.q-group { font-size: 14px; margin-bottom: 20px; }
+.q-group-label {font-size: 16px; margin-bottom: 8px; }
+</style>
+
+<br>
+<p style="font-size:12px; color:#6b7280; margin-bottom:20px;">Questions 4–6 of 9</p>
+
+<p>Refer to the state correlation table below, then fill in the probabilities for each question.</p>
+
+<table class="info-table" style="margin-bottom:30px;">
+    <thead>
+        <tr>
+            <th class="row-header" rowspan="2" colspan="2"></th>
+            <th colspan="3">Pre-Bank state</th>
+        </tr>
+        <tr>
+            <th>Low</th><th>Medium</th><th>High</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td class="row-header" rowspan="3" style="writing-mode:vertical-rl; transform:rotate(180deg); font-size:12px; font-weight:700; color:#3949ab; white-space:nowrap; width:18px;">Your bank</td>
+            <td class="row-header">Low</td>
+            <td>{{C.STATE_CORR}}%</td><td>{{unmatched_corr}}%</td><td>{{unmatched_corr}}%</td>
+        </tr>
+        <tr>
+            <td class="row-header">Medium</td>
+            <td>{{unmatched_corr}}%</td><td>{{C.STATE_CORR}}%</td><td>{{unmatched_corr}}%</td>
+        </tr>
+        <tr>
+            <td class="row-header">High</td>
+            <td>{{unmatched_corr}}%</td><td>{{unmatched_corr}}%</td><td>{{C.STATE_CORR}}%</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<div class="q-group">
+    <div class="q-group-label">4. If the Pre-Bank's state was <strong>Low</strong>, what is the probability (%) that your bank is in each state?</div>
+    {{ formfield 'comprehension_q4_low' }}
+    {{ formfield 'comprehension_q4_med' }}
+    {{ formfield 'comprehension_q4_high' }}
+</div>
+
+<div class="q-group">
+    <div class="q-group-label">5. If the Pre-Bank's state was <strong>Medium</strong>, what is the probability (%) that your bank is in each state?</div>
+    {{ formfield 'comprehension_q5_low' }}
+    {{ formfield 'comprehension_q5_med' }}
+    {{ formfield 'comprehension_q5_high' }}
+</div>
+
+<div class="q-group">
+    <div class="q-group-label">6. If the Pre-Bank's state was <strong>High</strong>, what is the probability (%) that your bank is in each state?</div>
+    {{ formfield 'comprehension_q6_low' }}
+    {{ formfield 'comprehension_q6_med' }}
+    {{ formfield 'comprehension_q6_high' }}
+</div>
+
+<div id="cq-error" style="display:none; color:#c62828; background:#fff3e0; border:1px solid #e65100; border-radius:6px; padding:8px 14px; margin-bottom:8px;"></div>
+<div style="text-align:center; padding-top:20px;">{{ next_button }}</div>
+
+<script>
+var CORRECT = {
+    comprehension_q4_low: {{C.STATE_CORR}}, comprehension_q4_med: {{unmatched_corr}}, comprehension_q4_high: {{unmatched_corr}},
+    comprehension_q5_low: {{unmatched_corr}}, comprehension_q5_med: {{C.STATE_CORR}}, comprehension_q5_high: {{unmatched_corr}},
+    comprehension_q6_low: {{unmatched_corr}}, comprehension_q6_med: {{unmatched_corr}}, comprehension_q6_high: {{C.STATE_CORR}},
+};
+var LABELS = {
+    comprehension_q4_low: 'Q4 Low', comprehension_q4_med: 'Q4 Medium', comprehension_q4_high: 'Q4 High',
+    comprehension_q5_low: 'Q5 Low', comprehension_q5_med: 'Q5 Medium', comprehension_q5_high: 'Q5 High',
+    comprehension_q6_low: 'Q6 Low', comprehension_q6_med: 'Q6 Medium', comprehension_q6_high: 'Q6 High',
+};
+document.querySelector('form').addEventListener('submit', function(e) {
+    var err = document.getElementById('cq-error');
+    var errors = [];
+    Object.keys(CORRECT).forEach(function(name) {
+        var input = document.querySelector('input[name="' + name + '"]');
+        if (!input || parseInt(input.value) !== CORRECT[name]) errors.push(LABELS[name]);
+    });
+    if (errors.length) {
+        e.preventDefault();
+        err.textContent = 'Incorrect answer(s): ' + errors.join(', ') + '. Please check the table and try again.';
+        err.style.display = 'block';
+    } else {
+        err.style.display = 'none';
+    }
+});
+</script>
+
+{{ endblock }}

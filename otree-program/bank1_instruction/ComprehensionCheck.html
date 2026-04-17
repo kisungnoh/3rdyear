@@ -1,0 +1,649 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Part 1 Comprehension Check{{ endblock }}
+
+{{ block content }}
+
+<style>
+/* ── Practice screen wrapper ── */
+.practice-wrap {
+    border: 2.5px solid #7986cb;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(121,134,203,0.12);
+}
+.practice-header {
+    background: #e8eaf6;
+    border-bottom: 1px solid #7986cb;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: #3949ab;
+}
+.practice-body {
+    background: #f4f5f7;
+    padding: 14px;
+}
+
+/* ── FirstStage-identical styles (scoped inside practice-body) ── */
+.practice-body .context-bar {
+    background: #fff;
+    border: 0.5px solid #dde1e7;
+    border-radius: 10px;
+    padding: 8px 18px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.practice-body .ctx-badge {
+    background: #37474f;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+}
+.practice-body .step-indicator { display: flex; align-items: center; gap: 4px; }
+.practice-body .step {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 14px; border-radius: 20px;
+    font-size: 14px; font-weight: 600;
+}
+.practice-body .step.active   { background: #e1f5fe; color: #0277bd; }
+.practice-body .step.inactive { color: #b0b8c4; }
+.practice-body .step-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+}
+.practice-body .step.active .step-num   { background: #0277bd; color: #fff; }
+.practice-body .step.inactive .step-num { background: #e0e0e0; color: #9aa0a8; }
+.practice-body .step-arrow { color: #c8cdd4; font-size: 14px; }
+.practice-body .card-panel {
+    background: #fff;
+    border: 0.5px solid #dde1e7;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+.practice-body .card-panel-header {
+    background: #f8f9fb;
+    border-bottom: 0.5px solid #dde1e7;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #6b7280;
+}
+.practice-body .card-panel-body { padding: 16px; }
+.practice-body .payoff-zone { margin-bottom: 12px; }
+.practice-body .payoff-three {
+    display: flex;
+    justify-content: center;
+    padding: 16px 24px;
+}
+.practice-body .payoff-col { width: 100%; max-width: 480px; }
+.practice-body .payoff-col-head { padding: 8px 0; background: #fff; }
+.practice-body .state-label { font-size: 16px; font-weight: 700; color: #1a1f2e; }
+.practice-body .state-step { font-size: 16px; font-weight: 400; color: #c8cdd4; letter-spacing: 0.04em; }
+.practice-body .state-step.active {
+    font-weight: 700; color: #1a1f2e;
+    border: 2.5px solid #1a1f2e; border-radius: 3px; padding: 3px 7px;
+}
+.practice-body .state-sep { color: #c8cdd4; margin: 0 8px; font-size: 12px; }
+.practice-body .payoff-table {
+    width: 100%; border-collapse: collapse;
+    font-size: 14px; table-layout: fixed;
+}
+.practice-body .payoff-table th, .practice-body .payoff-table td {
+    border: 0.5px solid #dde1e7;
+    padding: 9px 8px; text-align: center; color: #1a1f2e;
+}
+.practice-body .payoff-table thead th { background: #f8f9fb; font-size: 13px; font-weight: 600; }
+.practice-body .payoff-table .row-header {
+    background: #f8f9fb; font-weight: 600; font-size: 13px;
+    text-align: center; padding-left: 8px; width: 50px;
+}
+.practice-body .payoff-legend {
+    padding: 6px 0;
+    border-top: 0.5px solid #dde1e7;
+    background: #fff;
+    font-size: 12px; color: #6b7280;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    justify-content: center;
+    gap: 20px;
+}
+.practice-body .bottom-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    align-items: start;
+}
+.practice-body .decision-options label {
+    display: block; margin-bottom: 8px;
+    font-size: 15px; cursor: pointer; font-weight: 500;
+}
+.practice-body .decision-options input[type="radio"] { margin-right: 8px; }
+.pr-note { font-size: 13px; color: #6b7280; margin-top: 10px; font-style: italic; }
+
+/* ── Quiz wizard ── */
+.cq-progress-bar {
+    height: 5px;
+    background: #e8eaed;
+    border-radius: 3px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+.cq-progress-fill {
+    height: 100%;
+    background: #3949ab;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+.cq-step { display: none; }
+.cq-step.active { display: block; }
+.cq-card {
+    border: 0.5px solid #dde1e7;
+    border-radius: 10px;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    padding: 18px 22px;
+    margin-bottom: 16px;
+}
+.cq-num {
+    font-size: 12px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: #6b7280; margin-bottom: 6px;
+}
+.cq-question {
+    font-size: 15px; font-weight: 600;
+    margin-bottom: 12px; color: #1a1f2e;
+}
+.cq-options label {
+    display: block; margin-bottom: 6px;
+    font-size: 14px; cursor: pointer;
+}
+.cq-options input[type="radio"] { margin-right: 8px; }
+.cq-subquestions { margin-top: 4px; }
+.cq-subquestion {
+    display: flex; align-items: center;
+    gap: 10px; margin-bottom: 8px; font-size: 14px;
+}
+.cq-subquestion input[type="text"] {
+    width: 70px; border: 1px solid #bbb;
+    border-radius: 5px; padding: 3px 8px;
+    font-size: 14px; text-align: center;
+}
+.sq-fb {
+    display: none; color: #c62828;
+    font-size: 13px; margin-left: 8px;
+}
+.cq-table {
+    width: auto; border-collapse: collapse;
+    font-size: 13px; margin-bottom: 4px;
+}
+.cq-table th, .cq-table td {
+    border: 0.5px solid #dde1e7;
+    padding: 6px 12px; text-align: center;
+}
+.cq-table thead th { background: #f8f9fb; font-weight: 600; }
+.cq-table .row-h   { background: #f8f9fb; font-weight: 600; }
+.cq-table tr.hl-row td  { background: #e8f0fe; }
+.cq-table tr.hl-row .row-h { background: #d0e0fc; }
+
+.cq-nav {
+    display: flex; align-items: center;
+    justify-content: space-between; margin-top: 12px;
+}
+.cq-nav-label { font-size: 13px; color: #6b7280; }
+.cq-btn {
+    padding: 8px 22px; border-radius: 6px;
+    font-size: 14px; font-weight: 600;
+    border: none; cursor: pointer;
+    background: #3949ab; color: #fff;
+    transition: background 0.15s;
+}
+.cq-btn:hover { background: #283593; }
+.cq-btn:disabled { background: #c8cdd4; cursor: default; }
+.cq-step-feedback {
+    display: none; margin-top: 10px;
+    padding: 8px 12px; background: #fff3e0;
+    border: 1px solid #e65100; border-radius: 6px;
+    color: #c62828; font-size: 14px;
+}
+</style>
+
+<br>
+<p style="margin-bottom: 20px;">Please answer the following questions to confirm your understanding of the instructions.</p>
+
+<!-- ── Practice Screen (shown only for Q4–Q7) ── -->
+<div id="practice-section" style="display:none;">
+<div class="practice-wrap">
+    <div class="practice-header">&#9654; Practice — This is what the actual game screen looks like.</div>
+    <div class="practice-body">
+
+        <!-- context bar -->
+        <div class="context-bar">
+            <div class="ctx-badge">Practice Match</div>
+            <div class="step-indicator">
+                <div class="step active"><div class="step-num">1</div>Stage 1</div>
+                <div class="step-arrow">›</div>
+                <div class="step inactive"><div class="step-num">2</div>Stage 2</div>
+            </div>
+        </div>
+
+        <!-- payoff table (state toggled by JS) -->
+        <div class="card-panel payoff-zone">
+            <div class="card-panel-header">Payoff Table</div>
+            <div class="payoff-three">
+
+                <!-- LOW -->
+                <div class="payoff-col" id="pt-low" style="display:none;">
+                    <div class="payoff-col-head">
+                        <span class="state-label">State:</span>
+                        <span class="state-sep"><span class="state-step active">Low</span><span class="state-sep">·</span><span class="state-step">Medium</span><span class="state-sep">·</span><span class="state-step">High</span></span>
+                    </div>
+                    <table class="payoff-table">
+                        <thead><tr><th class="row-header"></th><th>A</th><th>BA</th><th>BB</th></tr></thead>
+                        <tbody>
+                            <tr><td class="row-header">A</td>  <td>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td><td>({{C.ENDOWMENT}}, {{delayed_a}})</td><td>({{C.ENDOWMENT}}, {{C.FAIL_PAYOFF}})</td></tr>
+                            <tr><td class="row-header">BA</td> <td>({{delayed_a}}, {{C.ENDOWMENT}})</td><td>({{delayed_a}}, {{delayed_a}})</td><td>({{delayed_a}}, {{C.FAIL_PAYOFF}})</td></tr>
+                            <tr><td class="row-header">BB</td> <td>({{C.FAIL_PAYOFF}}, {{C.ENDOWMENT}})</td><td>({{C.FAIL_PAYOFF}}, {{delayed_a}})</td><td>({{C.FAIL_PAYOFF}}, {{C.FAIL_PAYOFF}})</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- MEDIUM -->
+                <div class="payoff-col" id="pt-med" style="display:none;">
+                    <div class="payoff-col-head">
+                        <span class="state-label">State:</span>
+                        <span class="state-sep"><span class="state-step">Low</span><span class="state-sep">·</span><span class="state-step active">Medium</span><span class="state-sep">·</span><span class="state-step">High</span></span>
+                    </div>
+                    <table class="payoff-table">
+                        <thead><tr><th class="row-header"></th><th>A</th><th>BA</th><th>BB</th></tr></thead>
+                        <tbody>
+                            <tr><td class="row-header">A</td>  <td>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td><td>({{C.ENDOWMENT}}, {{delayed_a}})</td><td>({{C.ENDOWMENT}}, {{C.FAIL_PAYOFF}})</td></tr>
+                            <tr><td class="row-header">BA</td> <td>({{delayed_a}}, {{C.ENDOWMENT}})</td><td>({{delayed_a}}, {{delayed_a}})</td><td>({{C.ENDOWMENT}}, {{C.FAIL_PAYOFF}})</td></tr>
+                            <tr><td class="row-header">BB</td> <td>({{C.FAIL_PAYOFF}}, {{C.ENDOWMENT}})</td><td>({{C.FAIL_PAYOFF}}, {{C.ENDOWMENT}})</td><td>({{C.SUCCESS_PAYOFF}}, {{C.SUCCESS_PAYOFF}})</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- HIGH -->
+                <div class="payoff-col" id="pt-high" style="display:none;">
+                    <div class="payoff-col-head">
+                        <span class="state-label">State:</span>
+                        <span class="state-sep"><span class="state-step">Low</span><span class="state-sep">·</span><span class="state-step">Medium</span><span class="state-sep">·</span><span class="state-step active">High</span></span>
+                    </div>
+                    <table class="payoff-table">
+                        <thead><tr><th class="row-header"></th><th>A</th><th>BA</th><th>BB</th></tr></thead>
+                        <tbody>
+                            <tr><td class="row-header">A</td>  <td>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td><td>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td><td>({{C.ENDOWMENT}}, {{C.SUCCESS_PAYOFF}})</td></tr>
+                            <tr><td class="row-header">BA</td> <td>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td><td>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td><td>({{C.ENDOWMENT}}, {{C.SUCCESS_PAYOFF}})</td></tr>
+                            <tr><td class="row-header">BB</td> <td>({{C.SUCCESS_PAYOFF}}, {{C.ENDOWMENT}})</td><td>({{C.SUCCESS_PAYOFF}}, {{C.ENDOWMENT}})</td><td>({{C.SUCCESS_PAYOFF}}, {{C.SUCCESS_PAYOFF}})</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+            <div class="payoff-legend">
+                <span><b>A</b>: action A (Stage 1)</span>
+                <span><b>BA</b>: action B (Stage 1) &rarr; action A (Stage 2)</span>
+                <span><b>BB</b>: action B (Stage 1) &rarr; action B (Stage 2)</span>
+            </div>
+        </div>
+
+        <!-- decision card -->
+        <div class="bottom-row">
+            <div class="card-panel">
+                <div class="card-panel-header">Your Decision — Stage 1</div>
+                <div class="card-panel-body">
+                    <p>This is <b>Stage 1</b>. You have <b>{{C.ENDOWMENT}} points</b> in the bank.</p>
+                    <p><b>If you choose action A:</b> you will get {{C.ENDOWMENT}} points.</p>
+                    <p><b>If you choose action B:</b> you will move to Stage 2 and make a choice again.</p>
+                    <p>You won't see the other depositor's choice until the end of the match.</p>
+                </div>
+                <!-- <div class="card-panel-body">
+                    <b>Please make your choice:</b>
+                    <div class="decision-options" style="margin-top:10px;">
+                        <label><input type="radio" name="practice_decision" value="a"> Action A</label>
+                        <label><input type="radio" name="practice_decision" value="b"> Action B</label>
+                    </div>
+                </div> -->
+            </div>
+        </div>
+
+    </div>
+</div>
+</div><!-- end practice-section -->
+
+<!-- ── Progress bar ── -->
+<div class="cq-progress-bar">
+    <div class="cq-progress-fill" id="cq-progress" style="width:0%"></div>
+</div>
+
+<!-- ── Steps 1–3 (combined, no practice screen) ── -->
+<div class="cq-step active" id="step-1">
+    <div class="cq-card">
+        <div class="cq-num">Questions 1–3 of 8</div>
+
+        <div class="cq-question">1. In each match, you are likely to be paired with:</div>
+        <div class="cq-options">
+            <label><input type="radio" name="comprehension_q1" value="same"> The same participant throughout all matches</label>
+            <label><input type="radio" name="comprehension_q1" value="new"> A participant who may be different each match</label>
+        </div>
+        <div class="cq-step-feedback" id="fb-1"></div>
+
+        <div class="cq-question" style="margin-top:16px;">2. If you choose action A in Stage 1, your payoff is:</div>
+        <div class="cq-options">
+            <label><input type="radio" name="comprehension_q2" value="fixed"> Always 10, regardless of the bank state or the other depositor's choice</label>
+            <label><input type="radio" name="comprehension_q2" value="depends"> It depends on the bank state or the other depositor's choice</label>
+        </div>
+        <div class="cq-step-feedback" id="fb-2"></div>
+
+        <div class="cq-question" style="margin-top:16px;">3. If you choose action B in Stage 1, you make your Stage 2 decision:</div>
+        <div class="cq-options">
+            <label><input type="radio" name="comprehension_q3" value="after"> After learning the other depositor's choice in Stage 1</label>
+            <label><input type="radio" name="comprehension_q3" value="without"> Without knowing the other depositor's choice in Stage 1</label>
+        </div>
+        <div class="cq-step-feedback" id="fb-3"></div>
+
+        <div class="cq-nav">
+            <span class="cq-nav-label"></span>
+            <button type="button" class="cq-btn" onclick="advance(1)">Next &rsaquo;</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── Step 4: Low state ── -->
+<div class="cq-step" id="step-4">
+    <div class="cq-card">
+        <div class="cq-num">Question 4 of 8</div>
+        <div class="cq-question">Suppose the bank state is <strong>Low</strong>. What is your payoff in each case?</div>
+        <div class="cq-subquestions" style="margin-top:12px;">
+            <div class="cq-subquestion">
+                <span>Your payoff when you choose A:</span>
+                <input type="text" name="comprehension_q4_a" placeholder="pts">
+                <span class="sq-fb" id="sq-q4-a"></span>
+            </div>
+            <div class="cq-subquestion">
+                <span>Your payoff when you choose BA:</span>
+                <input type="text" name="comprehension_q4_ba" placeholder="pts">
+                <span class="sq-fb" id="sq-q4-ba"></span>
+            </div>
+            <div class="cq-subquestion">
+                <span>Your payoff when you choose BB:</span>
+                <input type="text" name="comprehension_q4_bb" placeholder="pts">
+                <span class="sq-fb" id="sq-q4-bb"></span>
+            </div>
+        </div>
+        <div class="cq-step-feedback" id="fb-4"></div>
+        <div class="cq-nav">
+            <button type="button" class="cq-btn" style="background:#6b7280;" onclick="goTo(1)">&lsaquo; Back</button>
+            <button type="button" class="cq-btn" onclick="advance(4)">Next &rsaquo;</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── Step 5: High state  ── -->
+<div class="cq-step" id="step-5">
+    <div class="cq-card">
+        <div class="cq-num">Question 5 of 8</div>
+        <div class="cq-question">Suppose the bank state is <strong>High</strong>. What is your payoff in each case?</div>
+        <div class="cq-subquestions" style="margin-top:12px;">
+            <div class="cq-subquestion"><span>Your payoff when you choose A:</span><input type="text" name="comprehension_q5_a" placeholder="pts"><span class="sq-fb" id="sq-q5-a"></span></div>
+            <div class="cq-subquestion"><span>Your payoff when you choose BA:</span><input type="text" name="comprehension_q5_ba" placeholder="pts"><span class="sq-fb" id="sq-q5-ba"></span></div>
+            <div class="cq-subquestion"><span>Your payoff when you choose BB:</span><input type="text" name="comprehension_q5_bb" placeholder="pts"><span class="sq-fb" id="sq-q5-bb"></span></div>
+        </div>
+        <div class="cq-step-feedback" id="fb-5"></div>
+        <div class="cq-nav">
+            <button type="button" class="cq-btn" style="background:#6b7280;" onclick="goTo(4)">&lsaquo; Back</button>
+            <button type="button" class="cq-btn" onclick="advance(5)">Next &rsaquo;</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── Step 6: Medium BA  ── -->
+<div class="cq-step" id="step-6">
+    <div class="cq-card">
+        <div class="cq-num">Question 6 of 8</div>
+        <div class="cq-question">Suppose the bank state is <strong>Medium</strong> and you choose <strong>BA</strong>. What is your payoff when:</div>
+        <div class="cq-subquestions" style="margin-top:12px;">
+            <div class="cq-subquestion"><span>The other depositor chooses A:</span><input type="text" name="comprehension_q6_a" placeholder="pts"><span class="sq-fb" id="sq-q6-a"></span></div>
+            <div class="cq-subquestion"><span>The other depositor chooses BA:</span><input type="text" name="comprehension_q6_ba" placeholder="pts"><span class="sq-fb" id="sq-q6-ba"></span></div>
+            <div class="cq-subquestion"><span>The other depositor chooses BB:</span><input type="text" name="comprehension_q6_bb" placeholder="pts"><span class="sq-fb" id="sq-q6-bb"></span></div>
+        </div>
+        <div class="cq-step-feedback" id="fb-6"></div>
+        <div class="cq-nav">
+            <button type="button" class="cq-btn" style="background:#6b7280;" onclick="goTo(5)">&lsaquo; Back</button>
+            <button type="button" class="cq-btn" onclick="advance(6)">Next &rsaquo;</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── Step 7: Medium BB ── -->
+<div class="cq-step" id="step-7">
+    <div class="cq-card">
+        <div class="cq-num">Question 7 of 8</div>
+        <div class="cq-question">Suppose the bank state is <strong>Medium</strong> and you choose <strong>BB</strong>. What is your payoff when:</div>
+        <div class="cq-subquestions" style="margin-top:12px;">
+            <div class="cq-subquestion"><span>The other depositor chooses A:</span><input type="text" name="comprehension_q7_a" placeholder="pts"><span class="sq-fb" id="sq-q7-a"></span></div>
+            <div class="cq-subquestion"><span>The other depositor chooses BA:</span><input type="text" name="comprehension_q7_ba" placeholder="pts"><span class="sq-fb" id="sq-q7-ba"></span></div>
+            <div class="cq-subquestion"><span>The other depositor chooses BB:</span><input type="text" name="comprehension_q7_bb" placeholder="pts"><span class="sq-fb" id="sq-q7-bb"></span></div>
+        </div>
+        <div class="cq-step-feedback" id="fb-7"></div>
+        <div class="cq-nav">
+            <button type="button" class="cq-btn" style="background:#6b7280;" onclick="goTo(6)">&lsaquo; Back</button>
+            <button type="button" class="cq-btn" onclick="advance(7)">Next &rsaquo;</button>
+        </div>
+    </div>
+</div>
+
+<!-- ── Step 8: Payment ── -->
+<div class="cq-step" id="step-8">
+    <div class="cq-card">
+        <div class="cq-num">Question 8 of 8</div>
+        <div class="cq-question">8. At the end of today's experiment, one of the 10 matches in Part 1 will be randomly selected for payment, and your points from that match will be converted to cash at a rate of 1 point = $0.50.</div>
+        <div class="cq-options">
+            <label><input type="radio" name="comprehension_q8" value="true"> True</label>
+            <label><input type="radio" name="comprehension_q8" value="false"> False</label>
+        </div>
+        <div class="cq-step-feedback" id="fb-8"></div>
+        <div class="cq-nav">
+            <button type="button" class="cq-btn" style="background:#6b7280;" onclick="goTo(7)">&lsaquo; Back</button>
+            <span id="q8-next">{{ next_button }}</span>
+        </div>
+    </div>
+</div>
+
+<div id="cq-feedback" style="display:none; margin-top:12px; padding:10px 14px; background:#fff3e0; border:1px solid #e65100; border-radius:6px; color:#c62828; font-size:14px;"></div>
+
+<div id="submit-area" style="display:none;"></div>
+
+<script>
+
+/* ── Intercept Q8 next button to validate before submitting ── */
+document.addEventListener('DOMContentLoaded', function() {
+    var q8next = document.querySelector('#q8-next button');
+    if (q8next) {
+        q8next.addEventListener('click', function(e) {
+            var fb  = document.getElementById('fb-8');
+            var sel = document.querySelector('input[name="comprehension_q8"]:checked');
+            if (!sel) {
+                e.preventDefault(); e.stopImmediatePropagation();
+                fb.textContent = 'Please select an answer.'; fb.style.display = 'block'; return;
+            }
+            if (sel.value !== CORRECT.q8) {
+                e.preventDefault(); e.stopImmediatePropagation();
+                fb.textContent = FEEDBACK.q8; fb.style.display = 'block'; return;
+            }
+            fb.style.display = 'none';
+            document.getElementById('cq-progress').style.width = '100%';
+            /* allow submit to proceed */
+        }, true);
+    }
+});
+
+var TOTAL = 8;
+
+/* ── Correct answers (oTree fills in numeric values at render time) ── */
+var CORRECT = {
+    q1:    'new',
+    q2:    'fixed',
+    q3:    'without',
+    q4_a:  '{{ C.ENDOWMENT }}',
+    q4_ba: '{{ delayed_a }}',
+    q4_bb: '{{ C.FAIL_PAYOFF }}',
+    q5_a:  '{{ C.ENDOWMENT }}',
+    q5_ba: '{{ C.ENDOWMENT }}',
+    q5_bb: '{{ C.SUCCESS_PAYOFF }}',
+    q6_a:  '{{ delayed_a }}',
+    q6_ba: '{{ delayed_a }}',
+    q6_bb: '{{ C.ENDOWMENT }}',
+    q7_a:  '{{ C.FAIL_PAYOFF }}',
+    q7_ba: '{{ C.FAIL_PAYOFF }}',
+    q7_bb: '{{ C.SUCCESS_PAYOFF }}',
+    q8:    'true',
+};
+
+var FEEDBACK = {
+    q1: 'Incorrect. In each match you are randomly paired with a participant who may be different each match.',
+    q2: 'Incorrect. Action A always pays 10 points, regardless of the bank state or the other depositor\'s choice.',
+    q3: 'Incorrect. You make your Stage 2 decision without knowing what the other depositor chose in Stage 1.',
+    q4: 'Incorrect. In the Low state, your payoff for A is {{ C.ENDOWMENT }}, for BA is {{ delayed_a }}, and for BB is {{ C.FAIL_PAYOFF }}.',
+    q5: 'Incorrect. In the High state, your payoff for A is {{ C.ENDOWMENT }}, for BA is {{ C.ENDOWMENT }}, and for BB is {{ C.SUCCESS_PAYOFF }}.',
+    q6: 'Incorrect. In the Medium state with BA: you earn {{ delayed_a }} if the other chooses A or BA, and {{ C.ENDOWMENT }} if the other chooses BB.',
+    q7: 'Incorrect. In the Medium state with BB: you earn {{ C.FAIL_PAYOFF }} if the other chooses A or BA, and {{ C.SUCCESS_PAYOFF }} if the other chooses BB.',
+    q8: 'Incorrect. At the end of the experiment, one of the 10 matches in Part 1 is randomly selected for payment, and points are converted to cash at a rate of 1 point = $0.50.',
+};
+
+function updateProgress(step) {
+    /* step 1 = Q1-Q3 combined; steps 4-8 = Q4-Q8 individually */
+    var pct = step === 1 ? 0 : ((step - 1) / TOTAL * 100);
+    document.getElementById('cq-progress').style.width = pct + '%';
+}
+
+var STATE_FOR_STEP = { 4: 'low', 5: 'high', 6: 'med', 7: 'med' };
+
+function showPractice(visible, step) {
+    var ps = document.getElementById('practice-section');
+    if (!ps) return;
+    ps.style.display = visible ? 'block' : 'none';
+    if (visible) {
+        ['low', 'med', 'high'].forEach(function(s) {
+            document.getElementById('pt-' + s).style.display = 'none';
+        });
+        var state = STATE_FOR_STEP[step] || 'med';
+        document.getElementById('pt-' + state).style.display = '';
+        scalePracticeWrap();
+    }
+}
+
+function goTo(n) {
+    document.querySelectorAll('.cq-step').forEach(function(s) { s.classList.remove('active'); });
+    document.getElementById('step-' + n).classList.add('active');
+    updateProgress(n);
+    showPractice(n >= 4 && n <= 7, n);
+    window.scrollTo(0, 0);
+}
+
+function advance(step) {
+    var ok = true;
+
+    if (step === 1) {
+        /* validate Q1, Q2, Q3 all at once */
+        var fb1 = document.getElementById('fb-1');
+        var fb2 = document.getElementById('fb-2');
+        var fb3 = document.getElementById('fb-3');
+        var sel1 = document.querySelector('input[name="comprehension_q1"]:checked');
+        var sel2 = document.querySelector('input[name="comprehension_q2"]:checked');
+        var sel3 = document.querySelector('input[name="comprehension_q3"]:checked');
+
+        if (!sel1) { fb1.textContent = 'Please select an answer.'; fb1.style.display = 'block'; ok = false; }
+        else if (sel1.value !== CORRECT.q1) { fb1.textContent = FEEDBACK.q1; fb1.style.display = 'block'; ok = false; }
+        else { fb1.style.display = 'none'; }
+
+        if (!sel2) { fb2.textContent = 'Please select an answer.'; fb2.style.display = 'block'; ok = false; }
+        else if (sel2.value !== CORRECT.q2) { fb2.textContent = FEEDBACK.q2; fb2.style.display = 'block'; ok = false; }
+        else { fb2.style.display = 'none'; }
+
+        if (!sel3) { fb3.textContent = 'Please select an answer.'; fb3.style.display = 'block'; ok = false; }
+        else if (sel3.value !== CORRECT.q3) { fb3.textContent = FEEDBACK.q3; fb3.style.display = 'block'; ok = false; }
+        else { fb3.style.display = 'none'; }
+
+        if (!ok) return;
+        goTo(4);
+        return;
+    }
+
+    var fb = document.getElementById('fb-' + step);
+
+    if (step === 4) {
+        var a  = document.querySelector('input[name="comprehension_q4_a"]').value.trim();
+        var ba = document.querySelector('input[name="comprehension_q4_ba"]').value.trim();
+        var bb = document.querySelector('input[name="comprehension_q4_bb"]').value.trim();
+        if (!a || !ba || !bb) { fb.textContent = 'Please fill in all answers.'; fb.style.display = 'block'; return; }
+        fb.style.display = 'none';
+        var ok = true;
+        var sqA = document.getElementById('sq-q4-a'), sqBa = document.getElementById('sq-q4-ba'), sqBb = document.getElementById('sq-q4-bb');
+        if (a  !== CORRECT.q4_a)  { sqA.textContent  = 'Incorrect — the answer is ' + CORRECT.q4_a  + '.'; sqA.style.display  = 'inline'; ok = false; } else { sqA.style.display  = 'none'; }
+        if (ba !== CORRECT.q4_ba) { sqBa.textContent = 'Incorrect — the answer is ' + CORRECT.q4_ba + '.'; sqBa.style.display = 'inline'; ok = false; } else { sqBa.style.display = 'none'; }
+        if (bb !== CORRECT.q4_bb) { sqBb.textContent = 'Incorrect — the answer is ' + CORRECT.q4_bb + '.'; sqBb.style.display = 'inline'; ok = false; } else { sqBb.style.display = 'none'; }
+        if (!ok) return;
+    } else if (step === 5) {
+        var a  = document.querySelector('input[name="comprehension_q5_a"]').value.trim();
+        var ba = document.querySelector('input[name="comprehension_q5_ba"]').value.trim();
+        var bb = document.querySelector('input[name="comprehension_q5_bb"]').value.trim();
+        if (!a || !ba || !bb) { fb.textContent = 'Please fill in all answers.'; fb.style.display = 'block'; return; }
+        fb.style.display = 'none';
+        var ok = true;
+        var sqA = document.getElementById('sq-q5-a'), sqBa = document.getElementById('sq-q5-ba'), sqBb = document.getElementById('sq-q5-bb');
+        if (a  !== CORRECT.q5_a)  { sqA.textContent  = 'Incorrect — the answer is ' + CORRECT.q5_a  + '.'; sqA.style.display  = 'inline'; ok = false; } else { sqA.style.display  = 'none'; }
+        if (ba !== CORRECT.q5_ba) { sqBa.textContent = 'Incorrect — the answer is ' + CORRECT.q5_ba + '.'; sqBa.style.display = 'inline'; ok = false; } else { sqBa.style.display = 'none'; }
+        if (bb !== CORRECT.q5_bb) { sqBb.textContent = 'Incorrect — the answer is ' + CORRECT.q5_bb + '.'; sqBb.style.display = 'inline'; ok = false; } else { sqBb.style.display = 'none'; }
+        if (!ok) return;
+    } else if (step === 6) {
+        var a  = document.querySelector('input[name="comprehension_q6_a"]').value.trim();
+        var ba = document.querySelector('input[name="comprehension_q6_ba"]').value.trim();
+        var bb = document.querySelector('input[name="comprehension_q6_bb"]').value.trim();
+        if (!a || !ba || !bb) { fb.textContent = 'Please fill in all answers.'; fb.style.display = 'block'; return; }
+        fb.style.display = 'none';
+        var ok = true;
+        var sqA = document.getElementById('sq-q6-a'), sqBa = document.getElementById('sq-q6-ba'), sqBb = document.getElementById('sq-q6-bb');
+        if (a  !== CORRECT.q6_a)  { sqA.textContent  = 'Incorrect — the answer is ' + CORRECT.q6_a  + '.'; sqA.style.display  = 'inline'; ok = false; } else { sqA.style.display  = 'none'; }
+        if (ba !== CORRECT.q6_ba) { sqBa.textContent = 'Incorrect — the answer is ' + CORRECT.q6_ba + '.'; sqBa.style.display = 'inline'; ok = false; } else { sqBa.style.display = 'none'; }
+        if (bb !== CORRECT.q6_bb) { sqBb.textContent = 'Incorrect — the answer is ' + CORRECT.q6_bb + '.'; sqBb.style.display = 'inline'; ok = false; } else { sqBb.style.display = 'none'; }
+        if (!ok) return;
+    } else if (step === 7) {
+        var a  = document.querySelector('input[name="comprehension_q7_a"]').value.trim();
+        var ba = document.querySelector('input[name="comprehension_q7_ba"]').value.trim();
+        var bb = document.querySelector('input[name="comprehension_q7_bb"]').value.trim();
+        if (!a || !ba || !bb) { fb.textContent = 'Please fill in all answers.'; fb.style.display = 'block'; return; }
+        fb.style.display = 'none';
+        var ok = true;
+        var sqA = document.getElementById('sq-q7-a'), sqBa = document.getElementById('sq-q7-ba'), sqBb = document.getElementById('sq-q7-bb');
+        if (a  !== CORRECT.q7_a)  { sqA.textContent  = 'Incorrect — the answer is ' + CORRECT.q7_a  + '.'; sqA.style.display  = 'inline'; ok = false; } else { sqA.style.display  = 'none'; }
+        if (ba !== CORRECT.q7_ba) { sqBa.textContent = 'Incorrect — the answer is ' + CORRECT.q7_ba + '.'; sqBa.style.display = 'inline'; ok = false; } else { sqBa.style.display = 'none'; }
+        if (bb !== CORRECT.q7_bb) { sqBb.textContent = 'Incorrect — the answer is ' + CORRECT.q7_bb + '.'; sqBb.style.display = 'inline'; ok = false; } else { sqBb.style.display = 'none'; }
+        if (!ok) return;
+    }
+
+    fb.style.display = 'none';
+
+    if (step < TOTAL) {
+        goTo(step + 1);
+    } else {
+        document.getElementById('cq-progress').style.width = '100%';
+    }
+}
+</script>
+
+{{ endblock }}

@@ -1,0 +1,186 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Round {{ player.round_number }} Results{{ endblock }}
+
+{{ block content }}
+
+<br>
+
+<!-- Table Section (Top) -->
+<div style="display: flex; justify-content: center; margin-bottom: 30px; width: 60%">
+    {{if bank_fundamental == 'Bad'}}
+    <div>
+        <table class="table table-bordered table-sm" style="table-layout: fixed; width: 100%;">
+            <colgroup>
+                <col style="width: 12%;">
+                <col style="width: 40%;">
+                <col style="width: 16%;">
+                <col style="width: 16%;">
+                <col style="width: 16%;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th rowspan="2" colspan="2" style="background-color: #f0f0f0; font-weight: normal; vertical-align: middle; text-align: center;">
+                      Bank Fundamental: <b>BAD</b>
+                    </th>
+                    <th colspan="3" class="text-center" style="background-color: #f0f0f0; font-weight: normal;">Other's choice</th>
+                </tr>
+                <tr>
+                    <th class="text-center" style="background-color: #f0f0f0; font-weight: normal;"><strong>W</strong></th>
+                    <th class="text-center" style="background-color: #f0f0f0; font-weight: normal;"><strong>SW</strong></th>
+                    <th class="text-center" style="background-color: #f0f0f0; font-weight: normal;"><strong>SS</strong></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="3" style="background-color: #f0f0f0; vertical-align: middle;">Your choice:</td>
+                    <td style="background-color: #f0f0f0;"> <strong>Withdraw (W)</strong></td>
+                    <td class="text-center" {{ if player.first_decision == 'withdraw' and other.first_decision == 'withdraw' }}style="background-color: yellow;"{{ endif }}>(10,10)</td>
+                    <td class="text-center" {{ if player.first_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'withdraw' }}style="background-color: yellow;"{{ endif }}>(10,{{delayed_withdraw}})</td>
+                    <td class="text-center" {{ if player.first_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'stay' }}style="background-color: yellow;"{{ endif }}>(10,0)</td>
+                </tr>
+                <tr>
+                    <td style="background-color: #f0f0f0;"> <strong>Stay & Withdraw (SW)</strong></td>
+                    <td class="text-center" {{ if player.first_decision == 'stay' and player.second_decision == 'withdraw' and other.first_decision == 'withdraw' }}style="background-color: yellow;"{{ endif }}>({{delayed_withdraw}},10)</td>
+                    <td class="text-center" {{ if player.first_decision == 'stay' and player.second_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'withdraw' }}style="background-color: yellow;"{{ endif }}>({{delayed_withdraw}},{{delayed_withdraw}})</td>
+                    <td class="text-center" {{ if player.first_decision == 'stay' and player.second_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'stay' }}style="background-color: yellow;"{{ endif }}>({{delayed_withdraw}},0)</td>
+                </tr>
+                <tr>
+                    <td style="background-color: #f0f0f0;"> <strong>Stay & Stay (SS)</strong></td>
+                    <td class="text-center" {{ if player.first_decision == 'stay' and player.second_decision == 'stay' and other.first_decision == 'withdraw' }}style="background-color: yellow;"{{ endif }}>(0,10)</td>
+                    <td class="text-center" {{ if player.first_decision == 'stay' and player.second_decision == 'stay' and other.first_decision == 'stay' and other.second_decision == 'withdraw' }}style="background-color: yellow;"{{ endif }}>(0,{{delayed_withdraw}})</td>
+                    <td class="text-center" {{ if player.first_decision == 'stay' and player.second_decision == 'stay' and other.first_decision == 'stay' and other.second_decision == 'stay' }}style="background-color: yellow;"{{ endif }}>(0,0)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+  {{elif bank_fundamental == 'Medium'}}  
+    <div>
+        <table class="table table-bordered table-sm" style="table-layout: fixed; width: 100%;">
+            <colgroup>
+                <col style="width: 12%;">
+                <col style="width: 40%;">
+                <col style="width: 16%;">
+                <col style="width: 16%;">
+                <col style="width: 16%;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th rowspan="2" colspan="2" style="background-color: #f0f0f0; font-weight: normal; vertical-align: middle; text-align: center;">
+                      Bank Fundamental: <b>MEDIUM</b>
+                    </th>
+                    <th colspan="3" class="text-center" style="background-color: #f0f0f0; font-weight: normal;">Other's choice</th>
+                </tr>
+                <tr>
+                    <th class="text-center" style="background-color: #f0f0f0; font-weight: normal;"><strong>W</strong></th>
+                    <th class="text-center" style="background-color: #f0f0f0; font-weight: normal;"><strong>SW</strong></th>
+                    <th class="text-center" style="background-color: #f0f0f0; font-weight: normal;"><strong>SS</strong></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="3" style="background-color: #f0f0f0; vertical-align: middle;">Your choice:</td>
+                    <td style="background-color: #f0f0f0;"> <strong>Withdraw (W)</strong></td>
+                    <td class="text-center" {{ if player.first_decision == 'withdraw' and other.first_decision == 'withdraw' }}style="background-color: yellow;"{{ endif }}>(10,10)</td>
+                    <td class="text-center" {{ if player.first_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'withdraw' }}style="background-color: yellow;"{{ endif }}>(10,{{delayed_withdraw}})</td>
+                    <td class="text-center" {{ if player.first_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'stay' }}style="background-color: yellow;"{{ endif }}>(10,0)</td>
+                </tr>
+                <tr>
+                    <td style="background-color: #f0f0f0;"> <strong>Stay & Withdraw (SW)</strong></td>
+                    <td class="text-center" {{ if player.first_decision == 'stay' and player.second_decision == 'withdraw' and other.first_decision == 'withdraw' }}style="background-color: yellow;"{{ endif }}>({{delayed_withdraw}},10)</td>
+                    <td class="text-center" {{ if player.first_decision == 'stay' and player.second_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'withdraw' }}style="background-color: yellow;"{{ endif }}>({{delayed_withdraw}},{{delayed_withdraw}})</td>
+                    <td class="text-center" {{ if player.first_decision == 'stay' and player.second_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'stay' }}style="background-color: yellow;"{{ endif }}>(10,0)</td>
+                </tr>
+                <tr>
+                    <td style="background-color: #f0f0f0;"> <strong>Stay & Stay (SS)</strong></td>
+                    <td class="text-center" {{ if player.first_decision == 'stay' and player.second_decision == 'stay' and other.first_decision == 'withdraw' }}style="background-color: yellow;"{{ endif }}>(0,10)</td>
+                    <td class="text-center" {{ if player.first_decision == 'stay' and player.second_decision == 'stay' and other.first_decision == 'stay' and other.second_decision == 'withdraw' }}style="background-color: yellow;"{{ endif }}>(0,10)</td>
+                    <td class="text-center" {{ if player.first_decision == 'stay' and player.second_decision == 'stay' and other.first_decision == 'stay' and other.second_decision == 'stay' }}style="background-color: yellow;"{{ endif }}>(20,20)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+  {{else}}  
+    <div>
+        <table class="table table-bordered table-sm" style="table-layout: fixed; width: 100%;">
+            <colgroup>
+                <col style="width: 12%;">
+                <col style="width: 40%;">
+                <col style="width: 16%;">
+                <col style="width: 16%;">
+                <col style="width: 16%;">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th rowspan="2" colspan="2" style="background-color: #f0f0f0; font-weight: normal; vertical-align: middle; text-align: center;">
+                      Bank Fundamental: <b>GOOD</b>
+                    </th>
+                    <th colspan="3" class="text-center" style="background-color: #f0f0f0; font-weight: normal;">Other's choice</th>
+                </tr>
+                <tr>
+                    <th class="text-center" style="background-color: #f0f0f0; font-weight: normal;"><strong>W</strong></th>
+                    <th class="text-center" style="background-color: #f0f0f0; font-weight: normal;"><strong>SW</strong></th>
+                    <th class="text-center" style="background-color: #f0f0f0; font-weight: normal;"><strong>SS</strong></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="3" style="background-color: #f0f0f0; vertical-align: middle;">Your choice:</td>
+                    <td style="background-color: #f0f0f0;"> <strong>Withdraw (W)</strong></td>
+                    <td class="text-center" {{ if player.first_decision == 'withdraw' and other.first_decision == 'withdraw' }}style="background-color: yellow;"{{ endif }}>(10,10)</td>
+                    <td class="text-center" {{ if player.first_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'withdraw' }}style="background-color: yellow;"{{ endif }}>(10,10)</td>
+                    <td class="text-center" {{ if player.first_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'stay' }}style="background-color: yellow;"{{ endif }}>(10,20)</td>
+                </tr>
+                <tr>
+                    <td style="background-color: #f0f0f0;"> <strong>Stay & Withdraw (SW)</strong></td>
+                    <td class="text-center" {{ if player.first_decision == 'stay' and player.second_decision == 'withdraw' and other.first_decision == 'withdraw' }}style="background-color: yellow;"{{ endif }}>(10,10)</td>
+                    <td class="text-center" {{ if player.first_decision == 'stay' and player.second_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'withdraw' }}style="background-color: yellow;"{{ endif }}>(10,10)</td>
+                    <td class="text-center" {{ if player.first_decision == 'stay' and player.second_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'stay' }}style="background-color: yellow;"{{ endif }}>(10,20)</td>
+                </tr>
+                <tr>
+                    <td style="background-color: #f0f0f0;"> <strong>Stay & Stay (SS)</strong></td>
+                    <td class="text-center" {{ if player.first_decision == 'stay' and player.second_decision == 'stay' and other.first_decision == 'withdraw' }}style="background-color: yellow;"{{ endif }}>(20,10)</td>
+                    <td class="text-center" {{ if player.first_decision == 'stay' and player.second_decision == 'stay' and other.first_decision == 'stay' and other.second_decision == 'withdraw' }}style="background-color: yellow;"{{ endif }}>(20,10)</td>
+                    <td class="text-center" {{ if player.first_decision == 'stay' and player.second_decision == 'stay' and other.first_decision == 'stay' and other.second_decision == 'stay' }}style="background-color: yellow;"{{ endif }}>(20,20)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+  {{endif}}
+</div>
+
+<!-- Information Section (Bottom) -->
+<div style="border-radius: 5px;">
+  <p>
+    In this round, <br>
+    <ul>
+      <li style="margin-bottom: 10px;">the bank fundamental was <b>{{ bank_fundamental }}</b>.</li>
+      <li style="margin-bottom: 10px;">your decision was:
+        <ul>
+          <li>Period 1: <b>{{ player.first_decision }}</b></li>
+          {{ if player.first_decision == 'stay' }}
+            <li>Period 2: <b>{{ player.second_decision }}</b></li>
+          {{ endif }}
+        </ul>
+      </li>
+      <li style="margin-bottom: 10px;">the other player's decision was:
+        <ul>
+          <li>Period 1: <b>{{ other.first_decision }}</b></li>
+          {{ if other.first_decision == 'stay' }}
+            <li>Period 2: <b>{{ other.second_decision }}</b></li>
+          {{ endif }}
+        </ul>
+      </li>
+    </ul>
+  </p>
+  <p>
+    As a result, you earned <b>{{ payoff_value }} ECU</b> this round.
+  </p>
+</div>
+
+<hr>
+
+<br>
+{{ next_button }}
+
+
+{{ endblock }}

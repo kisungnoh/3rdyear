@@ -73,14 +73,14 @@ details.pay-rule[open] summary::before { content: '▼'; }
 .tag-no  { color: #c62828; font-weight: 700; }
 </style>
 
-<p>The following details your earnings from the three matches that were randomly selected for payment.</p>
+<p>The following details your earnings from the three games that were randomly selected for payment.</p>
 <p>The conversion rate is <strong>1 point = ${{ C.REAL_WORLD_CURRENCY_PER_POINT }}</strong>.</p>
 
-<!-- Part 2: Choice (matches 1–2) -->
+<!-- Part 2: Choice (games 1–2) -->
 <div class="card-panel">
     <div class="card-panel-header">Part 2: Your Action</div>
     <div class="card-panel-body">
-        <div class="pay-row"><span class="pay-key">Selected match</span><span class="pay-val">Match {{ p2_round }}</span></div>
+        <div class="pay-row"><span class="pay-key">Selected game</span><span class="pay-val">Game {{ p2_round }}</span></div>
         <div class="pay-row"><span class="pay-key">State</span><span class="pay-val">{{ p2_state }}</span></div>
         <div class="pay-row"><span class="pay-key">Your action</span><span class="pay-val">{{ p2_action }}</span></div>
         <div class="pay-row"><span class="pay-key">Other depositor's action</span><span class="pay-val">{{ p2_other_action }}</span></div>
@@ -88,11 +88,11 @@ details.pay-rule[open] summary::before { content: '▼'; }
     </div>
 </div>
 
-<!-- Part 3: Choice (matches 3–5) -->
+<!-- Part 3: Choice (games 3–5) -->
 <div class="card-panel">
     <div class="card-panel-header">Part 3: Your Action</div>
     <div class="card-panel-body">
-        <div class="pay-row"><span class="pay-key">Selected match</span><span class="pay-val">Match {{ p3_round }}</span></div>
+        <div class="pay-row"><span class="pay-key">Selected game</span><span class="pay-val">Game {{ p3_round }}</span></div>
         <div class="pay-row"><span class="pay-key">State</span><span class="pay-val">{{ p3_state }}</span></div>
         <div class="pay-row"><span class="pay-key">Your action</span><span class="pay-val">{{ p3_action }}</span></div>
         <div class="pay-row"><span class="pay-key">Other depositor's action</span><span class="pay-val">{{ p3_other_action }}</span></div>
@@ -104,7 +104,7 @@ details.pay-rule[open] summary::before { content: '▼'; }
 <div class="card-panel">
     <div class="card-panel-header">Part 3: Your Belief (Other's Action)</div>
     <div class="card-panel-body">
-        <div class="pay-row"><span class="pay-key">Selected match</span><span class="pay-val">Match {{ bel_s1_round }}</span></div>
+        <div class="pay-row"><span class="pay-key">Selected game</span><span class="pay-val">Game {{ bel_s1_round }}</span></div>
         <div class="pay-row"><span class="pay-key">Your reported belief</span><span class="pay-val">Action A: {{ bel_s1_a }}% / Action B: {{ bel_s1_b }}%</span></div>
         <div class="pay-row"><span class="pay-key">Other depositor actually chose</span><span class="pay-val">{{ if bel_s1_other_action == 'action_a' }}Action A{{ else }}Action B{{ endif }} in Stage 1</span></div>
         <div class="pay-earned">Earnings: {{ bel_s1_payoff }} points (${{ bel_s1_payoff_usd }})</div>
@@ -135,7 +135,7 @@ details.pay-rule[open] summary::before { content: '▼'; }
 <div class="card-panel">
     <div class="card-panel-header">Part 3: Your Belief (Bank State)</div>
     <div class="card-panel-body">
-        <div class="pay-row"><span class="pay-key">Selected match</span><span class="pay-val">Match {{ bel_state_round }}</span></div>
+        <div class="pay-row"><span class="pay-key">Selected game</span><span class="pay-val">Game {{ bel_state_round }}</span></div>
         <div class="pay-row"><span class="pay-key">Randomly picked state</span><span class="pay-val">{{ bel_picked_state }}</span></div>
         <div class="pay-row"><span class="pay-key">Your reported probability for {{ bel_picked_state }}</span><span class="pay-val">{{ bel_state_rep }}%</span></div>
         <div class="pay-row"><span class="pay-key">Actual state</span><span class="pay-val">{{ bel_act_state }}</span></div>
