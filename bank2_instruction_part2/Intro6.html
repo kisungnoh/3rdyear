@@ -1,0 +1,20 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Part 2 Instructions - Today's Experiment{{ endblock }}
+
+{{ block content }}
+
+<br>
+<h5>Earnings</h5>
+<p>After both you and the other participant make decisions, you will learn how many points you received along with the state of your bank, the state of the Pre-Bank, and what action the other participant chose. This concludes the game.</p>
+<p>This part consists of <strong>10 games</strong>. At the end of the experiment, one game will be randomly selected for payment, and your earnings from that game will be converted to dollars at the rate of <strong>1 point = {{C.REAL_WORLD_CURRENCY_PER_POINT}} dollar</strong>.</p>
+
+<br>
+<h5>Pairings</h5>
+<p>At the start of each game, you will be randomly paired with another participant. That means you are likely to play with a different participant in each game.</p>
+
+
+<div style="display:flex; justify-content:center; gap:12px; padding-top:10px;">
+    {{ next_button }}
+</div>
+
+{{ endblock }}

@@ -15,32 +15,32 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
 
-    # Stage 1
-    stage1_choice = models.StringField(
-        choices=[['action_a', 'Action A'], ['action_b', 'Action B'], ['even', 'Even']],
+    # Period 1
+    period1_choice = models.StringField(
+        choices=[['withdraw', 'Withdraw'], ['stay', 'Stay']],
         widget=widgets.RadioSelect,
         label=""
     )
-    stage1_certainty = models.IntegerField(
+    period1_certainty = models.IntegerField(
         min=50, max=100,
         blank=True,
         label=""
     )
 
-    # Stage 2
-    stage2_choice = models.StringField(
-        choices=[['action_a', 'Action A'], ['action_b', 'Action B'], ['even', 'Even']],
+    # Period 2
+    period2_choice = models.StringField(
+        choices=[['withdraw', 'Withdraw'], ['stay', 'Stay']],
         widget=widgets.RadioSelect,
         label=""
     )
-    stage2_certainty = models.IntegerField(
+    period2_certainty = models.IntegerField(
         min=50, max=100,
         blank=True,
         label=""
     )
 
     # Explanation
-    ba_reason = models.LongStringField(
+    sw_reason = models.LongStringField(
         blank=True,
         label=""
     )
@@ -72,34 +72,34 @@ class Player(BasePlayer):
 
 def action_label(action):
     if action == 'early':
-        return 'Action A in Stage 1'
+        return 'Withdraw in Period 1 (W)'
     elif action == 'late':
-        return 'Action B in Stage 1 → Action A in Stage 2 (BA)'
+        return 'Stay in Period 1 → Withdraw in Period 2 (SW)'
     else:  # stay
-        return 'Action B in Stage 1 → Action B in Stage 2 (BB)'
+        return 'Stay in Period 1 → Stay in Period 2 (SS)'
 
 
 class PostSurveyQ1(Page):
     form_model = 'player'
-    form_fields = ['stage1_choice', 'stage1_certainty']
+    form_fields = ['period1_choice', 'period1_certainty']
 
     @staticmethod
     def error_message(player, values):
-        if values['stage1_certainty'] is None:
-            return dict(stage1_certainty='Please move the slider to indicate your certainty.')
+        if values['period1_certainty'] is None:
+            return dict(period1_certainty='Please move the slider to indicate your certainty.')
 
 class PostSurveyQ2(Page):
     form_model = 'player'
-    form_fields = ['stage2_choice', 'stage2_certainty']
+    form_fields = ['period2_choice', 'period2_certainty']
 
     @staticmethod
     def error_message(player, values):
-        if values['stage2_certainty'] is None:
-            return dict(stage2_certainty='Please move the slider to indicate your certainty.')
+        if values['period2_certainty'] is None:
+            return dict(period2_certainty='Please move the slider to indicate your certainty.')
 
 class PostSurveyQ3(Page):
     form_model = 'player'
-    form_fields = ['ba_reason']
+    form_fields = ['sw_reason']
 
 class CRT(Page):
     form_model = 'player'
@@ -115,17 +115,17 @@ class Payment(Page):
         p1_payoff      = int(player.participant.b1_p1_payoff)
         p2_payoff      = int(player.participant.b1_p2_payoff)
         bel_s1_payoff  = int(player.participant.b1_bel_s1_payoff)
-        bel_s1_a = int(player.participant.b1_bel_s1)
-        bel_s1_b = 100 - bel_s1_a
-        bel_s1_other_a = player.participant.b1_bel_s1_other_action == 'action_a'
+        bel_s1_withdraw = int(player.participant.b1_bel_s1)
+        bel_s1_stay = 100 - bel_s1_withdraw
+        bel_s1_other_withdraw = player.participant.b1_bel_s1_other_action == 'withdraw'
         r1 = int(player.participant.b1_bel_s1_draw1)
         r2 = int(player.participant.b1_bel_s1_draw2)
-        if bel_s1_other_a:
-            bel_s1_cond1 = bel_s1_a > r1
-            bel_s1_cond2 = bel_s1_a > r2
+        if bel_s1_other_withdraw:
+            bel_s1_cond1 = bel_s1_withdraw > r1
+            bel_s1_cond2 = bel_s1_withdraw > r2
         else:
-            bel_s1_cond1 = bel_s1_b > r1
-            bel_s1_cond2 = bel_s1_b > r2
+            bel_s1_cond1 = bel_s1_stay > r1
+            bel_s1_cond2 = bel_s1_stay > r2
         bel_s1_rewarded    = bel_s1_cond1 or bel_s1_cond2
         p1_payoff_usd      = round(p1_payoff     * C.REAL_WORLD_CURRENCY_PER_POINT, 2)
         p2_payoff_usd      = round(p2_payoff     * C.REAL_WORLD_CURRENCY_PER_POINT, 2)
@@ -153,8 +153,8 @@ class Payment(Page):
             bel_s1_payoff=bel_s1_payoff,
             bel_s1_payoff_usd=bel_s1_payoff_usd,
             bel_state=player.participant.b1_bel_state,
-            bel_s1_a=bel_s1_a,
-            bel_s1_b=bel_s1_b,
+            bel_s1_withdraw=bel_s1_withdraw,
+            bel_s1_stay=bel_s1_stay,
             bel_s1_other_action=player.participant.b1_bel_s1_other_action,
             bel_s1_draw1=r1,
             bel_s1_draw2=r2,

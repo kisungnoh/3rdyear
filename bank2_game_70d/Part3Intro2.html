@@ -1,0 +1,414 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Part 3 Instructions{{ endblock }}
+
+{{ block content }}
+
+<style>
+/* ── Binary slider ── */
+.demo-slider-section-title { font-size: 15px; font-weight: 600; color: var(--text,#1a1f2e); margin-bottom: 6px; }
+.demo-slider-wrap          { margin: 18px 0 8px; }
+.demo-labels-row           { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+.demo-end                  { min-width: 60px; }
+.demo-end.left             { text-align: left; }
+.demo-end.right            { text-align: right; }
+.demo-h-label              { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+.demo-h-pct                { font-size: 26px; font-weight: 600; min-height: 32px; }
+.demo-track-wrap           { position: relative; height: 20px; }
+.demo-track-bg             { position: absolute; top: 50%; left: 0; right: 0; height: 12px; transform: translateY(-50%); border-radius: 6px; pointer-events: none; background: #e8eaed; }
+input.demo-range           { position: absolute; top: 50%; left: 0; width: 100%; transform: translateY(-50%); -webkit-appearance: none; appearance: none; background: transparent; outline: none; margin: 0; height: 20px; cursor: pointer; }
+input.demo-range::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; background: #37474f; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+input.demo-range::-moz-range-thumb     { width: 24px; height: 24px; border-radius: 50%; background: #37474f; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+.demo-caption              { font-size: 14px; color: #888; text-align: center; margin-top: 10px; }
+.knob-hidden::-webkit-slider-thumb { opacity: 0 !important; }
+.knob-hidden::-moz-range-thumb     { opacity: 0 !important; }
+
+/* ── Tri-region state belief ── */
+.tri-demo-labels    { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+.tri-demo-col       { text-align: center; min-width: 60px; }
+.tri-demo-name      { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+.tri-demo-pct       { font-size: 26px; font-weight: 600; min-height: 32px; }
+.tri-demo-track-wrap { position: relative; height: 20px; cursor: pointer; user-select: none; margin-bottom: 4px; }
+.tri-demo-track-bg  { position: absolute; top: 50%; left: 0; right: 0; height: 12px; transform: translateY(-50%); border-radius: 6px; background: #e8eaed; }
+.tri-demo-knob      { position: absolute; top: 50%; width: 24px; height: 24px; border-radius: 50%; background: #37474f; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); transform: translate(-50%, -50%); cursor: grab; }
+.tri-demo-knob.knob-hidden { opacity: 0; }
+
+/* ── Step indicator ── */
+.step-indicator { display: flex; align-items: center; gap: 4px; margin-bottom: 14px; }
+.step           { display: flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 20px; font-size: 14px; font-weight: 600; }
+.step.active    { background: #e1f5fe; color: #0277bd; }
+.step.inactive  { color: #b0b8c4; }
+.step-num       { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+.step.active  .step-num  { background: #0277bd; color: #fff; }
+.step.inactive .step-num { background: #e0e0e0; color: #9aa0a8; }
+.step-arrow { color: #c8cdd4; font-size: 14px; }
+
+/* ── Vertical tabs ── */
+.vtab-card {
+    border: 1px solid #dde1e7;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: flex;
+    min-height: 280px;
+    margin-bottom: 28px;
+    overflow: hidden;
+    background: #fff;
+}
+.vtab-list {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    width: 200px;
+    border-right: 1.5px solid #dde1e7;
+    background: #f8f9fb;
+}
+.vtab {
+    padding: 16px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    border-left: 3px solid transparent;
+    transition: color 0.15s, background 0.15s;
+    line-height: 1.4;
+}
+.vtab:hover  { color: #1a1f2e; background: #eef0f4; }
+.vtab.active { color: #1a1f2e; background: #ffffff; border-left: 3px solid #37474f; }
+.vtab-task-num { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9aa0a8; margin-bottom: 2px; }
+.vtab.active .vtab-task-num { color: #37474f; }
+.vtab-content { flex: 1; padding: 20px 24px; }
+.vtab-panel   { display: none; }
+.vtab-panel.active { display: block; }
+
+/* ── Demo slider box ── */
+.demo-row {
+    border: 0.5px solid #dde1e7;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    overflow: hidden;
+    background: #ffffff;
+    max-width: 500px;
+    margin: 12px auto 8px;
+}
+.demo-row-header {
+    background: #f8f9fb;
+    border-bottom: 0.5px solid #dde1e7;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #6b7280;
+}
+.demo-row-body { padding: 16px; }
+
+/* ── Tab feedback ── */
+.feedback-box {
+    display: none;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: #fff3e0;
+    border: 1px solid #e65100;
+    border-radius: 6px;
+    color: #c62828;
+    font-size: 14px;
+}
+
+/* ── Collapsible payment rule ── */
+.payment-rule-toggle    { display: inline-block; margin-top: 12px; color: #1976D2; cursor: pointer; text-decoration: underline; user-select: none; }
+.payment-rule-box       { display: none; border-left: 4px solid #0277bd; background: #f5f9ff; padding: 14px 18px; margin-top: 10px; line-height: 1.6; }
+.payment-rule-box h6    { margin: 0 0 8px; font-size: 14px; color: #37474f; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.payment-rule-box ul    { margin: 8px 0 8px 20px; padding: 0; }
+.payment-rule-box li    { margin-bottom: 6px; }
+.payment-rule-highlight { background: #e3f0fb; font-size: 18px; border-radius: 4px; padding: 8px 12px; margin-top: 20px; }
+
+/* ── Sample screen wrapper ── */
+.sample-screen {
+    border: 2px solid #0277bd;
+    border-radius: 12px;
+    padding: 12px;
+    background: #f4f5f7;
+    margin: 0 auto 24px;
+    max-width: 500px;
+}
+.sample-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #0277bd;
+    text-transform: uppercase;
+    margin: 0 -12px 10px -12px;
+    padding: 0 16px 8px 16px;
+    border-bottom: 2px solid #0277bd;
+}
+.ss-context-bar {
+    background: #fff;
+    border: 0.5px solid #dde1e7;
+    border-radius: 10px;
+    padding: 8px 18px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.ss-ctx-badge {
+    background: #37474f;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+}
+.ss-card {
+    background: #fff;
+    border: 0.5px solid #dde1e7;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+.ss-card-header {
+    background: #f8f9fb;
+    border-bottom: 0.5px solid #dde1e7;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #6b7280;
+}
+.ss-card-body { padding: 16px; }
+.ss-payoff-three { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+.ss-payoff-col { border-right: 0.5px solid #dde1e7; }
+.ss-payoff-col:last-child { border-right: none; }
+.ss-payoff-col-head {
+    padding: 9px 12px;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.05em;
+    border-bottom: 1.5px solid #dde1e7;
+    display: flex; align-items: center; gap: 6px;
+    background: #fff;
+}
+.ss-state-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.ss-payoff-table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
+.ss-payoff-table th, .ss-payoff-table td { border: 0.5px solid #dde1e7; padding: 8px 4px; text-align: center; }
+.ss-payoff-table thead th { background: #f8f9fb; font-size: 13px; font-weight: 600; }
+.ss-payoff-table .ss-row-header { background: #f8f9fb; font-weight: 600; font-size: 13px; text-align: center; padding-left: 4px; }
+.ss-payoff-table col.ss-col-label  { width: 40px; }
+.ss-payoff-table col.ss-col-action { width: 50px; }
+.ss-payoff-legend {
+    padding: 6px 0; border-top: 0.5px solid #dde1e7; background: #fff;
+    font-size: 12px; color: #6b7280;
+    display: grid; grid-template-columns: auto auto auto; justify-content: center; gap: 20px;
+}
+.ss-bottom-row {
+    display: grid;
+    grid-template-columns: 200px 1fr 1fr;
+    gap: 10px;
+    align-items: start;
+}
+.ss-prebank-body {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; text-align: center; padding: 20px 12px; gap: 4px;
+}
+.ss-prebank-number { font-size: 52px; font-weight: 700; color: #000; line-height: 1.1; }
+.ss-prebank-sub { font-size: 14px; font-weight: 600; color: #1a1f2e; margin-top: 2px; }
+.ss-mock-choice { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+.ss-mock-radio { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 500; cursor: pointer; }
+.ss-slider-title { font-size: 15px; font-weight: 600; color: #1a1f2e; margin-bottom: 6px; }
+.ss-slider-hint { font-size: 13px; color: #6b7280; margin-bottom: 12px; }
+.ss-h-labels-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+.ss-h-end { min-width: 60px; }
+.ss-h-end.left  { text-align: left; }
+.ss-h-end.right { text-align: right; }
+.ss-h-label { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+.ss-h-pct   { font-size: 26px; font-weight: 600; min-height: 32px; }
+.ss-h-track-wrap { position: relative; height: 20px; }
+.ss-h-track-bg {
+    position: absolute; top: 50%; left: 0; right: 0;
+    height: 12px; transform: translateY(-50%);
+    border-radius: 6px; pointer-events: none; background: #e8eaed;
+}
+input.ss-h-range {
+    position: absolute; top: 50%; left: 0; width: 100%;
+    transform: translateY(-50%);
+    -webkit-appearance: none; appearance: none;
+    background: transparent; outline: none; margin: 0; height: 20px; cursor: pointer;
+}
+input.ss-h-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: #37474f; border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+input.ss-h-range::-moz-range-thumb {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: #37474f; border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.ss-tri-labels-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+.ss-tri-side { min-width: 44px; }
+.ss-tri-side.left  { text-align: left; }
+.ss-tri-side.right { text-align: right; }
+.ss-tri-center { text-align: center; flex: 1; }
+.ss-tri-name { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+.ss-tri-pct  { font-size: 26px; font-weight: 600; min-height: 32px; }
+.ss-tri-track-outer {
+    position: relative; height: 12px; border-radius: 6px;
+    background: #e8eaed; cursor: pointer; user-select: none;
+}
+.ss-tri-fill { position: absolute; inset: 0; border-radius: 6px; pointer-events: none; background: #e8eaed; }
+.ss-tri-knob {
+    position: absolute; top: 50%;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: #37474f; border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    transform: translate(-50%, -50%); cursor: grab; z-index: 2;
+}
+.ss-tri-knob.knob-hidden { opacity: 0; pointer-events: none; }
+.ss-beliefs-divider { border: none; border-top: 0.5px solid #dde1e7; margin: 16px 0; }
+</style>
+<p>
+    In this part, you will play <strong>{{ part3_rounds }} more games</strong> and make the same decisions as before, with additional tasks.
+</p>
+
+<br>
+
+<h5>Belief about the other participant's choice</h5>
+<p>
+    In each period, you will report your belief by moving a slider. The percentage on the left indicates how likely you think it is that the other participant will choose to <strong>withdraw</strong>, while the percentage on the right indicates how likely you think it is that the other participant will choose to <strong>stay</strong>.
+</p>
+
+<div class="sample-screen">
+    <!-- Context bar -->
+    <div class="ss-context-bar">
+
+        <div class="step-indicator" style="margin-bottom:0;">
+            <div class="step active"><div class="step-num">1</div>Period 1</div>
+            <div class="step-arrow">›</div>
+            <div class="step inactive"><div class="step-num">2</div>Period 2</div>
+        </div>
+    </div>
+
+    <!-- Beliefs -->
+    <div class="ss-card">
+
+        <div class="ss-card-body">
+
+            <!-- Action belief slider -->
+            <div class="ss-slider-title">How likely do you think the other participant will choose to withdraw or stay in Period 1?</div>
+            <p class="ss-slider-hint">This is an example slider. Click the track and move the slider.</p>
+            <div class="ss-h-labels-row">
+                <div class="ss-h-end left">
+                    <div class="ss-h-label" style="color:#5e35b1;">Withdraw</div>
+                    <div class="ss-h-pct" id="ss_pct_a" style="color:#5e35b1;"></div>
+                </div>
+                <div class="ss-h-end right">
+                    <div class="ss-h-label" style="color:#00838f;">Stay</div>
+                    <div class="ss-h-pct" id="ss_pct_b" style="color:#00838f;"></div>
+                </div>
+            </div>
+            <div class="ss-h-track-wrap">
+                <div class="ss-h-track-bg" id="ss_track_bg"></div>
+                <input type="range" class="ss-h-range knob-hidden" id="ss_h_slider" min="0" max="100" step="1" value="50">
+            </div>
+        </div>
+    </div>
+</div><!-- /sample-screen -->
+
+<div class="sample-screen">
+    <!-- Context bar -->
+    <div class="ss-context-bar">
+
+        <div class="step-indicator" style="margin-bottom:0;">
+            <div class="step inactive"><div class="step-num">1</div>Period 1</div>
+            <div class="step-arrow">›</div>
+            <div class="step active"><div class="step-num">2</div>Period 2</div>
+        </div>
+    </div>
+
+    <!-- Beliefs -->
+    <div class="ss-card">
+
+        <div class="ss-card-body">
+
+            <!-- Action belief slider -->
+            <div class="ss-slider-title">Suppose the other participant stayed in Period 1 and is now in Period 2. How likely do you think they would choose to withdraw or stay in Period 2?</div>
+            <p class="ss-slider-hint">This is an example slider. Click the track and move the slider.</p>
+            <div class="ss-h-labels-row">
+                <div class="ss-h-end left">
+                    <div class="ss-h-label" style="color:#5e35b1;">Withdraw</div>
+                    <div class="ss-h-pct" id="ss2_pct_a" style="color:#5e35b1;"></div>
+                </div>
+                <div class="ss-h-end right">
+                    <div class="ss-h-label" style="color:#00838f;">Stay</div>
+                    <div class="ss-h-pct" id="ss2_pct_b" style="color:#00838f;"></div>
+                </div>
+            </div>
+            <div class="ss-h-track-wrap">
+                <div class="ss-h-track-bg" id="ss2_track_bg"></div>
+                <input type="range" class="ss-h-range knob-hidden" id="ss2_h_slider" min="0" max="100" step="1" value="50">
+            </div>
+        </div>
+    </div>
+</div><!-- /sample-screen -->
+
+<p><strong>Clarification: Period 2 slider</strong></p>
+<ul>
+    <li>You will only see the slider if you choose to stay in Period 1 and move to Period 2.</li>
+    <li>The other participant may or may not be in Period 2, depending on their choice in Period 1. The slider asks how likely you think they are to withdraw or stay, if they are in Period 2.</li>
+</ul>
+
+<br>
+<div style="margin-top: 30px;">{{ next_button }}</div>
+
+<script>
+(function () {
+
+    /* ── Sample screen: action-belief slider ── */
+    var ssHSlider   = document.getElementById('ss_h_slider');
+    var ssTrackBg   = document.getElementById('ss_track_bg');
+    var ssPctA      = document.getElementById('ss_pct_a');
+    var ssPctB      = document.getElementById('ss_pct_b');
+    var ssHTouched  = false;
+
+    function updateSSH(v) {
+        ssTrackBg.style.background =
+            'linear-gradient(to right, #5e35b1 ' + v + '%, #00838f ' + v + '%)';
+        ssPctA.textContent = v + '%';
+        ssPctB.textContent = (100 - v) + '%';
+    }
+    function onSSHFirstTouch() {
+        if (!ssHTouched) { ssHTouched = true; ssHSlider.classList.remove('knob-hidden'); updateSSH(parseInt(ssHSlider.value)); }
+    }
+    ssHSlider.addEventListener('mousedown',  onSSHFirstTouch);
+    ssHSlider.addEventListener('touchstart', onSSHFirstTouch);
+    ssHSlider.addEventListener('input', function () { if (ssHTouched) updateSSH(parseInt(this.value)); });
+
+    /* ── Sample screen: action-belief slider (Period 2) ── */
+    var ss2HSlider   = document.getElementById('ss2_h_slider');
+    var ss2TrackBg   = document.getElementById('ss2_track_bg');
+    var ss2PctA      = document.getElementById('ss2_pct_a');
+    var ss2PctB      = document.getElementById('ss2_pct_b');
+    var ss2HTouched  = false;
+
+    function updateSS2H(v) {
+        ss2TrackBg.style.background =
+            'linear-gradient(to right, #5e35b1 ' + v + '%, #00838f ' + v + '%)';
+        ss2PctA.textContent = v + '%';
+        ss2PctB.textContent = (100 - v) + '%';
+    }
+    function onSS2HFirstTouch() {
+        if (!ss2HTouched) { ss2HTouched = true; ss2HSlider.classList.remove('knob-hidden'); updateSS2H(parseInt(ss2HSlider.value)); }
+    }
+    ss2HSlider.addEventListener('mousedown',  onSS2HFirstTouch);
+    ss2HSlider.addEventListener('touchstart', onSS2HFirstTouch);
+    ss2HSlider.addEventListener('input', function () { if (ss2HTouched) updateSS2H(parseInt(this.value)); });
+
+}());
+</script>
+
+{{ endblock }}

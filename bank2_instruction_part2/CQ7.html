@@ -4,20 +4,20 @@
 {{ block content }}
 <br>
 <p style="font-size:12px; color:#6b7280; margin-bottom:20px;">Question 7 of 9</p>
-{{ formfields }}
-<div id="cq-error" style="display:none; color:#c62828; background:#fff3e0; border:1px solid #e65100; border-radius:6px; padding:8px 14px; margin-bottom:8px;"></div>
+{{ formfield 'comprehension_q7' }}
+<div id="fb-q7" style="display:none; color:#c62828; background:#fff3e0; border:1px solid #e65100; border-radius:6px; padding:8px 14px; margin-bottom:8px;"></div>
 <div style="text-align:center; padding-top:20px;">{{ next_button }}</div>
 <script>
 document.querySelector('form').addEventListener('submit', function(e) {
     var sel = document.querySelector('input[name="comprehension_q7"]:checked');
-    var err = document.getElementById('cq-error');
+    var fb  = document.getElementById('fb-q7');
+    fb.style.display = 'none';
     if (!sel) {
-        e.preventDefault(); err.textContent = 'Please select an answer.'; err.style.display = 'block'; return;
+        e.preventDefault(); fb.textContent = 'Please select an answer.'; fb.style.display = 'block'; return;
     }
     if (sel.value !== 'either') {
-        e.preventDefault(); err.textContent = 'Incorrect. In Stage 1, you will see the number of Pre-Bank depositors who chose action A in either Stage 1 (A) or Stage 2 (BA).'; err.style.display = 'block'; return;
+        e.preventDefault(); fb.textContent = 'Incorrect. In Period 1, you will be informed of the number of Pre-Bank customers who withdrew in either Period 1 (W) or Period 2 (SW).'; fb.style.display = 'block';
     }
-    err.style.display = 'none';
 });
 </script>
 {{ endblock }}

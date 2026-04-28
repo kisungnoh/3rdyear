@@ -1,0 +1,131 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Part 1 Instructions (1 of 3){{ endblock }}
+
+{{ block content }}
+
+<br>
+<h5>General Information</h5>
+<p>In today's experiment, you will act as a customer in a bank and make decisions for a number of games. </p>
+<p>You will be paired with another participant at the beginning of a game, and you and the other pair member are the only customers in your bank. Pairs are randomly determined and are likely to change each game. Part 1 consists of <strong>3 games.</strong></p>
+
+<br>
+
+<h5>How a Game Proceeds</h5>
+<div style="display: flex; padding: 20px 0px; justify-content: center;">
+    <div style="border: 1px solid #ccc; padding: 20px 30px; display: inline-block;">
+    <table style="border-collapse: collapse;">
+        <thead>
+        <tr>
+            <td></td>
+            <td></td>
+            <td style="padding-bottom: 8px;">
+            <span style="padding: 0 24px; text-decoration: underline; font-weight: bold;">Stage 1</span>
+            </td>
+            <td></td>
+            <td style="text-align: center; padding-bottom: 8px;">
+            <span style="text-decoration: underline; font-weight: bold;">Stage 2</span>
+            </td>
+            <td style="text-align: left; padding-bottom: 8px; padding-left: 16px; font-size: 0.9em;">(label for each path)</td>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Row 1: Stage 1 action A -->
+        <tr style="height: 44px;">
+            <td rowspan="3" style="position: relative; min-width: 46px; padding-right: 12px; white-space: nowrap;">
+            <span style="position: absolute; top: 44px; left: 0;">You:</span>
+            </td>
+    
+            <!-- Stage 1 brace: spans 3 rows (3 × 44px = 132px)
+                Top bullet (action A) center: y=22px, bottom bullet (action B) center: y=88px, midpoint: y=55px -->
+            <td rowspan="3" style="padding: 0; width: 16px; position: relative;">
+            <div style="position: absolute; top: 22px; left: 0; width: 16px; height: 22px;
+                        border-top: 1.5px solid black;
+                        border-left: 1.5px solid black;
+                        border-radius: 6px 0 0 0;"></div>
+            <div style="position: absolute; bottom: 44px; left: 0; width: 16px; height: 44px;
+                        border-bottom: 1.5px solid black;
+                        border-left: 1.5px solid black;
+                        border-radius: 0 0 0 6px;"></div>
+            </td>
+
+            <td style="padding: 0 16px; vertical-align: middle; white-space: nowrap;">&#x2022; action A</td>
+            <td></td>
+            <td></td>
+            <td style="padding-left: 36px; vertical-align: middle;">: <em>A</em></td>
+        </tr>
+
+        <!-- Row 2: Stage 1 action B → Stage 2 action A -->
+        <tr style="height: 44px;">
+            <!-- "action B →" spans rows 2–3 -->
+            <td rowspan="2" style="padding: 0 16px; vertical-align: middle; white-space: nowrap;">
+            &#x2022; action B
+            <span style="display: inline-flex; align-items: center; margin-left: 8px;">
+                <span style="display: inline-block; width: 60px; height: 1.5px; background: #555;
+                            position: relative; vertical-align: middle;">
+                <span style="position: absolute; right: -1px; top: 50%;
+                            transform: translateY(-50%);
+                            border-top: 4px solid transparent;
+                            border-bottom: 4px solid transparent;
+                            border-left: 6px solid #555;"></span>
+                </span>
+            </span>
+            </td>
+
+            <!-- Stage 2 brace: spans rows 2–3 (2 × 44px = 88px)
+                Top bullet center: y=22px, bottom bullet center: y=66px, midpoint: y=44px -->
+            <td rowspan="2" style="padding: 0; width: 16px; position: relative;">
+            <div style="position: absolute; top: 22px; left: 0; width: 16px; height: 22px;
+                        border-top: 1.5px solid black;
+                        border-left: 1.5px solid black;
+                        border-radius: 6px 0 0 0;"></div>
+            <div style="position: absolute; bottom: 22px; left: 0; width: 16px; height: 22px;
+                        border-bottom: 1.5px solid black;
+                        border-left: 1.5px solid black;
+                        border-radius: 0 0 0 6px;"></div>
+            </td>
+
+            <td style="padding: 0 12px; vertical-align: middle; white-space: nowrap;">&#x2022; action A</td>
+            <td style="padding-left: 36px; vertical-align: middle;">: <em>BA</em></td>
+        </tr>
+
+        <!-- Row 3: Stage 2 action B -->
+        <tr style="height: 44px;">
+            <td style="padding: 0 12px; vertical-align: middle; white-space: nowrap;">&#x2022; action B</td>
+            <td style="padding-left: 36px; vertical-align: middle;">: <em>BB</em></td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+</div>
+
+<p>You will start a game with <strong>10 points</strong> in your deposit account and make decisions over two stages.</p>
+
+<p>In <strong>Stage 1</strong>, both you and the other customer simultaneously choose between action A and action B.</p>
+<ul>
+  <li>If you choose <strong>action A</strong>, your decisions end: you do not proceed to Stage 2. (Path label: <em>A</em>)</li>
+  <li>If you choose <strong>action B</strong>, you move to <strong>Stage 2</strong> and choose again between action A and action B.
+    <ul style="margin-top: 4px;">
+      <li>Choosing action A in Stage 2 is labeled <em>BA</em>.</li>
+      <li>Choosing action B in Stage 2 is labeled <em>BB</em>.</li>
+    </ul>
+  </li>
+</ul>
+
+<p>
+    Suppose you reached <strong>Stage 2</strong>.
+    <ul>
+        <li>If the other customer also chose action B in Stage 1, both of you will be making the Stage 2 decision simultaneously again.</li>
+        <li>If the other customer chose action A in Stage 1, you will be the only one in Stage 2.</li>
+    </ul>
+    However, <strong>you will NOT see what the other customer chose in Stage 1.</strong> Thus, you will not know which case applies.
+</p>
+
+<hr>
+<p>On the next page, you will see the payoff table showing how many points you earn based on both of your decisions.</p>
+
+<div style="text-align:left; padding-top:20px;">
+    {{ next_button }}
+</div>
+
+
+{{ endblock }}

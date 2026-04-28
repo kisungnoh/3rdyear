@@ -1,0 +1,16 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Part 1 Instructions{{ endblock }}
+
+{{ block content }}
+
+<br>
+<h5>Earnings</h5>
+<p>After both you and the other participant make decisions, you will learn how many points you received and what action the other participant chose. This concludes the game.</p>
+<p>You will play <strong>10 games</strong> in this part. At the end of the experiment, one game will be randomly selected for payment, and your earnings from that game will be converted to dollars at the rate of <strong>1 point = {{C.REAL_WORLD_CURRENCY_PER_POINT}} dollar</strong>.</p>
+
+
+<div style="text-align:center; padding-top:30px;">
+    {{ next_button }}
+</div>
+
+{{ endblock }}

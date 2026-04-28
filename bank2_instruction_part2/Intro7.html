@@ -1,0 +1,26 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Part 2 Instructions - Today's Experiment{{ endblock }}
+
+{{ block content }}
+
+<br>
+<h5>Summary</h5>
+<p>Here is how today's experiment proceeds:</p>
+
+<ol style="line-height: 1.6;">
+    <li style="margin-top: 8px; margin-bottom: 8px;">You are randomly paired with another participant. The pair is likely to change from game to game.</li>
+    <li style="margin-bottom: 8px;">The state of your bank and the Pre-Bank are <strong>unknown</strong>, and all three states are possible. However, your bank is in the same state as the Pre-Bank with <strong>{{C.STATE_CORR}}%</strong> probability, and in one of the other two states with <strong>{{unmatched_corr}}%</strong> probability each.</li>
+    <li style="margin-bottom: 8px;">In <strong>Period 1</strong>, you see the number of <strong>Pre-Bank withdrawals</strong> (W or SW), then choose whether to withdraw or stay.</li>
+    <li style="margin-bottom: 8px;">If you choose to withdraw in Period 1, you don't have any more decision to make.</li>
+    <li style="margin-bottom: 8px;">If you choose to stay in Period 1, you move to <strong>Period 2</strong>, where you receive <strong>the Observer's message</strong> and choose to withdraw or stay again.</li>
+    <li style="margin-bottom: 8px;">At the end of the game, you will be told your points, the state of your bank, the state of the Pre-Bank, and the other participant's choice.</li>
+    <li style="margin-bottom: 8px;">This part consists of <strong>10 games</strong>. At the end of the experiment, one game will be randomly selected for payment, and your earnings from that game will be converted to dollars at the rate of 1 point = {{C.REAL_WORLD_CURRENCY_PER_POINT}} dollar.</li>
+</ol>
+
+
+
+<div style="display:flex; justify-content:center; gap:12px; padding-top:10px;">
+    {{ next_button }}
+</div>
+
+{{ endblock }}

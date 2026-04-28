@@ -18,6 +18,7 @@
 .info-table thead th { background: #f8f9fb; font-size: 14px; font-weight: 600; }
 .info-table .row-header { background: #f8f9fb; font-weight: 600; font-size: 14px; }
 .q-group-label { font-size: 16px; margin-bottom: 8px; }
+.fb { display:none; color:#c62828; background:#fff3e0; border:1px solid #e65100; border-radius:6px; padding:8px 14px; margin-bottom:8px; }
 </style>
 
 <br>
@@ -37,7 +38,7 @@
     </thead>
     <tbody>
         <tr>
-            <td class="row-header" rowspan="3" style="writing-mode:vertical-rl; transform:rotate(180deg); font-size:12px; font-weight:700; color:#3949ab; white-space:nowrap; width:18px;">Your bank</td>
+            <td class="row-header" rowspan="3" style="font-weight:700; color:#3949ab; white-space:nowrap;">Your bank <br> state</td>
             <td class="row-header">Low</td>
             <td>{{C.STATE_CORR}}%</td><td>{{unmatched_corr}}%</td><td>{{unmatched_corr}}%</td>
         </tr>
@@ -55,35 +56,48 @@
 <div style="font-size:14px; margin-bottom:20px;">
     <div class="q-group-label">6. If the Pre-Bank's state was <strong>High</strong>, what is the probability (%) that your bank is in each state?</div>
     {{ formfield 'comprehension_q6_low' }}
+    <div id="fb-q6-low" class="fb"></div>
     {{ formfield 'comprehension_q6_med' }}
+    <div id="fb-q6-med" class="fb"></div>
     {{ formfield 'comprehension_q6_high' }}
+    <div id="fb-q6-high" class="fb"></div>
 </div>
 
-<div id="cq-error" style="display:none; color:#c62828; background:#fff3e0; border:1px solid #e65100; border-radius:6px; padding:8px 14px; margin-bottom:8px;"></div>
 <div style="text-align:center; padding-top:20px;">{{ next_button }}</div>
 
 <script>
-var CORRECT = {
-    comprehension_q6_low: {{unmatched_corr}},
-    comprehension_q6_med: {{unmatched_corr}},
-    comprehension_q6_high: {{C.STATE_CORR}},
-};
-var LABELS = {
-    comprehension_q6_low: 'Low', comprehension_q6_med: 'Medium', comprehension_q6_high: 'High',
-};
 document.querySelector('form').addEventListener('submit', function(e) {
-    var err = document.getElementById('cq-error');
-    var errors = [];
-    Object.keys(CORRECT).forEach(function(name) {
-        var input = document.querySelector('input[name="' + name + '"]');
-        if (!input || parseInt(input.value) !== CORRECT[name]) errors.push(LABELS[name]);
-    });
-    if (errors.length) {
-        e.preventDefault();
-        err.textContent = 'Incorrect answer(s): ' + errors.join(', ') + '. Please check the table and try again.';
-        err.style.display = 'block';
-    } else {
-        err.style.display = 'none';
+    var inpLow  = document.querySelector('input[name="comprehension_q6_low"]');
+    var inpMed  = document.querySelector('input[name="comprehension_q6_med"]');
+    var inpHigh = document.querySelector('input[name="comprehension_q6_high"]');
+    var fbLow   = document.getElementById('fb-q6-low');
+    var fbMed   = document.getElementById('fb-q6-med');
+    var fbHigh  = document.getElementById('fb-q6-high');
+
+    fbLow.style.display = 'none';
+    fbMed.style.display = 'none';
+    fbHigh.style.display = 'none';
+
+    var valLow  = inpLow  ? inpLow.value.trim()  : '';
+    var valMed  = inpMed  ? inpMed.value.trim()  : '';
+    var valHigh = inpHigh ? inpHigh.value.trim() : '';
+
+    if (valLow === '') {
+        e.preventDefault(); fbLow.textContent = 'Please enter an answer.'; fbLow.style.display = 'block';
+    } else if (parseInt(valLow) !== {{unmatched_corr}}) {
+        e.preventDefault(); fbLow.textContent = 'Incorrect. When the Pre-Bank\'s state is High, your bank is in the Low state with probability {{unmatched_corr}}%.'; fbLow.style.display = 'block';
+    }
+
+    if (valMed === '') {
+        e.preventDefault(); fbMed.textContent = 'Please enter an answer.'; fbMed.style.display = 'block';
+    } else if (parseInt(valMed) !== {{unmatched_corr}}) {
+        e.preventDefault(); fbMed.textContent = 'Incorrect. When the Pre-Bank\'s state is High, your bank is in the Medium state with probability {{unmatched_corr}}%.'; fbMed.style.display = 'block';
+    }
+
+    if (valHigh === '') {
+        e.preventDefault(); fbHigh.textContent = 'Please enter an answer.'; fbHigh.style.display = 'block';
+    } else if (parseInt(valHigh) !== {{C.STATE_CORR}}) {
+        e.preventDefault(); fbHigh.textContent = 'Incorrect. When the Pre-Bank\'s state is High, your bank is in the High state with probability {{C.STATE_CORR}}%.'; fbHigh.style.display = 'block';
     }
 });
 </script>

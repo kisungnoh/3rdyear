@@ -1,0 +1,45 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Part 1 Instructions{{ endblock }}
+
+{{ block content }}
+
+<br>
+<h5>Pairings</h5>
+<p>At the start of each game, you will be randomly paired with another participant. That means you are likely to play with a different participant in each game.</p>
+<br>
+<h5>Bank's State</h5>
+<p>At the start of each game, the bank's state will be randomly determined with the following probabilities:</p>
+
+<table style="width:320px; border-collapse:collapse; font-size:14px; margin-bottom:28px; margin-left:auto; margin-right:auto; table-layout:fixed;">
+    <colgroup>
+        <col style="width:160px;">
+        <col style="width:160px;">
+    </colgroup>
+    <thead>
+        <tr>
+            <th style="background:#f8f9fb; border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; font-weight:600; color:#1a1f2e;">State</th>
+            <th style="background:#f8f9fb; border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; font-weight:600; color:#1a1f2e;">Probability</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; color:#1a1f2e; background:#ffffff;">Low</td>
+            <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; color:#1a1f2e; background:#ffffff;">{{C.LOW_PROB}}%</td>
+        </tr>
+        <tr>
+            <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center;color:#1a1f2e; background:#ffffff;">Medium</td>
+            <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; color:#1a1f2e; background:#ffffff;">{{C.MEDIUM_PROB}}%</td>
+        </tr>
+        <tr>
+            <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center;color:#1a1f2e; background:#ffffff;">High</td>
+            <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; color:#1a1f2e; background:#ffffff;">{{C.HIGH_PROB}}%</td>
+        </tr>
+    </tbody>
+</table>
+
+
+<div style="text-align:center; padding-top:30px;">
+    {{ next_button }}
+</div>
+
+{{ endblock }}

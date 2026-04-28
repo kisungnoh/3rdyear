@@ -7,8 +7,8 @@ class C(BaseConstants):
     # built-in constants
     NAME_IN_URL = 'bank2_game_70d'
     PLAYERS_PER_GROUP = 2
-    PART2_ROUNDS = 3
-    NUM_ROUNDS = 6
+    PART2_ROUNDS = 2
+    NUM_ROUNDS = 5
     # user-defined constants
     ENDOWMENT = 10
     DELAY_COST = 1
@@ -27,17 +27,17 @@ class Subsession(BaseSubsession):
 
 class Group(BaseGroup):
     prebank_state = models.StringField()
-    prebank_a_count = models.IntegerField(blank=True)
+    prebank_withdrawals = models.IntegerField(blank=True)
     your_state = models.StringField()
     
 class Player(BasePlayer):
     first_decision = models.StringField(
-        choices=[['action_a', 'Action A'], ['action_b', 'Action B']],
+        choices=[['withdraw', 'Withdraw'], ['stay', 'Stay']],
         label='',
         widget=widgets.RadioSelect)
     second_decision = models.StringField(
         blank=True,
-        choices=[['action_a', 'Action A'], ['action_b', 'Action B']],
+        choices=[['withdraw', 'Withdraw'], ['stay', 'Stay']],
         label='',
         widget=widgets.RadioSelect)
 
@@ -45,15 +45,15 @@ class Player(BasePlayer):
     path = models.StringField(blank=True)
     other_path = models.StringField(blank=True)
 
-    # Stage 1 belief - other's action
+    # Period 1 belief - other's action
     belief_s1 = models.IntegerField(
         blank=True,
-        label='How likely do you think the other depositor chose action A in Stage 1? (%)')
+        label='How likely do you think the other depositor chose Withdraw in Period 1? (%)')
     belief_draw1_s1 = models.IntegerField(blank=True)
     belief_draw2_s1 = models.IntegerField(blank=True)
     belief_rewarded_s1 = models.BooleanField(blank=True)
 
-    # Stage 1 belief - state
+    # Period 1 belief - state
     belief_low = models.IntegerField(blank=True, label='Probability the state is Low (%)')
     belief_med = models.IntegerField(blank=True, label='Probability the state is Medium (%)')
     belief_high = models.IntegerField(blank=True, label='Probability the state is High (%)')
@@ -61,10 +61,10 @@ class Player(BasePlayer):
     belief_draw2_state = models.IntegerField(blank=True)
     belief_rewarded_state = models.BooleanField(blank=True)
 
-    # Stage 2 belief - other's action (elicited only, not paid)
+    # Period 2 belief - other's action (elicited only, not paid)
     belief_s2 = models.IntegerField(
         blank=True,
-        label='How likely do you think the other depositor will choose action A in Stage 2? (%)')
+        label='How likely do you think the other depositor will choose Withdraw in Period 2? (%)')
 
     # Observer message
     received_message = models.StringField(blank=True, label='Message from the observer (if any):')
@@ -102,9 +102,9 @@ def draw_correlated_state(prebank_state):
 
 
 def get_player_action(player: Player):
-    if player.first_decision == 'action_a':
+    if player.first_decision == 'withdraw':
         return 'early'
-    elif player.second_decision == 'action_a':
+    elif player.second_decision == 'withdraw':
         return 'late'
     else:
         return 'stay'
@@ -163,7 +163,7 @@ def creating_session(subsession: Subsession):
             prebank_state = draw_state(random.randint(1, C.RAND_MAX))
             a_count = DEMO_A_COUNT[prebank_state]
         group.prebank_state = prebank_state
-        group.prebank_a_count = a_count
+        group.prebank_withdrawals = a_count
         group.your_state = draw_correlated_state(prebank_state)
 
     if subsession.round_number == 1:
@@ -174,7 +174,7 @@ def creating_session(subsession: Subsession):
         for player in subsession.get_players():
             r1, r2, r3 = random.sample(range(C.PART2_ROUNDS + 1, C.NUM_ROUNDS + 1), 3)
             player.participant.b2_p3_round    = r1  # game payoff round
-            player.participant.b2_bel_s1_round = r2  # belief_s1 payment round (other's Stage 1 action)
+            player.participant.b2_bel_s1_round = r2  # belief_s1 payment round (other's Period 1 action)
             player.participant.b2_bel_state_round  = r3  # state belief payment round
 
 
@@ -200,10 +200,10 @@ class FirstStage(Page):
     def vars_for_template(player: Player):
         return dict(
             round_number=player.round_number,
-            delayed_a=10-C.DELAY_COST,
+            sw_payoff=C.ENDOWMENT-C.DELAY_COST,
             unmatched_corr=(100-C.STATE_CORR)//2,
             show_beliefs=player.round_number > C.PART2_ROUNDS,
-            prebank_a_count=player.group.prebank_a_count,
+            prebank_withdrawals=player.group.prebank_withdrawals,
         )
 
     @staticmethod
@@ -221,17 +221,17 @@ class AfterFirstStage(WaitPage):
     def after_all_players_arrive(group: Group):
         for player in group.get_players():
             other = player.get_others_in_group()[0]
-            if player.first_decision == 'action_a':
+            if player.first_decision == 'withdraw':
                 player.received_message = ''
             else:
                 state = group.your_state
-                other_chose_a_s1 = (other.first_decision == 'action_a')
+                other_chose_w_s1 = (other.first_decision == 'withdraw')
                 if state == 'Low':
                     player.received_message = 'Left'
                 elif state == 'High':
                     player.received_message = 'Right'
                 else:  # Medium
-                    player.received_message = 'Left' if other_chose_a_s1 else 'Right'
+                    player.received_message = 'Left' if other_chose_w_s1 else 'Right'
 
 class SecondStage(Page):
     form_model = 'player'
@@ -245,16 +245,16 @@ class SecondStage(Page):
 
     @staticmethod
     def is_displayed(player: Player):
-        return player.first_decision == 'action_b'
+        return player.first_decision == 'stay'
 
     @staticmethod
     def vars_for_template(player: Player):
         return dict(
             round_number=player.round_number,
-            delayed_a=10-C.DELAY_COST,
+            sw_payoff=C.ENDOWMENT-C.DELAY_COST,
             unmatched_corr=(100-C.STATE_CORR)//2,
             show_beliefs=player.round_number > C.PART2_ROUNDS,
-            prebank_a_count=player.group.prebank_a_count,
+            prebank_withdrawals=player.group.prebank_withdrawals,
             received_message=player.received_message,
         )
     
@@ -284,11 +284,11 @@ class AfterSecondStage(WaitPage):
                     player.participant.b2_p3_action = get_player_action(player)
                     player.participant.b2_p3_other_action = get_player_action(other)
 
-                # Other's action belief payment (Stage 1, BQSR)
+                # Other's action belief payment (Period 1, BQSR)
                 if player.round_number == player.participant.b2_bel_s1_round:
-                    other_chose_a_s1 = (other.first_decision == 'action_a')
-                    player.participant.b2_bel_s1 = player.belief_s1                    
-                    player.participant.b2_bel_s1_other_action = 'action_a' if other_chose_a_s1 else 'action_b'
+                    other_chose_w_s1 = (other.first_decision == 'withdraw')
+                    player.participant.b2_bel_s1 = player.belief_s1
+                    player.participant.b2_bel_s1_other_action = 'withdraw' if other_chose_w_s1 else 'stay'
 
                     r1_s1 = random.randint(0, 100)
                     r2_s1 = random.randint(0, 100)
@@ -297,7 +297,7 @@ class AfterSecondStage(WaitPage):
                     player.participant.b2_bel_s1_draw1 = r1_s1
                     player.participant.b2_bel_s1_draw2 = r2_s1
 
-                    if other_chose_a_s1:
+                    if other_chose_w_s1:
                         player.belief_rewarded_s1 = (player.belief_s1 > r1_s1) or (player.belief_s1 > r2_s1)
                     else:
                         player.belief_rewarded_s1 = ((100 - player.belief_s1) > r1_s1) or ((100 - player.belief_s1) > r2_s1)
@@ -306,7 +306,7 @@ class AfterSecondStage(WaitPage):
                         C.BELIEF_REWARD if player.belief_rewarded_s1 else 0
                     )
 
-                # State belief payment (Stage 1, BQSR)
+                # State belief payment (Period 1, BQSR)
                 if player.round_number == player.participant.b2_bel_state_round:
                     actual_state = player.group.your_state
                     player.participant.b2_bel_act_state = actual_state
@@ -347,7 +347,7 @@ class Results(Page):
         return dict(
             round_number=player.round_number,
             other=other,
-            delayed_a=10-C.DELAY_COST,
+            sw_payoff=10-C.DELAY_COST,
             your_state=player.group.your_state,
             prebank_state=player.group.prebank_state,
             payoff_value=int(player.payoff)
@@ -373,7 +373,21 @@ class AfterPart2(WaitPage):
         return player.round_number == C.PART2_ROUNDS
 
 
-class Part3Intro(Page):
+class Part3Intro1(Page):
+    form_model = 'player'
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == C.PART2_ROUNDS
+
+    @staticmethod
+    def vars_for_template(_player: Player):
+        return dict(
+            part3_rounds=C.NUM_ROUNDS-C.PART2_ROUNDS,
+            sw_payoff=C.ENDOWMENT-C.DELAY_COST,
+        )
+
+class Part3Intro2(Page):
     form_model = 'player'
 
     @staticmethod
@@ -385,6 +399,43 @@ class Part3Intro(Page):
         return dict(
             part3_rounds=C.NUM_ROUNDS-C.PART2_ROUNDS,
         )
+
+class Part3Intro3(Page):
+    form_model = 'player'
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == C.PART2_ROUNDS
+
+    @staticmethod
+    def vars_for_template(_player: Player):
+        return dict(
+            part3_rounds=C.NUM_ROUNDS-C.PART2_ROUNDS,
+        )
+
+class Part3Intro4(Page):
+    form_model = 'player'
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == C.PART2_ROUNDS
+
+    @staticmethod
+    def vars_for_template(_player: Player):
+        return dict(
+            part3_rounds=C.NUM_ROUNDS-C.PART2_ROUNDS,
+        )
+
+
+class WaitforAll(WaitPage):
+    wait_for_all_groups = True
+    title_text = 'Please wait'
+    body_text = 'Waiting for all participants to finish Part 3 instructions.'
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == C.PART2_ROUNDS
+
 
 class Part3Outro(Page):
     form_model = 'player'
@@ -425,4 +476,5 @@ class FinalResults(Page):
         )
 
 page_sequence = [Part2Intro, FirstStage, AfterFirstStage, SecondStage, AfterSecondStage, 
-                 Results, Part2Outro, AfterPart2, Part3Intro, Part3Outro, AfterPart3]
+                 Results, Part2Outro, AfterPart2, 
+                 Part3Intro1, Part3Intro2, Part3Intro3, Part3Intro4, WaitforAll, Part3Outro, AfterPart3]

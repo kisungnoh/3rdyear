@@ -5,6 +5,9 @@
 
 <style>
 :root {
+    --low-color:      #C62828;
+    --med-color:      #E65100;
+    --high-color:     #2E7D32;
     --accent:         #37474f;
     --card-bg:        #ffffff;
     --page-bg:        #f4f5f7;
@@ -13,7 +16,7 @@
     --muted:          #6b7280;
     --radius:         10px;
     --shadow:         0 2px 8px rgba(0,0,0,0.08);
-}
+}    
 
 body, .otree-body {
     background: var(--page-bg) !important;
@@ -108,8 +111,8 @@ body, .otree-body {
     padding-left: 8px;
 }
 /* Column widths */
-.payoff-table col.col-label  { width: 50px; }
-.payoff-table col.col-action { width: 70px; }
+.payoff-table col.col-label  { width: 60px; }
+.payoff-table col.col-action { width: 90px; }
 .payoff-table col.col-data   { width: auto; }
 .payoff-table td.highlight {
     background: #fff9c4;
@@ -185,23 +188,7 @@ body, .otree-body {
 
 <!-- Context bar -->
 <div class="context-bar">
-    <div class="ctx-badge">Match {{ round_number }}</div>
-    <div class="step-indicator">
-        <div class="step done">
-            <div class="step-num">1</div>
-            Stage 1
-        </div>
-        <div class="step-arrow">›</div>
-        <div class="step done">
-            <div class="step-num">2</div>
-            Stage 2
-        </div>
-        <div class="step-arrow">›</div>
-        <div class="step active">
-            <div class="step-num">✓</div>
-            Results
-        </div>
-    </div>
+    <div class="ctx-badge">Game {{ round_number }} — Results</div>
 </div>
 
 <!-- Summary -->
@@ -210,12 +197,9 @@ body, .otree-body {
     <!-- Bank state -->
     <div class="summary-item">
         <div class="summary-label">Bank State</div>
-        <div class="summary-value" style="font-size:16px; padding-top:6px;">
-            <span class="state-step {{if your_state == 'Low'}}active{{endif}}">Low</span>
-            <span class="state-sep">·</span>
-            <span class="state-step {{if your_state == 'Medium'}}active{{endif}}">Medium</span>
-            <span class="state-sep">·</span>
-            <span class="state-step {{if your_state == 'High'}}active{{endif}}">High</span>
+        <div class="summary-value"
+             style="color:{{if your_state == 'Low'}}var(--low-color){{elif your_state == 'Medium'}}var(--med-color){{else}}var(--high-color){{endif}};">
+            {{ your_state }}
         </div>
     </div>
 
@@ -223,9 +207,9 @@ body, .otree-body {
     <div class="summary-item">
         <div class="summary-label">Your Choice</div>
         <div class="summary-value" style="font-size:16px; padding-top:4px;">
-            Stage 1: <b>{{if player.first_decision == 'action_a'}}Action A{{else}}Action B{{endif}}</b><br>
-            {{if player.first_decision == 'action_b'}}
-            Stage 2: <b>{{if player.second_decision == 'action_a'}}Action A{{else}}Action B{{endif}}</b>
+            Period 1: <b>{{if player.first_decision == 'withdraw'}}Withdraw{{else}}Stay{{endif}}</b><br>
+            {{if player.first_decision == 'stay'}}
+            Period 2: <b>{{if player.second_decision == 'withdraw'}}Withdraw{{else}}Stay{{endif}}</b>
             {{endif}}
         </div>
     </div>
@@ -234,9 +218,9 @@ body, .otree-body {
     <div class="summary-item">
         <div class="summary-label">Other's Choice</div>
         <div class="summary-value" style="font-size:16px; padding-top:4px;">
-            Stage 1: <b>{{if other.first_decision == 'action_a'}}Action A{{else}}Action B{{endif}}</b><br>
-            {{if other.first_decision == 'action_b'}}
-            Stage 2: <b>{{if other.second_decision == 'action_a'}}Action A{{else}}Action B{{endif}}</b>
+            Period 1: <b>{{if other.first_decision == 'withdraw'}}Withdraw{{else}}Stay{{endif}}</b><br>
+            {{if other.first_decision == 'stay'}}
+            Period 2: <b>{{if other.second_decision == 'withdraw'}}Withdraw{{else}}Stay{{endif}}</b>
             {{endif}}
         </div>
     </div>
@@ -271,27 +255,27 @@ body, .otree-body {
             </colgroup>
             <thead>
                 <tr><th class="row-header" rowspan="2" colspan="2"></th><th colspan="3" style="font-weight:500;">Other</th></tr>
-                <tr><th>A</th><th>BA</th><th>BB</th></tr>
+                <tr><th>W</th><th>SW</th><th>SS</th></tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="row-header" rowspan="3" style="font-weight:700; white-space:nowrap;">You</td>
-                    <td class="row-header">A</td>
-                    <td {{if player.first_decision == 'action_a' and other.first_decision == 'action_a'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td>
-                    <td {{if player.first_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_a'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{delayed_a}})</td>
-                    <td {{if player.first_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_b'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.FAIL_PAYOFF}})</td>
+                    <td class="row-header" rowspan="3" style="font-weight:700; white-space:nowrap; width:18px;">You</td>
+                    <td class="row-header">W</td>
+                    <td {{if player.first_decision == 'withdraw' and other.first_decision == 'withdraw'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'withdraw'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{sw_payoff}})</td>
+                    <td {{if player.first_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'stay'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.FAIL_PAYOFF}})</td>
                 </tr>
                 <tr>
-                    <td class="row-header">BA</td>
-                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_a' and other.first_decision == 'action_a'}}class="highlight"{{endif}}>({{delayed_a}}, {{C.ENDOWMENT}})</td>
-                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_a'}}class="highlight"{{endif}}>({{delayed_a}}, {{delayed_a}})</td>
-                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_b'}}class="highlight"{{endif}}>({{delayed_a}}, {{C.FAIL_PAYOFF}})</td>
+                    <td class="row-header">SW</td>
+                    <td {{if player.first_decision == 'stay' and player.second_decision == 'withdraw' and other.first_decision == 'withdraw'}}class="highlight"{{endif}}>({{sw_payoff}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'stay' and player.second_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'withdraw'}}class="highlight"{{endif}}>({{sw_payoff}}, {{sw_payoff}})</td>
+                    <td {{if player.first_decision == 'stay' and player.second_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'stay'}}class="highlight"{{endif}}>({{sw_payoff}}, {{C.FAIL_PAYOFF}})</td>
                 </tr>
                 <tr>
-                    <td class="row-header">BB</td>
-                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_b' and other.first_decision == 'action_a'}}class="highlight"{{endif}}>({{C.FAIL_PAYOFF}}, {{C.ENDOWMENT}})</td>
-                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_b' and other.first_decision == 'action_b' and other.second_decision == 'action_a'}}class="highlight"{{endif}}>({{C.FAIL_PAYOFF}}, {{delayed_a}})</td>
-                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_b' and other.first_decision == 'action_b' and other.second_decision == 'action_b'}}class="highlight"{{endif}}>({{C.FAIL_PAYOFF}}, {{C.FAIL_PAYOFF}})</td>
+                    <td class="row-header">SS</td>
+                    <td {{if player.first_decision == 'stay' and player.second_decision == 'stay' and other.first_decision == 'withdraw'}}class="highlight"{{endif}}>({{C.FAIL_PAYOFF}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'stay' and player.second_decision == 'stay' and other.first_decision == 'stay' and other.second_decision == 'withdraw'}}class="highlight"{{endif}}>({{C.FAIL_PAYOFF}}, {{sw_payoff}})</td>
+                    <td {{if player.first_decision == 'stay' and player.second_decision == 'stay' and other.first_decision == 'stay' and other.second_decision == 'stay'}}class="highlight"{{endif}}>({{C.FAIL_PAYOFF}}, {{C.FAIL_PAYOFF}})</td>
                 </tr>
             </tbody>
         </table>
@@ -307,27 +291,27 @@ body, .otree-body {
             </colgroup>
             <thead>
                 <tr><th class="row-header" rowspan="2" colspan="2"></th><th colspan="3" style="font-weight:500;">Other</th></tr>
-                <tr><th>A</th><th>BA</th><th>BB</th></tr>
+                <tr><th>W</th><th>SW</th><th>SS</th></tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="row-header" rowspan="3" style="font-weight:700; white-space:nowrap;">You</td>
-                    <td class="row-header">A</td>
-                    <td {{if player.first_decision == 'action_a' and other.first_decision == 'action_a'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td>
-                    <td {{if player.first_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_a'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{delayed_a}})</td>
-                    <td {{if player.first_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_b'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.FAIL_PAYOFF}})</td>
+                    <td class="row-header" rowspan="3" style="font-weight:700; white-space:nowrap; width:18px;">You</td>
+                    <td class="row-header">W</td>
+                    <td {{if player.first_decision == 'withdraw' and other.first_decision == 'withdraw'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'withdraw'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{sw_payoff}})</td>
+                    <td {{if player.first_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'stay'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.FAIL_PAYOFF}})</td>
                 </tr>
                 <tr>
-                    <td class="row-header">BA</td>
-                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_a' and other.first_decision == 'action_a'}}class="highlight"{{endif}}>({{delayed_a}}, {{C.ENDOWMENT}})</td>
-                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_a'}}class="highlight"{{endif}}>({{delayed_a}}, {{delayed_a}})</td>
-                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_b'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.FAIL_PAYOFF}})</td>
+                    <td class="row-header">SW</td>
+                    <td {{if player.first_decision == 'stay' and player.second_decision == 'withdraw' and other.first_decision == 'withdraw'}}class="highlight"{{endif}}>({{sw_payoff}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'stay' and player.second_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'withdraw'}}class="highlight"{{endif}}>({{sw_payoff}}, {{sw_payoff}})</td>
+                    <td {{if player.first_decision == 'stay' and player.second_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'stay'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.FAIL_PAYOFF}})</td>
                 </tr>
                 <tr>
-                    <td class="row-header">BB</td>
-                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_b' and other.first_decision == 'action_a'}}class="highlight"{{endif}}>({{C.FAIL_PAYOFF}}, {{C.ENDOWMENT}})</td>
-                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_b' and other.first_decision == 'action_b' and other.second_decision == 'action_a'}}class="highlight"{{endif}}>({{C.FAIL_PAYOFF}}, {{C.ENDOWMENT}})</td>
-                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_b' and other.first_decision == 'action_b' and other.second_decision == 'action_b'}}class="highlight"{{endif}}>({{C.SUCCESS_PAYOFF}}, {{C.SUCCESS_PAYOFF}})</td>
+                    <td class="row-header">SS</td>
+                    <td {{if player.first_decision == 'stay' and player.second_decision == 'stay' and other.first_decision == 'withdraw'}}class="highlight"{{endif}}>({{C.FAIL_PAYOFF}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'stay' and player.second_decision == 'stay' and other.first_decision == 'stay' and other.second_decision == 'withdraw'}}class="highlight"{{endif}}>({{C.FAIL_PAYOFF}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'stay' and player.second_decision == 'stay' and other.first_decision == 'stay' and other.second_decision == 'stay'}}class="highlight"{{endif}}>({{C.SUCCESS_PAYOFF}}, {{C.SUCCESS_PAYOFF}})</td>
                 </tr>
             </tbody>
         </table>
@@ -343,27 +327,27 @@ body, .otree-body {
             </colgroup>
             <thead>
                 <tr><th class="row-header" rowspan="2" colspan="2"></th><th colspan="3" style="font-weight:500;">Other</th></tr>
-                <tr><th>A</th><th>BA</th><th>BB</th></tr>
+                <tr><th>W</th><th>SW</th><th>SS</th></tr>
             </thead>
             <tbody>
                 <tr>
-                    <td class="row-header" rowspan="3" style="font-weight:700; white-space:nowrap;">You</td>
-                    <td class="row-header">A</td>
-                    <td {{if player.first_decision == 'action_a' and other.first_decision == 'action_a'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td>
-                    <td {{if player.first_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_a'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td>
-                    <td {{if player.first_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_b'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.SUCCESS_PAYOFF}})</td>
+                    <td class="row-header" rowspan="3" style="font-weight:700; white-space:nowrap; width:18px;">You</td>
+                    <td class="row-header">W</td>
+                    <td {{if player.first_decision == 'withdraw' and other.first_decision == 'withdraw'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'withdraw'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'stay'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.SUCCESS_PAYOFF}})</td>
                 </tr>
                 <tr>
-                    <td class="row-header">BA</td>
-                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_a' and other.first_decision == 'action_a'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td>
-                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_a'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td>
-                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_a' and other.first_decision == 'action_b' and other.second_decision == 'action_b'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.SUCCESS_PAYOFF}})</td>
+                    <td class="row-header">SW</td>
+                    <td {{if player.first_decision == 'stay' and player.second_decision == 'withdraw' and other.first_decision == 'withdraw'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'stay' and player.second_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'withdraw'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'stay' and player.second_decision == 'withdraw' and other.first_decision == 'stay' and other.second_decision == 'stay'}}class="highlight"{{endif}}>({{C.ENDOWMENT}}, {{C.SUCCESS_PAYOFF}})</td>
                 </tr>
                 <tr>
-                    <td class="row-header">BB</td>
-                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_b' and other.first_decision == 'action_a'}}class="highlight"{{endif}}>({{C.SUCCESS_PAYOFF}}, {{C.ENDOWMENT}})</td>
-                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_b' and other.first_decision == 'action_b' and other.second_decision == 'action_a'}}class="highlight"{{endif}}>({{C.SUCCESS_PAYOFF}}, {{C.ENDOWMENT}})</td>
-                    <td {{if player.first_decision == 'action_b' and player.second_decision == 'action_b' and other.first_decision == 'action_b' and other.second_decision == 'action_b'}}class="highlight"{{endif}}>({{C.SUCCESS_PAYOFF}}, {{C.SUCCESS_PAYOFF}})</td>
+                    <td class="row-header">SS</td>
+                    <td {{if player.first_decision == 'stay' and player.second_decision == 'stay' and other.first_decision == 'withdraw'}}class="highlight"{{endif}}>({{C.SUCCESS_PAYOFF}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'stay' and player.second_decision == 'stay' and other.first_decision == 'stay' and other.second_decision == 'withdraw'}}class="highlight"{{endif}}>({{C.SUCCESS_PAYOFF}}, {{C.ENDOWMENT}})</td>
+                    <td {{if player.first_decision == 'stay' and player.second_decision == 'stay' and other.first_decision == 'stay' and other.second_decision == 'stay'}}class="highlight"{{endif}}>({{C.SUCCESS_PAYOFF}}, {{C.SUCCESS_PAYOFF}})</td>
                 </tr>
             </tbody>
         </table>
@@ -371,10 +355,9 @@ body, .otree-body {
 
     </div>
     <div class="payoff-legend">
-        <span><b>A</b> = Action A (Stage 1)</span>
-        <span><b>BA</b> = Action B (Stage 1) → Action A (Stage 2)</span>
-        <span><b>BB</b> = Action B (Stage 1) → Action B (Stage 2)</span>
-        <span>Highlighted cell = outcome in this game</span>
+        <span><b>W</b>: Withdraw (Period 1)</span>
+        <span><b>SW</b>: Stay (Period 1) &rarr; Withdraw (Period 2)</span>
+        <span><b>SS</b>: Stay (Period 1) &rarr; Stay (Period 2)</span>
     </div>
 </div>
 

@@ -4,20 +4,20 @@
 {{ block content }}
 <br>
 <p style="font-size:12px; color:#6b7280; margin-bottom:20px;">Question 8 of 9</p>
-{{ formfields }}
-<div id="cq-error" style="display:none; color:#c62828; background:#fff3e0; border:1px solid #e65100; border-radius:6px; padding:8px 14px; margin-bottom:8px;"></div>
+{{ formfield 'comprehension_q8' }}
+<div id="fb-q8" style="display:none; color:#c62828; background:#fff3e0; border:1px solid #e65100; border-radius:6px; padding:8px 14px; margin-bottom:8px;"></div>
 <div style="text-align:center; padding-top:20px;">{{ next_button }}</div>
 <script>
 document.querySelector('form').addEventListener('submit', function(e) {
     var sel = document.querySelector('input[name="comprehension_q8"]:checked');
-    var err = document.getElementById('cq-error');
+    var fb  = document.getElementById('fb-q8');
+    fb.style.display = 'none';
     if (!sel) {
-        e.preventDefault(); err.textContent = 'Please select an answer.'; err.style.display = 'block'; return;
+        e.preventDefault(); fb.textContent = 'Please select an answer.'; fb.style.display = 'block'; return;
     }
     if (sel.value !== 'b-stage1') {
-        e.preventDefault(); err.textContent = 'Incorrect. You receive a message from the Observer only if you choose action B in Stage 1 and move to Stage 2.'; err.style.display = 'block'; return;
+        e.preventDefault(); fb.textContent = 'Incorrect. You receive a message from the Observer only if you stayed in Period 1 and moved to Period 2.'; fb.style.display = 'block';
     }
-    err.style.display = 'none';
 });
 </script>
 {{ endblock }}

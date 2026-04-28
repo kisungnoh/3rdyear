@@ -1,0 +1,139 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Part 2 Instructions{{ endblock }}
+
+{{ block content }}
+
+<style>
+.demo-row {
+    display: grid;
+    grid-template-columns: 400px;
+    gap: 12px;
+    align-items: start;
+    border: 1px solid #dde1e7;
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 0 auto 20px;
+    width: fit-content;
+}
+
+/* Demo slider — matches the actual belief slider in Period 1 */
+.demo-slider-section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+}
+.demo-slider-hint {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 12px;
+}
+.demo-slider-wrap { margin: 18px 0 24px; }
+.demo-labels-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+.demo-end { min-width: 60px; }
+.demo-end.left  { text-align: left; }
+.demo-end.right { text-align: right; }
+.demo-h-label { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+.demo-h-pct   { font-size: 26px; font-weight: 600; min-height: 32px; }
+.demo-track-wrap { position: relative; height: 20px; }
+.demo-track-bg { position: absolute; top: 50%; left: 0; right: 0; height: 12px; transform: translateY(-50%); border-radius: 6px; pointer-events: none; background: #e8eaed; }
+input.demo-range { position: absolute; top: 50%; left: 0; width: 100%; transform: translateY(-50%); -webkit-appearance: none; appearance: none; background: transparent; outline: none; margin: 0; height: 20px; cursor: pointer; }
+input.demo-range::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; background: #37474f; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+input.demo-range::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: #37474f; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+.demo-caption { font-size: 14px; color: #888; text-align: center; margin-top: 10px; }
+.knob-hidden::-webkit-slider-thumb { opacity: 0 !important; }
+.knob-hidden::-moz-range-thumb     { opacity: 0 !important; }
+
+/* Step indicator (reused from game pages) */
+.step-indicator { display: flex; align-items: center; gap: 4px; margin-bottom: 10px; }
+.step {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 14px; border-radius: 20px;
+    font-size: 14px; font-weight: 600;
+}
+.step.active   { background: #e1f5fe; color: #0277bd; }
+.step.inactive { color: #b0b8c4; }
+.step.done     { color: #b0b8c4; }
+.step-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+}
+.step.active .step-num           { background: #0277bd; color: #fff; }
+.step.inactive .step-num,
+.step.done     .step-num         { background: #e0e0e0; color: #9aa0a8; }
+.step-arrow { color: #c8cdd4; font-size: 14px; }
+
+/* Collapsible payment rule */
+.payment-rule-toggle {
+    display: inline-block;
+    margin-top: 12px;
+    color: #1976D2;
+    cursor: pointer;
+    text-decoration: underline;
+    user-select: none;
+}
+.payment-rule-box {
+    display: none;
+    border-left: 4px solid #1976D2;
+    background: #f5f9ff;
+    padding: 14px 18px;
+    margin-top: 10px;
+    line-height: 1.6;
+}
+.payment-rule-box h6 { margin: 0 0 8px; font-size: 14px; color: #37474f; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.payment-rule-box ul { margin: 8px 0 8px 20px; padding: 0; }
+.payment-rule-box li { margin-bottom: 6px; }
+.payment-rule-highlight { background: #e3f0fb; font-size: 18px; border-radius: 4px; padding: 8px 12px; margin-top: 20px; }
+</style>
+
+<br>
+<h5>Earnings</h5>
+This part lasts for <strong>{{ part2_rounds }} games</strong>. At the end of today's experiment, the computer will randomly select <strong>two games</strong> for payment.</p>
+<ul>
+    <li>In one game, you will earn points from the decision you make, as in Part 1.</li>
+    <li>In a second game, you will earn either <strong>0 or 4 points</strong>, based on the belief you reported about the other's Period 1 choice.</li>
+</ul>
+<p>
+    Your payoffs from the selected games will then be displayed and
+    converted to dollars at the rate of <strong>1 point = {{C.REAL_WORLD_CURRENCY_PER_POINT}} dollar</strong>.
+</p>
+<hr>
+<p>
+    The payment rule for belief reporting is designed in a way that <strong style="color: #1976D2; font-size: 18px;">honestly reporting your true assessment always maximizes your chance of winning 4 points.</strong>
+</p>
+<p>
+    Here's why: your earnings from belief reporting will depend on the actual action the other participant chose (withdraw or stay). This means that reporting a higher likelihood for an action increases your chance of earning points if that action actually occurs, but decreases your chance if it does not.
+</p>
+
+<p>
+    Since you do not know which game will be selected for payment, <strong>it is in your best interest to report your beliefs truthfully in every game.</strong>
+</p>
+
+<p>If you'd like to know more about how payments are calculated, <span class="payment-rule-toggle" id="rule_toggle">click here.</span></p>
+
+<div class="payment-rule-box" id="rule_box">
+    <h6>Payment Rule for Belief Reporting</h6>
+    <p>To determine your payment, the computer will randomly draw two numbers.
+    Each number is between 0 and 100, and all numbers in this range are equally likely to be drawn.
+    The two draws are independent, meaning that the outcome of one draw does not influence the other.</p>
+    <ul>
+        <li>If the other participant chose to <strong>withdraw</strong> in Period 1: you will be rewarded if your reported percentage of withdrawal is larger than either one of the two draws.</li>
+        <li>If the other participant chose to <strong>stay</strong> in Period 1: you will be rewarded if your reported percentage of staying is larger than either one of the two draws.</li>
+    </ul>
+    <p>If this rule sounds confusing,</p>
+    <div class="payment-rule-highlight" style="color: #1565C0; font-weight: 700;">
+        Simply remember: submitting your belief truthfully will maximize your chance of winning 4 points.
+    </div>
+</div>
+
+<div style="margin-top: 30px;">{{ next_button }}</div>
+
+<script>
+document.getElementById('rule_toggle').addEventListener('click', function () {
+    var box = document.getElementById('rule_box');
+    box.style.display = (box.style.display === 'block') ? 'none' : 'block';
+});
+</script>
+
+{{ endblock }}

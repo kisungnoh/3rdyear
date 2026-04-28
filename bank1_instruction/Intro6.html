@@ -1,0 +1,38 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Part 1 Instructions{{ endblock }}
+
+{{ block content }}
+
+<br>
+<h5>Summary</h5>
+<ol style="line-height: 1.6;">
+    <li style="margin-bottom: 8px;">You will start a game with a randomly paired participant, who is likely to change from game to game.</li>
+    <li style="margin-bottom: 8px;">The bank state is randomly determined with the following probabilities:
+        <ul>
+            <li>Low with 15% probability</li>
+            <li>Medium with 70% probability</li>
+            <li>High with 15% probability</li>
+        </ul>
+    </li>
+    <li style="margin-bottom: 8px;">Based on the bank state, the payoff table is displayed. The initials in the table represent the combination of decisions across two periods.
+        <ul>
+            <li><b>W</b>: Withdraw (Period 1) </li>
+            <li><b>SW</b>: Stay (Period 1) → Withdraw (Period 2)</li>
+            <li><b>SS</b>: Stay (Period 1) → Stay (Period 2)</li>
+        </ul>
+    </li>
+    <li style="margin-bottom: 8px;">Given the payoff table, you and the paired participant make decisions up to two periods:
+        <ul>
+            <li>In Period 1, both participants simultaneously choose either to withdraw or to stay.</li>
+            <li>If a participant chooses to stay in Period 1, they will move to Period 2, where they can choose again whether to withdraw or stay.</li>
+        </ul>
+    </li>
+    <li style="margin-bottom: 8px;">At the end of each game, you will be told how many points you received, along with the other participant's decision.</li>
+    <li>At the end of the experiment, one game is randomly selected for payment (1 point = {{C.REAL_WORLD_CURRENCY_PER_POINT}} dollar).</li>
+</ol>
+
+<div style="text-align:center; padding-top:30px;">
+    {{ next_button }}
+</div>
+
+{{ endblock }}

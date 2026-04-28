@@ -15,32 +15,45 @@ class Group(BaseGroup):
 
 class Player(BasePlayer):
 
-    # Stage 1
-    stage1_choice = models.StringField(
-        choices=[['action_a', 'Action A'], ['action_b', 'Action B'], ['even', 'Even']],
+    # Period 1 — by Pre-Bank withdrawal count (0, 1, 2)
+    period1_choice_0 = models.StringField(
+        choices=[['withdraw', 'Withdraw'], ['stay', 'Stay']],
         widget=widgets.RadioSelect,
         label=""
     )
-    stage1_certainty = models.IntegerField(
-        min=50, max=100,
-        blank=True,
-        label=""
-    )
+    period1_certainty_0 = models.IntegerField(min=50, max=100, blank=True, label="")
 
-    # Stage 2
-    stage2_choice = models.StringField(
-        choices=[['action_a', 'Action A'], ['action_b', 'Action B'], ['even', 'Even']],
+    period1_choice_1 = models.StringField(
+        choices=[['withdraw', 'Withdraw'], ['stay', 'Stay']],
         widget=widgets.RadioSelect,
         label=""
     )
-    stage2_certainty = models.IntegerField(
-        min=50, max=100,
-        blank=True,
+    period1_certainty_1 = models.IntegerField(min=50, max=100, blank=True, label="")
+
+    period1_choice_2 = models.StringField(
+        choices=[['withdraw', 'Withdraw'], ['stay', 'Stay']],
+        widget=widgets.RadioSelect,
         label=""
     )
+    period1_certainty_2 = models.IntegerField(min=50, max=100, blank=True, label="")
+
+    # Period 2 — by Observer message (Left / Right)
+    period2_choice_left = models.StringField(
+        choices=[['withdraw', 'Withdraw'], ['stay', 'Stay']],
+        widget=widgets.RadioSelect,
+        label=""
+    )
+    period2_certainty_left = models.IntegerField(min=50, max=100, blank=True, label="")
+
+    period2_choice_right = models.StringField(
+        choices=[['withdraw', 'Withdraw'], ['stay', 'Stay']],
+        widget=widgets.RadioSelect,
+        label=""
+    )
+    period2_certainty_right = models.IntegerField(min=50, max=100, blank=True, label="")
 
     # Explanation
-    ba_reason = models.LongStringField(
+    sw_reason = models.LongStringField(
         blank=True,
         label=""
     )
@@ -72,34 +85,44 @@ class Player(BasePlayer):
 
 def action_label(action):
     if action == 'early':
-        return 'Action A in Stage 1'
+        return 'Withdraw in Period 1 (W)'
     elif action == 'late':
-        return 'Action B in Stage 1 → Action A in Stage 2 (BA)'
+        return 'Stay in Period 1 → Withdraw in Period 2 (SW)'
     else:  # stay
-        return 'Action B in Stage 1 → Action B in Stage 2 (BB)'
+        return 'Stay in Period 1 → Stay in Period 2 (SS)'
 
 
 class PostSurveyQ1(Page):
     form_model = 'player'
-    form_fields = ['stage1_choice', 'stage1_certainty']
+    form_fields = [
+        'period1_choice_0', 'period1_certainty_0',
+        'period1_choice_1', 'period1_certainty_1',
+        'period1_choice_2', 'period1_certainty_2',
+    ]
 
     @staticmethod
     def error_message(player, values):
-        if values['stage1_certainty'] is None:
-            return dict(stage1_certainty='Please move the slider to indicate your certainty.')
+        errors = {}
+        for n in [0, 1, 2]:
+            if values[f'period1_certainty_{n}'] is None:
+                errors[f'period1_certainty_{n}'] = 'Please move the slider to indicate your certainty.'
+        return errors if errors else None
 
 class PostSurveyQ2(Page):
     form_model = 'player'
-    form_fields = ['stage2_choice', 'stage2_certainty']
+    form_fields = [
+        'period2_choice_left', 'period2_certainty_left',
+        'period2_choice_right', 'period2_certainty_right',
+    ]
 
     @staticmethod
     def error_message(player, values):
-        if values['stage2_certainty'] is None:
-            return dict(stage2_certainty='Please move the slider to indicate your certainty.')
+        errors = {}
+        for side in ['left', 'right']:
+            if values[f'period2_certainty_{side}'] is None:
+                errors[f'period2_certainty_{side}'] = 'Please move the slider to indicate your certainty.'
+        return errors if errors else None
 
-class PostSurveyQ3(Page):
-    form_model = 'player'
-    form_fields = ['ba_reason']
 
 class CRT(Page):
     form_model = 'player'
@@ -151,7 +174,7 @@ class Payment(Page):
             (p2_payoff + p3_payoff + bel_s1_payoff + bel_state_payoff) * C.REAL_WORLD_CURRENCY_PER_POINT
             + bret_payoff_usd, 2
         )
-        total_payment = total_earnings_usd + C.PARTICIPATION_FEE
+        total_payment = round(total_earnings_usd + C.PARTICIPATION_FEE, 0)
         player.participant.b2_total_payment = total_payment
 
         return dict(
@@ -194,9 +217,11 @@ class Payment(Page):
             bel_state_draw2=r2_st,
             bel_state_rewarded=bel_state_rewarded,
 
+            bret_boxes_collected=player.participant.bret_boxes_collected,
+            bret_bomb=player.participant.bret_bomb,
             bret_payoff_usd=bret_payoff_usd,
             total_earnings_usd=total_earnings_usd,
             total_payment=total_payment,
         )
 
-page_sequence = [PostSurveyQ1, PostSurveyQ2, PostSurveyQ3, CRT, Demographic, Payment]
+page_sequence = [PostSurveyQ1, PostSurveyQ2, CRT, Demographic, Payment]

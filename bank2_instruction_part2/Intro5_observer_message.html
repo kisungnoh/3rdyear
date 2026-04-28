@@ -1,0 +1,532 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Part 2 Instructions - Today's Experiment{{ endblock }}
+
+{{ block content }}
+<style>
+:root {
+    --low-color:      #C62828;
+    --med-color:      #E65100;
+    --high-color:     #2E7D32;
+    --accent:         #37474f;
+    --card-bg:        #ffffff;
+    --page-bg:        #ffffff;
+    --border:         #dde1e7;
+    --text:           #1a1f2e;
+    --muted:          #6b7280;
+    --radius:         10px;
+    --shadow:         0 2px 8px rgba(0,0,0,0.08);
+}
+
+body, .otree-body {
+    background: var(--page-bg) !important;
+    color: var(--text) !important;
+}
+
+.sample-screen {
+    border: 2px solid #0277bd;
+    border-radius: 12px;
+    padding: 12px;
+    background: #f4f5f7;
+    margin: 24px auto;
+    max-width: 940px;
+}
+.sample-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #0277bd;
+    text-transform: uppercase;
+    margin: 0 -12px 10px -12px;
+    padding: 0 16px 8px 16px;
+    border-bottom: 2px solid #0277bd;
+}
+
+/* Context bar */
+.context-bar {
+    background: var(--card-bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 18px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--shadow);
+}
+.ctx-badge {
+    background: var(--accent);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+}
+.step-indicator { display: flex; align-items: center; gap: 4px; }
+.step {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 14px; border-radius: 20px;
+    font-size: 14px; font-weight: 600;
+}
+.step.active   { background: #e1f5fe; color: #0277bd; }
+.step.inactive { color: #b0b8c4; }
+.step-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+}
+.step.active .step-num   { background: #0277bd; color: #fff; }
+.step.inactive .step-num { background: #e0e0e0; color: #9aa0a8; }
+.step-arrow { color: #c8cdd4; font-size: 14px; }
+
+/* Card panel */
+.card-panel {
+    background: var(--card-bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+.card-panel-header {
+    background: #f8f9fb;
+    border-bottom: 0.5px solid var(--border);
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.card-panel-body { padding: 16px; }
+
+/* Payoff table — 3-column grid */
+.payoff-three {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+.payoff-col { border-right: 0.5px solid var(--border); }
+.payoff-col:last-child { border-right: none; }
+.payoff-col-head {
+    padding: 9px 12px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    border-bottom: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #ffffff;
+}
+.state-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.payoff-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    table-layout: fixed;
+}
+.payoff-table th, .payoff-table td {
+    border: 0.5px solid var(--border);
+    padding: 8px 4px;
+    text-align: center;
+    color: var(--text);
+}
+.payoff-table thead th {
+    background: #f8f9fb;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+}
+.payoff-table .row-header {
+    background: #f8f9fb;
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--text);
+    text-align: center;
+    padding-left: 4px;
+}
+.payoff-table .row-na {
+    background: #f4f5f7;
+    color: #c8cdd4;
+    font-size: 12px;
+}
+.payoff-table col.col-label  { width: 40px; }
+.payoff-table col.col-action { width: 50px; }
+.payoff-table col.col-data   { width: auto; }
+.my-payoff { font-weight: 700; color: #0000ff; }
+.payoff-legend {
+    padding: 6px 0;
+    border-top: 0.5px solid var(--border);
+    background: #ffffff;
+    font-size: 12px;
+    color: var(--muted);
+    display: grid;
+    grid-template-columns: auto auto auto;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* Bottom row grid */
+.bottom-row {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 10px;
+    align-items: start;
+}
+
+/* Pre-bank card */
+.prebank-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px 12px;
+    gap: 4px;
+}
+.prebank-number {
+    font-size: 52px;
+    font-weight: 700;
+    color: #000000;
+    line-height: 1.1;
+}
+.prebank-sub {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 2px;
+}
+
+/* Observer message card */
+.observer-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px 12px;
+    gap: 4px;
+}
+.observer-label {
+    font-size: 40px;
+    font-weight: 700;
+    color: #000000;
+    line-height: 1.1;
+}
+.observer-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-top: 2px;
+}
+
+/* Decision mock */
+.mock-choice { display: flex; flex-direction: column; gap: 10px; }
+.mock-radio {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+}
+
+/* Reference table */
+.ref-table {
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 20px auto 24px;
+}
+.ref-table th {
+    background: #f8f9fb;
+    border: 0.5px solid var(--border);
+    padding: 9px 20px;
+    font-weight: 600;
+    text-align: center;
+}
+.ref-table td {
+    border: 0.5px solid var(--border);
+    padding: 9px 20px;
+    text-align: center;
+}
+.msg-left  { font-weight: 700; }
+.msg-right { font-weight: 700; }
+
+/* Hover highlight */
+td.cell-highlighted {
+    background: #e8f0fe !important;
+    transition: background 0.15s;
+}
+tr.ref-row { cursor: default; transition: background 0.15s; }
+tr.ref-row.row-active { background: #f0f4ff; }
+</style>
+
+<br>
+<p>Along with the Pre-Bank Withdrawals, below describes the second piece of information which may help you make your decisions.</p>
+
+<div class="sample-screen">
+    <div class="sample-label">Sample Screen — Period 2</div>
+
+    <!-- Context bar -->
+    <div class="context-bar">
+        <div class="ctx-badge">Game 1</div>
+        <div class="step-indicator">
+            <div class="step inactive"><div class="step-num">1</div>Period 1</div>
+            <div class="step-arrow">›</div>
+            <div class="step active"><div class="step-num">2</div>Period 2</div>
+        </div>
+    </div>
+
+    <!-- Payoff tables (W row greyed out — not available in Period 2) -->
+    <div class="card-panel" id="payoff-wrap">
+        <div class="card-panel-header">Payoff Tables (Your payoff, Other's payoff)</div>
+        <div class="payoff-three">
+
+            <!-- LOW -->
+            <div class="payoff-col">
+                <div class="payoff-col-head">
+                    <span class="state-dot" style="background:var(--low-color);"></span>
+                    <span style="color:var(--low-color);">Low state</span>
+                </div>
+                <table class="payoff-table">
+                    <colgroup><col class="col-label"><col class="col-action"><col class="col-data"><col class="col-data"><col class="col-data"></colgroup>
+                    <thead>
+                        <tr><th class="row-header" rowspan="2" colspan="2"></th><th colspan="3" style="font-weight:500;">Other</th></tr>
+                        <tr><th>W</th><th>SW</th><th>SS</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="row-header" rowspan="3" style="font-weight:700; white-space:nowrap;"><span class="my-payoff">You</span></td>
+                            <td class="row-header">W</td>
+                            <td class="row-na"></td>
+                            <td class="row-na"></td>
+                            <td class="row-na"></td>
+                        </tr>
+                        <tr>
+                            <td class="row-header">SW</td>
+                            <td data-state="low" data-col="W">(<span class="my-payoff">{{delayed_a}}</span>, {{C.ENDOWMENT}})</td>
+                            <td data-state="low" data-col="SW">(<span class="my-payoff">{{delayed_a}}</span>, {{delayed_a}})</td>
+                            <td data-state="low" data-col="SS">(<span class="my-payoff">{{delayed_a}}</span>, {{C.FAIL_PAYOFF}})</td>
+                        </tr>
+                        <tr>
+                            <td class="row-header">SS</td>
+                            <td data-state="low" data-col="W">(<span class="my-payoff">{{C.FAIL_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
+                            <td data-state="low" data-col="SW">(<span class="my-payoff">{{C.FAIL_PAYOFF}}</span>, {{delayed_a}})</td>
+                            <td data-state="low" data-col="SS">(<span class="my-payoff">{{C.FAIL_PAYOFF}}</span>, {{C.FAIL_PAYOFF}})</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- MEDIUM -->
+            <div class="payoff-col">
+                <div class="payoff-col-head">
+                    <span class="state-dot" style="background:var(--med-color);"></span>
+                    <span style="color:var(--med-color);">Medium state</span>
+                </div>
+                <table class="payoff-table">
+                    <colgroup><col class="col-label"><col class="col-action"><col class="col-data"><col class="col-data"><col class="col-data"></colgroup>
+                    <thead>
+                        <tr><th class="row-header" rowspan="2" colspan="2"></th><th colspan="3" style="font-weight:500;">Other</th></tr>
+                        <tr><th>W</th><th>SW</th><th>SS</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="row-header" rowspan="3" style="font-weight:700; white-space:nowrap;"><span class="my-payoff">You</span></td>
+                            <td class="row-header">W</td>
+                            <td class="row-na"></td>
+                            <td class="row-na"></td>
+                            <td class="row-na"></td>
+                        </tr>
+                        <tr>
+                            <td class="row-header">SW</td>
+                            <td data-state="med" data-col="W">(<span class="my-payoff">{{delayed_a}}</span>, {{C.ENDOWMENT}})</td>
+                            <td data-state="med" data-col="SW">(<span class="my-payoff">{{delayed_a}}</span>, {{delayed_a}})</td>
+                            <td data-state="med" data-col="SS">(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.FAIL_PAYOFF}})</td>
+                        </tr>
+                        <tr>
+                            <td class="row-header">SS</td>
+                            <td data-state="med" data-col="W">(<span class="my-payoff">{{C.FAIL_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
+                            <td data-state="med" data-col="SW">(<span class="my-payoff">{{C.FAIL_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
+                            <td data-state="med" data-col="SS">(<span class="my-payoff">{{C.SUCCESS_PAYOFF}}</span>, {{C.SUCCESS_PAYOFF}})</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- HIGH -->
+            <div class="payoff-col">
+                <div class="payoff-col-head">
+                    <span class="state-dot" style="background:var(--high-color);"></span>
+                    <span style="color:var(--high-color);">High state</span>
+                </div>
+                <table class="payoff-table">
+                    <colgroup><col class="col-label"><col class="col-action"><col class="col-data"><col class="col-data"><col class="col-data"></colgroup>
+                    <thead>
+                        <tr><th class="row-header" rowspan="2" colspan="2"></th><th colspan="3" style="font-weight:500;">Other</th></tr>
+                        <tr><th>W</th><th>SW</th><th>SS</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="row-header" rowspan="3" style="font-weight:700; white-space:nowrap;"><span class="my-payoff">You</span></td>
+                            <td class="row-header">W</td>
+                            <td class="row-na"></td>
+                            <td class="row-na"></td>
+                            <td class="row-na"></td>
+                        </tr>
+                        <tr>
+                            <td class="row-header">SW</td>
+                            <td data-state="high" data-col="W">(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.ENDOWMENT}})</td>
+                            <td data-state="high" data-col="SW">(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.ENDOWMENT}})</td>
+                            <td data-state="high" data-col="SS">(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.SUCCESS_PAYOFF}})</td>
+                        </tr>
+                        <tr>
+                            <td class="row-header">SS</td>
+                            <td data-state="high" data-col="W">(<span class="my-payoff">{{C.SUCCESS_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
+                            <td data-state="high" data-col="SW">(<span class="my-payoff">{{C.SUCCESS_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
+                            <td data-state="high" data-col="SS">(<span class="my-payoff">{{C.SUCCESS_PAYOFF}}</span>, {{C.SUCCESS_PAYOFF}})</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="payoff-legend">
+            <span><b>W</b>: Withdraw (Period 1)</span>
+            <span><b>SW</b>: Stay (Period 1) &rarr; Withdraw (Period 2)</span>
+            <span><b>SS</b>: Stay (Period 1) &rarr; Stay (Period 2)</span>
+        </div>
+    </div>
+
+    <!-- Pre-bank + Observer (stacked) | Decision -->
+    <div class="bottom-row">
+
+        <!-- Left column: two stacked cards -->
+        <div style="display:flex; flex-direction:column; gap:10px;">
+
+            <!-- Pre-bank withdrawals -->
+            <div class="card-panel" style="margin-bottom: 0;">
+                <div class="card-panel-header" style="color:var(--muted);">Pre-Bank Withdrawals</div>
+                <div class="prebank-body">
+                    <div class="prebank-number">1</div>
+                    <div class="prebank-sub">(W or SW in Pre-Bank)</div>
+                </div>
+            </div>
+
+            <!-- Observer message -->
+            <div class="card-panel" style="margin-bottom: 0;">
+                <div class="card-panel-header" style="color:var(--muted);">Observer Message</div>
+                <div class="observer-body">
+                    <div class="observer-label">Right</div>
+                    <div class="observer-sub"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Decision card (static mock) -->
+        <div class="card-panel" style="margin-bottom: 0; font-size: 15px;">
+            <div class="card-panel-header">Your Decision — Period 2</div>
+            <div class="card-panel-body">
+                <p>This is <b>Period 2</b>.</p>
+                <p>You chose to stay in Period 1. The payoffs in row W are now unavailable, so they are not shown.</p>
+                <p>The other participant's Period 1 choice is unavailable.</p>
+                <p style="font-weight:700;">Based on all available information, please make your choice:</p>
+                <div class="mock-choice" style="margin-top: 10px;">
+                    <label class="mock-radio"><input type="radio" name="mock_s2" value="withdraw"> Withdraw</label>
+                    <label class="mock-radio"><input type="radio" name="mock_s2" value="stay"> Stay</label>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<br>
+<h5>Observer's Message</h5>
+<p>
+    If you choose to stay in Period 1 and move to <strong>Period 2</strong>, a computerized agent called the <strong>Observer</strong> will send you a message —
+    <strong>"Left"</strong> or <strong>"Right"</strong> — before you make your Period 2 decision.
+    The message depends on the actual state of your bank and the other participant's Period 1 choice:
+    <span style="display:inline-block; font-size:12px; font-weight:600; color:#3949ab;
+                 background:#e8eaf6; border:1px solid #9fa8da; border-radius:4px; padding:2px 8px; margin-left:8px;">
+        &#9654; hover a row to highlight the relevant cells above
+    </span>
+</p>
+
+<table class="ref-table">
+    <thead>
+        <tr>
+            <th>Your bank's state</th>
+            <th>Other's Period 1 choice</th>
+            <th>Message you receive</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr class="ref-row left-row" data-hl-state="low" data-hl-cols="W SW SS">
+            <td>Low</td>
+            <td style="color: var(--muted); font-style: italic;">any</td>
+            <td><span class="msg-left">"Left"</span></td>
+        </tr>
+        <tr class="ref-row left-row" data-hl-state="med" data-hl-cols="W">
+            <td>Medium</td>
+            <td>Withdraw</td>
+            <td><span class="msg-left">"Left"</span></td>
+        </tr>
+        <tr class="ref-row right-row" data-hl-state="med" data-hl-cols="SW SS">
+            <td>Medium</td>
+            <td>Stay</td>
+            <td><span class="msg-right">"Right"</span></td>
+        </tr>
+        <tr class="ref-row right-row" data-hl-state="high" data-hl-cols="W SW SS">
+            <td>High</td>
+            <td style="color: var(--muted); font-style: italic;">any</td>
+            <td><span class="msg-right">"Right"</span></td>
+        </tr>
+    </tbody>
+</table>
+
+<p>The message does not reveal which specific case triggered it. However, <strong>the Observer always tells the truth</strong>, so you can rely on the message.</p>
+<p><strong>NOTE:</strong> You will <strong>NOT</strong> receive the message if you chose to withdraw in Period 1.</p>
+
+<div style="display:flex; justify-content:center; gap:12px; padding-top:10px;">
+    {{ back_button }}
+    {{ next_button }}
+</div>
+
+{{ include "bank2_instruction_part2/Summary_bank1experiment.html" }}
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    function getGroupCells(groupClass) {
+        var cells = [];
+        document.querySelectorAll('tr.ref-row.' + groupClass).forEach(function(r) {
+            var state = r.dataset.hlState;
+            (r.dataset.hlCols || '').split(' ').forEach(function(col) {
+                document.querySelectorAll(
+                    '#payoff-wrap td[data-state="' + state + '"][data-col="' + col + '"]'
+                ).forEach(function(td) { cells.push(td); });
+            });
+        });
+        return cells;
+    }
+
+    document.querySelectorAll('tr.ref-row').forEach(function(row) {
+        var groupClass = row.classList.contains('left-row') ? 'left-row' : 'right-row';
+
+        row.addEventListener('mouseenter', function() {
+            document.querySelectorAll('tr.ref-row.row-active').forEach(function(r) { r.classList.remove('row-active'); });
+            document.querySelectorAll('tr.ref-row.' + groupClass).forEach(function(r) { r.classList.add('row-active'); });
+            document.querySelectorAll('#payoff-wrap td.cell-highlighted').forEach(function(td) { td.classList.remove('cell-highlighted'); });
+            getGroupCells(groupClass).forEach(function(td) { td.classList.add('cell-highlighted'); });
+        });
+        row.addEventListener('mouseleave', function() {
+            document.querySelectorAll('tr.ref-row.row-active').forEach(function(r) { r.classList.remove('row-active'); });
+            document.querySelectorAll('#payoff-wrap td.cell-highlighted').forEach(function(td) { td.classList.remove('cell-highlighted'); });
+        });
+    });
+});
+</script>
+
+{{ endblock }}

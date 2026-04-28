@@ -1,0 +1,43 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Part 1 Instructions{{ endblock }}
+
+{{ block content }}
+
+<br>
+<h5>Summary of the Previous Experiment</h5>
+<ol style="line-height: 1.6;">
+    <li style="margin-bottom: 8px;">Each game started with a randomly paired participant, who was likely to change from game to game.</li>
+    <li style="margin-bottom: 8px;">The bank state was randomly determined with the following probabilities:
+        <ul>
+            <li>Low with 15% probability</li>
+            <li>Medium with 70% probability</li>
+            <li>High with 15% probability</li>
+        </ul>
+    </li>
+    <li style="margin-bottom: 8px;">Once the game started, the payoff table corresponding to the bank state was displayed. Initials represented possible decisions across two periods.
+        <ul>
+            <li><b>W</b>: Withdraw (Period 1) </li>
+            <li><b>SW</b>: Stay (Period 1) → Withdraw (Period 2)</li>
+            <li><b>SS</b>: Stay (Period 1) → Stay (Period 2)</li>
+        </ul>
+    </li>
+    <li style="margin-bottom: 8px;">Given the payoff table, participants made decisions up to two periods:
+        <ul>
+            <li>In Period 1, both participants simultaneously chose either to withdraw or to stay.</li>
+            <li>If a participant chose to stay in Period 1, they moved to Period 2, where they could choose again to withdraw or stay.</li>
+        </ul>
+    </li>
+    <li style="margin-bottom: 8px;">At the end of each game, participants were told how many points they received, along with the other participant's decision.</li>
+    <li>Participants played 40 games in total. At the end of the experiment, they were paid in cash based on their outcomes.</li>
+</ol>
+
+
+
+<div style="text-align:center; padding-top:30px;">
+    {{ next_button }}
+</div>
+
+{{ include "bank2_instruction_part1/Reminder.html" }}
+
+
+{{ endblock }}

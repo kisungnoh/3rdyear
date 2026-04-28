@@ -1,0 +1,142 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Part 2 Instructions - Today's Experiment{{ endblock }}
+
+{{ block content }}
+
+<style>
+:root {
+    --border: #dde1e7;
+    --text:   #1a1f2e;
+    --muted:  #6b7280;
+}
+.info-table {
+    border-collapse: collapse;
+    font-size: 14px;
+    margin: 0 auto;
+}
+.info-table th, .info-table td {
+    border: 0.5px solid var(--border);
+    padding: 8px 18px;
+    text-align: center;
+}
+.info-table thead th {
+    background: #f8f9fb;
+    font-size: 14px;
+    font-weight: 600;
+}
+.info-table .row-header {
+    background: #f8f9fb;
+    font-weight: 600;
+    font-size: 14px;
+}
+</style>
+
+<br>
+<h5>How the Bank State Is Determined</h5>
+<br>
+<p>
+    Your bank's state is determined as follows:
+    <ul>
+        <li>At the start of each game today, one game from the previous experiment is randomly picked. The bank from that past game will be called the <strong>Pre-Bank</strong> to distinguish it from <strong>your bank</strong> in today's experiment.</li>
+        <li>Your bank's state is then randomly determined based on the Pre-Bank's state, as shown in the table below.</li>
+    </ul>
+
+<div>
+    <table class="info-table">
+        <colgroup>
+            <col style="width: 20px;">
+            <col style="width: 80px;">
+            <col style="width: 90px;">
+            <col style="width: 90px;">
+            <col style="width: 90px;">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="row-header" rowspan="2" colspan="2"></th>
+                <th colspan="3">Pre-Bank state</th>
+            </tr>
+            <tr>
+                <th>Low</th>
+                <th>Medium</th>
+                <th>High</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="row-header" rowspan="3" style="font-weight:700; color:#3949ab; white-space:nowrap;">Your bank <br> State</td>
+                <td class="row-header">Low</td>
+                <td>{{C.STATE_CORR}}%</td>
+                <td>{{unmatched_corr}}%</td>
+                <td>{{unmatched_corr}}%</td>
+            </tr>
+            <tr>
+                <td class="row-header">Medium</td>
+                <td>{{unmatched_corr}}%</td>
+                <td>{{C.STATE_CORR}}%</td>
+                <td>{{unmatched_corr}}%</td>
+            </tr>
+            <tr>
+                <td class="row-header">High</td>
+                <td>{{unmatched_corr}}%</td>
+                <td>{{unmatched_corr}}%</td>
+                <td>{{C.STATE_CORR}}%</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+</p>
+
+<ul>
+    <li>Each row shows the probability that your bank is in a given state, depending on the Pre-Bank's state.</li>
+    <li>In a word, your bank is in the same state as the Pre-Bank with <strong>{{C.STATE_CORR}}% probability</strong>, and in one of the other two states with <strong>{{unmatched_corr}}% probability</strong> each.</li>
+</ul>
+
+<hr style="margin: 30px 0;">
+
+<p>In today's experiment, <strong>you will also not be told the Pre-Bank's state</strong>. Recall that the Pre-Bank's state was randomly drawn with the following probabilities:</p>
+    <table style="width:300px; border-collapse:collapse; font-size:14px; margin-bottom:28px; margin-left:auto; margin-right:auto; table-layout:fixed;">
+        <colgroup>
+            <col style="width:150px;">
+            <col style="width:150px;">
+        </colgroup>
+        <thead>
+            <tr>
+                <th style="background:#f8f9fb; border:0.5px solid #dde1e7; padding:8px 18px; text-align:center; font-weight:600; color:#1a1f2e;">Pre-Bank state</th>
+                <th style="background:#f8f9fb; border:0.5px solid #dde1e7; padding:8px 18px; text-align:center; font-weight:600; color:#1a1f2e;">Probability</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; color:#1a1f2e; background:#ffffff;">Low</td>
+                <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; color:#1a1f2e; background:#ffffff;">{{C.LOW_PROB}}%</td>
+            </tr>
+            <tr>
+                <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center;color:#1a1f2e; background:#ffffff;">Medium</td>
+                <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; color:#1a1f2e; background:#ffffff;">{{C.MEDIUM_PROB}}%</td>
+            </tr>
+            <tr>
+                <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center;color:#1a1f2e; background:#ffffff;">High</td>
+                <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; color:#1a1f2e; background:#ffffff;">{{C.HIGH_PROB}}%</td>
+            </tr>
+        </tbody>
+    </table>
+
+<hr style="margin: 30px 0;">
+
+<p><strong>In summary:</strong></p>
+<ul style="line-height: 1.8;">
+    <li>At the start of each game, a <strong>new Pre-Bank</strong> is randomly picked. It will be different every game.</li>
+    <li>Both the Pre-Bank's state and your bank's state will be <strong>unknown</strong> to you.</li>
+    <li>Your bank's state <strong>depends on</strong> the Pre-Bank's state.</li>
+    <li>The probability of each Pre-Bank state may give you a clue about what state your bank is likely to be in.</li>
+</ul>
+
+<div style="display:flex; justify-content:center; gap:12px; padding-top:10px;">
+    {{ back_button }}
+    {{ next_button }}
+</div>
+
+{{ include "bank2_instruction_part2/Summary_bank1experiment.html" }}
+
+
+{{ endblock }}

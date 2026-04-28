@@ -19,36 +19,114 @@ input.cert-range::-moz-range-thumb { width: 28px; height: 28px; border-radius: 5
 .knob-hidden::-moz-range-thumb     { opacity: 0 !important; }
 .cert-val-below { text-align: center; font-size: 24px; font-weight: 600; min-height: 30px; margin-top: 8px; color: #1976D2; }
 .cert-feedback { min-height: 18px; margin-top: 4px; font-size: 13px; color: #888; text-align: center; }
+
+.pbank-block {
+    border: 1px solid #dde1e7;
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    background: #fafbfc;
+}
+.pbank-label {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #1a1f2e;
+}
 </style>
 
-<!-- Q1: Stage 1 Choice -->
-<p><strong>Q1.</strong> When the bank state was <strong>Medium</strong>, what was your preferred choice in Stage 1?</p>
-{{ formfield 'stage1_choice' }}
+<p><strong>Q1.</strong> In Period 1, what was your preferred choice given the number of Pre-Bank withdrawals? How certain were you that your preferred choice was your best decision, given your personal preferences and the available information?</p>
 
-<!-- Stage 1 Certainty — hidden until Q1 is answered -->
-<div id="q2_section" style="display: none; margin-top: 28px;">
-    <div class="cert-block">
-        <div class="cert-question">
-            <strong>How certain</strong> were you that
-            <strong><span id="choice_label_s1">your preferred choice</span></strong>
-            was your best decision, given your personal preferences and the available information?
+<!-- Pre-Bank Withdrawals = 0 -->
+<div class="pbank-block">
+    <p class="pbank-label">Pre-Bank Withdrawals = 0</p>
+    {{ formfield 'period1_choice_0' }}
+    <div id="cert_section_0" style="display: none; margin-top: 28px;">
+        <div class="cert-block">
+            <div class="cert-question">
+                <strong>How certain</strong> were you that
+                <strong><span id="choice_label_0">your preferred choice</span></strong>
+                was your best choice, given your personal preferences and the available information?
+            </div>
+            <div class="cert-slider-inner">
+                <div class="cert-ends">
+                    <span class="cert-end-label">Very uncertain</span>
+                    <span class="cert-end-label">Completely certain</span>
+                </div>
+                <div class="cert-ticks">
+                    <span>50%</span><span>60%</span><span>70%</span><span>80%</span><span>90%</span><span>100%</span>
+                </div>
+                <div class="cert-track-wrap">
+                    <div class="cert-track-bg" id="track_0"></div>
+                    <input type="range" class="cert-range knob-hidden" id="slider_0" min="50" max="100" step="1" value="">
+                </div>
+                <div class="cert-val-below" id="val_0">&nbsp;</div>
+            </div>
+            <div class="cert-feedback" id="feedback_0"></div>
+            <input type="hidden" name="period1_certainty_0" id="id_period1_certainty_0" value="">
         </div>
-        <div class="cert-slider-inner">
-            <div class="cert-ends">
-                <span class="cert-end-label">Very uncertain</span>
-                <span class="cert-end-label">Completely certain</span>
+    </div>
+</div>
+
+<!-- Pre-Bank Withdrawals = 1 -->
+<div class="pbank-block">
+    <p class="pbank-label">Pre-Bank Withdrawals = 1</p>
+    {{ formfield 'period1_choice_1' }}
+    <div id="cert_section_1" style="display: none; margin-top: 28px;">
+        <div class="cert-block">
+            <div class="cert-question">
+                <strong>How certain</strong> were you that
+                <strong><span id="choice_label_1">your preferred choice</span></strong>
+                was your best choice, given your personal preferences and the available information?
             </div>
-            <div class="cert-ticks">
-                <span>50%</span><span>60%</span><span>70%</span><span>80%</span><span>90%</span><span>100%</span>
+            <div class="cert-slider-inner">
+                <div class="cert-ends">
+                    <span class="cert-end-label">Very uncertain</span>
+                    <span class="cert-end-label">Completely certain</span>
+                </div>
+                <div class="cert-ticks">
+                    <span>50%</span><span>60%</span><span>70%</span><span>80%</span><span>90%</span><span>100%</span>
+                </div>
+                <div class="cert-track-wrap">
+                    <div class="cert-track-bg" id="track_1"></div>
+                    <input type="range" class="cert-range knob-hidden" id="slider_1" min="50" max="100" step="1" value="">
+                </div>
+                <div class="cert-val-below" id="val_1">&nbsp;</div>
             </div>
-            <div class="cert-track-wrap">
-                <div class="cert-track-bg" id="track_s1"></div>
-                <input type="range" class="cert-range knob-hidden" id="slider_s1" min="50" max="100" step="1" value="">
-            </div>
-            <div class="cert-val-below" id="val_s1">&nbsp;</div>
+            <div class="cert-feedback" id="feedback_1"></div>
+            <input type="hidden" name="period1_certainty_1" id="id_period1_certainty_1" value="">
         </div>
-        <div class="cert-feedback" id="feedback_s1"></div>
-        <input type="hidden" name="stage1_certainty" id="id_stage1_certainty" value="">
+    </div>
+</div>
+
+<!-- Pre-Bank Withdrawals = 2 -->
+<div class="pbank-block">
+    <p class="pbank-label">Pre-Bank Withdrawals = 2</p>
+    {{ formfield 'period1_choice_2' }}
+    <div id="cert_section_2" style="display: none; margin-top: 28px;">
+        <div class="cert-block">
+            <div class="cert-question">
+                <strong>How certain</strong> were you that
+                <strong><span id="choice_label_2">your preferred choice</span></strong>
+                was your best choice, given your personal preferences and the available information?
+            </div>
+            <div class="cert-slider-inner">
+                <div class="cert-ends">
+                    <span class="cert-end-label">Very uncertain</span>
+                    <span class="cert-end-label">Completely certain</span>
+                </div>
+                <div class="cert-ticks">
+                    <span>50%</span><span>60%</span><span>70%</span><span>80%</span><span>90%</span><span>100%</span>
+                </div>
+                <div class="cert-track-wrap">
+                    <div class="cert-track-bg" id="track_2"></div>
+                    <input type="range" class="cert-range knob-hidden" id="slider_2" min="50" max="100" step="1" value="">
+                </div>
+                <div class="cert-val-below" id="val_2">&nbsp;</div>
+            </div>
+            <div class="cert-feedback" id="feedback_2"></div>
+            <input type="hidden" name="period1_certainty_2" id="id_period1_certainty_2" value="">
+        </div>
     </div>
 </div>
 
@@ -57,55 +135,69 @@ input.cert-range::-moz-range-thumb { width: 28px; height: 28px; border-radius: 5
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-    var CHOICE_LABELS = { action_a: 'Action A', action_b: 'Action B', even: 'Even' };
-    var choiceLabelEl = document.getElementById('choice_label_s1');
-    var q2Section     = document.getElementById('q2_section');
+    var CHOICE_LABELS = { withdraw: 'Withdraw', stay: 'Stay' };
 
-    var slider   = document.getElementById('slider_s1');
-    var track    = document.getElementById('track_s1');
-    var valEl    = document.getElementById('val_s1');
-    var feedback = document.getElementById('feedback_s1');
-    var hidden   = document.getElementById('id_stage1_certainty');
-    var touched  = false;
+    function setupSlider(idx) {
+        var choiceLabelEl = document.getElementById('choice_label_' + idx);
+        var certSection   = document.getElementById('cert_section_' + idx);
+        var slider        = document.getElementById('slider_' + idx);
+        var track         = document.getElementById('track_' + idx);
+        var valEl         = document.getElementById('val_' + idx);
+        var feedback      = document.getElementById('feedback_' + idx);
+        var hidden        = document.getElementById('id_period1_certainty_' + idx);
+        var touched       = false;
 
-    document.querySelectorAll('input[name="stage1_choice"]').forEach(function (radio) {
-        radio.addEventListener('change', function () {
-            choiceLabelEl.textContent = CHOICE_LABELS[this.value] || 'your preferred choice';
-            q2Section.style.display = 'block';
+        document.querySelectorAll('input[name="period1_choice_' + idx + '"]').forEach(function (radio) {
+            radio.addEventListener('change', function () {
+                choiceLabelEl.textContent = CHOICE_LABELS[this.value] || 'your preferred choice';
+                certSection.style.display = 'block';
+            });
         });
-    });
 
-    function onFirstTouch() {
-        if (!touched) {
-            touched = true;
-            slider.classList.remove('knob-hidden');
-            hidden.value = slider.value;
-            var pct = ((parseInt(slider.value) - 50) / 50) * 100;
-            track.style.background = 'linear-gradient(to right, #1976D2 ' + pct + '%, #e8eaed ' + pct + '%)';
-            valEl.textContent = slider.value + '%';
+        function onFirstTouch() {
+            if (!touched) {
+                touched = true;
+                slider.classList.remove('knob-hidden');
+                hidden.value = slider.value;
+                var pct = ((parseInt(slider.value) - 50) / 50) * 100;
+                track.style.background = 'linear-gradient(to right, #1976D2 ' + pct + '%, #e8eaed ' + pct + '%)';
+                valEl.textContent = slider.value + '%';
+            }
         }
-    }
-    slider.addEventListener('mousedown', onFirstTouch);
-    slider.addEventListener('touchstart', onFirstTouch);
+        slider.addEventListener('mousedown', onFirstTouch);
+        slider.addEventListener('touchstart', onFirstTouch);
 
-    slider.addEventListener('input', function () {
-        hidden.value = this.value;
-        var pct = ((parseInt(this.value) - 50) / 50) * 100;
-        track.style.background = 'linear-gradient(to right, #1976D2 ' + pct + '%, #e8eaed ' + pct + '%)';
-        valEl.textContent = this.value + '%';
-        feedback.textContent = '';
-    });
+        slider.addEventListener('input', function () {
+            hidden.value = this.value;
+            var pct = ((parseInt(this.value) - 50) / 50) * 100;
+            track.style.background = 'linear-gradient(to right, #1976D2 ' + pct + '%, #e8eaed ' + pct + '%)';
+            valEl.textContent = this.value + '%';
+            feedback.textContent = '';
+        });
+
+        return {
+            isTouched: function () { return touched; },
+            getFeedback: function () { return feedback; }
+        };
+    }
+
+    var sliders = [setupSlider(0), setupSlider(1), setupSlider(2)];
 
     var nextBtn = document.querySelector('button[type=submit], .otree-btn-next');
     if (nextBtn) {
         nextBtn.addEventListener('click', function (e) {
             var blocked = false;
-            if (!document.querySelector('input[name="stage1_choice"]:checked')) { blocked = true; }
-            if (!touched) {
-                feedback.style.color = '#c62828';
-                feedback.textContent = 'Please move the slider to indicate your certainty.';
-                blocked = true;
-            }
+            [0, 1, 2].forEach(function (idx) {
+                if (!document.querySelector('input[name="period1_choice_' + idx + '"]:checked')) {
+                    blocked = true;
+                }
+                if (!sliders[idx].isTouched()) {
+                    var fb = sliders[idx].getFeedback();
+                    fb.style.color = '#c62828';
+                    fb.textContent = 'Please move the slider to indicate your certainty.';
+                    blocked = true;
+                }
+            });
             if (blocked) { e.preventDefault(); e.stopImmediatePropagation(); }
         });
     }

@@ -1,0 +1,23 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Comprehension Check{{ endblock }}
+
+{{ block content }}
+<br>
+<p style="font-size:12px; color:#6b7280; margin-bottom:20px;">Question 1 of 7</p>
+{{ formfields }}
+<div id="cq-error" style="display:none; color:#c62828; background:#fff3e0; border:1px solid #e65100; border-radius:6px; padding:8px 14px; margin-bottom:8px;"></div>
+<div style="text-align:center; padding-top:20px;">{{ next_button }}</div>
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    var sel = document.querySelector('input[name="comprehension_q1"]:checked');
+    var err = document.getElementById('cq-error');
+    if (!sel) {
+        e.preventDefault(); err.textContent = 'Please select an answer.'; err.style.display = 'block'; return;
+    }
+    if (sel.value !== 'new') {
+        e.preventDefault(); err.textContent = 'Incorrect.'; err.style.display = 'block'; return;
+    }
+    err.style.display = 'none';
+});
+</script>
+{{ endblock }}

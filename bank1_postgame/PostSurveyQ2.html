@@ -22,17 +22,17 @@ input.cert-range::-moz-range-thumb { width: 28px; height: 28px; border-radius: 5
 .cert-feedback { min-height: 18px; margin-top: 4px; font-size: 13px; color: #888; text-align: center; }
 </style>
 
-<!-- Q2: Stage 2 Choice -->
-<p><strong>Q2.</strong> When the bank state was <strong>Medium</strong> and you moved to Stage 2, what was your preferred choice?</p>
-{{ formfield 'stage2_choice' }}
+<!-- Q2: Period 2 Choice -->
+<p><strong>Q2.</strong> When the bank state was <strong>Medium</strong> and you moved to Period 2, what was your preferred choice?</p>
+{{ formfield 'period2_choice' }}
 
-<!-- Stage 2 Certainty — hidden until Q2 is answered -->
+<!-- Period 2 Certainty — hidden until Q2 is answered -->
 <div id="q4_section" style="display: none; margin-top: 28px;">
     <div class="cert-block">
         <div class="cert-question">
             <strong>How certain</strong> were you that
             <strong><span id="choice_label_s2">your preferred choice</span></strong>
-            was your best decision, given your personal preferences and the available information?
+            was your best choice, given your personal preferences and the available information?
         </div>
         <div class="cert-slider-inner">
             <div class="cert-ends">
@@ -49,7 +49,7 @@ input.cert-range::-moz-range-thumb { width: 28px; height: 28px; border-radius: 5
             <div class="cert-val-below" id="val_s2">&nbsp;</div>
         </div>
         <div class="cert-feedback" id="feedback_s2"></div>
-        <input type="hidden" name="stage2_certainty" id="id_stage2_certainty" value="">
+        <input type="hidden" name="period2_certainty" id="id_period2_certainty" value="">
     </div>
 </div>
 
@@ -58,7 +58,7 @@ input.cert-range::-moz-range-thumb { width: 28px; height: 28px; border-radius: 5
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
-    var CHOICE_LABELS = { action_a: 'Action A', action_b: 'Action B', even: 'Even' };
+    var CHOICE_LABELS = { withdraw: 'Withdraw', stay: 'Stay' };
     var choiceLabelEl = document.getElementById('choice_label_s2');
     var q4Section     = document.getElementById('q4_section');
 
@@ -66,10 +66,10 @@ document.addEventListener("DOMContentLoaded", function () {
     var track    = document.getElementById('track_s2');
     var valEl    = document.getElementById('val_s2');
     var feedback = document.getElementById('feedback_s2');
-    var hidden   = document.getElementById('id_stage2_certainty');
+    var hidden   = document.getElementById('id_period2_certainty');
     var touched  = false;
 
-    document.querySelectorAll('input[name="stage2_choice"]').forEach(function (radio) {
+    document.querySelectorAll('input[name="period2_choice"]').forEach(function (radio) {
         radio.addEventListener('change', function () {
             choiceLabelEl.textContent = CHOICE_LABELS[this.value] || 'your preferred choice';
             q4Section.style.display = 'block';
@@ -101,7 +101,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (nextBtn) {
         nextBtn.addEventListener('click', function (e) {
             var blocked = false;
-            if (!document.querySelector('input[name="stage2_choice"]:checked')) { blocked = true; }
+            if (!document.querySelector('input[name="period2_choice"]:checked')) { blocked = true; }
             if (!touched) {
                 feedback.style.color = '#c62828';
                 feedback.textContent = 'Please move the slider to indicate your certainty.';

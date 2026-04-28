@@ -1,5 +1,5 @@
 {{ extends "global/Page.html" }}
-{{ block title }}Part 2 Instructions (1 of 5){{ endblock }}
+{{ block title }}Part 2 Instructions{{ endblock }}
 
 {{ block content }}
 
@@ -77,141 +77,34 @@
 </style>
 
 <br>
-<p>Today's experiment is similar to the previous experiment. You will act as <strong>a depositor in a bank</strong> and make decisions for <strong>10 games</strong>.</p>
-<p>The basic structure is the same as in Part 1:
-    <ul>
-        <li> You are randomly paired with another participant in this room each game. The pair member is likely to change game to game. You and the pair member are the only depositors in your bank.</li>
-        <li> You will start each game with <strong>10 points</strong> in your deposit account and choose between action A and action B over two stages.</li>
-        <li>Payoffs depend on the bank state and both depositors' actions</li>
-    </ul>
-</p>
-<p>The payoff tables are unchanged from Part 1. Each cell shows (<strong style="color:#1565c0;">your payoff</strong>, the other's payoff).</p>
+<p><strong>Part 2</strong> describes today's experiment. Similar to the previous experiment described in Part 1, you will be randomly paired with another participant and make decisions as <strong>a customer in a bank</strong> for <strong>10 games</strong>.</p>
 
-<!-- Payoff tables -->
-<div class="card-panel" style="margin-bottom: 30px;">
-    <div class="card-panel-header">Payoff Tables</div>
-    <div class="payoff-three">
-
-        <!-- LOW -->
-        <div class="payoff-col">
-            <div class="payoff-col-label">Bank State: Low</div> 
-            <table class="payoff-table">
-                <colgroup>
-                    <col class="col-label"><col class="col-action">
-                    <col class="col-data"><col class="col-data"><col class="col-data">
-                </colgroup>
-                <thead>
-                    <tr><th class="row-header" rowspan="2" colspan="2"></th><th colspan="3" style="font-weight:500; font-size:12px;">Other</th></tr>
-                    <tr><th>A</th><th>BA</th><th>BB</th></tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="row-header" rowspan="3" style="writing-mode:vertical-rl; transform:rotate(180deg); font-size:12px; font-weight:700; color:#3949ab; white-space:nowrap; width:18px;">You</td>
-                        <td class="row-header">A</td>
-                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.ENDOWMENT}})</td>
-                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{delayed_a}})</td>
-                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.FAIL_PAYOFF}})</td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">BA</td>
-                        <td>(<span class="my-payoff">{{delayed_a}}</span>, {{C.ENDOWMENT}})</td>
-                        <td>(<span class="my-payoff">{{delayed_a}}</span>, {{delayed_a}})</td>
-                        <td>(<span class="my-payoff">{{delayed_a}}</span>, {{C.FAIL_PAYOFF}})</td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">BB</td>
-                        <td>(<span class="my-payoff">{{C.FAIL_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
-                        <td>(<span class="my-payoff">{{C.FAIL_PAYOFF}}</span>, {{delayed_a}})</td>
-                        <td>(<span class="my-payoff">{{C.FAIL_PAYOFF}}</span>, {{C.FAIL_PAYOFF}})</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- MEDIUM -->
-        <div class="payoff-col">
-            <div class="payoff-col-label">Bank State: Medium</div>
-            <table class="payoff-table">
-                <colgroup>
-                    <col class="col-label"><col class="col-action">
-                    <col class="col-data"><col class="col-data"><col class="col-data">
-                </colgroup>
-                <thead>
-                    <tr><th class="row-header" rowspan="2" colspan="2"></th><th colspan="3" style="font-weight:500; font-size:12px;">Other</th></tr>
-                    <tr><th>A</th><th>BA</th><th>BB</th></tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="row-header" rowspan="3" style="writing-mode:vertical-rl; transform:rotate(180deg); font-size:12px; font-weight:700; color:#3949ab; white-space:nowrap; width:18px;">You</td>
-                        <td class="row-header">A</td>
-                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.ENDOWMENT}})</td>
-                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{delayed_a}})</td>
-                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.FAIL_PAYOFF}})</td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">BA</td>
-                        <td>(<span class="my-payoff">{{delayed_a}}</span>, {{C.ENDOWMENT}})</td>
-                        <td>(<span class="my-payoff">{{delayed_a}}</span>, {{delayed_a}})</td>
-                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.FAIL_PAYOFF}})</td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">BB</td>
-                        <td>(<span class="my-payoff">{{C.FAIL_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
-                        <td>(<span class="my-payoff">{{C.FAIL_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
-                        <td>(<span class="my-payoff">{{C.SUCCESS_PAYOFF}}</span>, {{C.SUCCESS_PAYOFF}})</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- HIGH -->
-        <div class="payoff-col">
-            <div class="payoff-col-label">Bank State: High</div>
-            <table class="payoff-table">
-                <colgroup>
-                    <col class="col-label"><col class="col-action">
-                    <col class="col-data"><col class="col-data"><col class="col-data">
-                </colgroup>
-                <thead>
-                    <tr><th class="row-header" rowspan="2" colspan="2"></th><th colspan="3" style="font-weight:500; font-size:12px;">Other</th></tr>
-                    <tr><th>A</th><th>BA</th><th>BB</th></tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="row-header" rowspan="3" style="writing-mode:vertical-rl; transform:rotate(180deg); font-size:12px; font-weight:700; color:#3949ab; white-space:nowrap; width:18px;">You</td>
-                        <td class="row-header">A</td>
-                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.ENDOWMENT}})</td>
-                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.ENDOWMENT}})</td>
-                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.SUCCESS_PAYOFF}})</td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">BA</td>
-                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.ENDOWMENT}})</td>
-                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.ENDOWMENT}})</td>
-                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.SUCCESS_PAYOFF}})</td>
-                    </tr>
-                    <tr>
-                        <td class="row-header">BB</td>
-                        <td>(<span class="my-payoff">{{C.SUCCESS_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
-                        <td>(<span class="my-payoff">{{C.SUCCESS_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
-                        <td>(<span class="my-payoff">{{C.SUCCESS_PAYOFF}}</span>, {{C.SUCCESS_PAYOFF}})</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-    </div>
-    <div class="payoff-legend">
-        <span><b>A</b>: action A (Stage 1)</span>
-        <span><b>BA</b>: action B (Stage 1) &rarr; action A (Stage 2)</span>
-        <span><b>BB</b>: action B (Stage 1) &rarr; action B (Stage 2)</span>
-    </div>
-</div>
+<ul style="line-height: 1.8;">
+    <li>You will start with <strong>10 points</strong> in your deposit account.</li>
+    <li>The bank can be in one of three states: <strong>Low</strong>, <strong>Medium</strong>, and <strong>High</strong>.</li>
+    <li>You will decide whether to <strong>withdraw</strong> your money or <strong>stay</strong> in the bank.</li>
+        <ul>
+            <li>In <strong>Period 1</strong>, both you and the participant you are paired with simultaneously chose either to withdraw or to stay.</li>
+            <li>Those who choose to stay in Period 1 moves to <strong>Period 2</strong>, where they choose again to withdraw or stay.</li>
+        </ul>
+</ul>
 <br>
-<p>The next page describes differences from Part 1.</p>
+<p>
+    You may receive different earnings depending on your decision, the decision of the participant you are paired with, and the bank's state.
+    <strong>Importantly, the bank's state will be determined based on the previous experiment described in Part 1.</strong>
+</p>
+<br>
+<p>
+    On the following pages, you will learn how today's experiment differs from the previous one.
+</p>
+
+<hr>
+<p><em>Note:</em> The <strong>Part 2</strong> instructions will remain available during the game in summarized form, so you can refer to them whenever needed.</p>
 
 <div style="text-align:center; padding-top:30px;">
     {{ next_button }}
 </div>
+
+{{ include "bank2_instruction_part2/Summary_bank1experiment.html" }}
 
 {{ endblock }}

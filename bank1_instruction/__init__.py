@@ -25,31 +25,50 @@ class Group(BaseGroup):
 class Player(BasePlayer):
     # Comprehension check fields
     comprehension_q1 = models.StringField(
-        choices=[['same', 'The same participant'], ['new', 'A new participant']],
-        label='', widget=widgets.RadioSelect)
+        choices=[['same', 'The same participant'],
+                 ['new', 'A new participant']],
+        label='In each game, you are likely to be paired with:',
+        widget=widgets.RadioSelect)
     comprehension_q2 = models.StringField(
-        choices=[['fixed', 'Always 10, regardless of bank state or the other\'s choice'],
-                 ['depends', 'It depends on the bank state or the other\'s choice']],
-        label='', widget=widgets.RadioSelect)
-    comprehension_q3 = models.StringField(
-        choices=[['after', 'After learning the other depositor\'s Stage 1 choice'],
-                 ['without', 'Without knowing the other depositor\'s Stage 1 choice']],
-        label='', widget=widgets.RadioSelect)
-    comprehension_q4_a  = models.IntegerField(label='')
-    comprehension_q4_ba = models.IntegerField(label='')
-    comprehension_q4_bb = models.IntegerField(label='')
-    comprehension_q5_a  = models.IntegerField(label='')
-    comprehension_q5_ba = models.IntegerField(label='')
-    comprehension_q5_bb = models.IntegerField(label='')
-    comprehension_q6_a  = models.IntegerField(label='')
-    comprehension_q6_ba = models.IntegerField(label='')
-    comprehension_q6_bb = models.IntegerField(label='')
-    comprehension_q7_a  = models.IntegerField(label='')
-    comprehension_q7_ba = models.IntegerField(label='')
-    comprehension_q7_bb = models.IntegerField(label='')
-    comprehension_q8 = models.StringField(
+        choices=[['fixed', 'You receive 10, regardless of the state of the bank or the other\'s choice.'],
+                 ['depends', 'It depends on the state of the bank or the other\'s choice.']],
+        label='If you choose to withdraw in Period 1,',
+        widget=widgets.RadioSelect)
+    comprehension_q3a = models.IntegerField(
+        label='You choose to stay in Period 1 and to withdraw in Period 2:', 
+        min=0, max=100)
+    comprehension_q3b = models.IntegerField(
+        label='You choose to stay in Period 1 and to stay in Period 2:', 
+        min=0, max=100)
+    comprehension_q4a = models.IntegerField(
+        label='You choose to stay in Period 1 and to withdraw in Period 2:', 
+        min=0, max=100)
+    comprehension_q4b = models.IntegerField(
+        label='You choose to stay in both Period 1 and Period 2:', 
+        min=0, max=100)
+    comprehension_q5a = models.IntegerField(
+        label='The other chooses to withdraw in Period 1:', 
+        min=0, max=100)
+    comprehension_q5b = models.IntegerField(
+        label='The other chooses to stay in both Period 1 and Period 2:',
+        min=0, max=100)
+    comprehension_q5c = models.IntegerField(
+        label='The other chooses to stay in both Period 1 and Period 2:',
+        min=0, max=100)
+    comprehension_q6a = models.IntegerField(
+        label='The other chooses to withdraw in Period 1:', 
+        min=0, max=100)
+    comprehension_q6b = models.IntegerField(
+        label='The other chooses to stay in Period 1 and to withdraw in Period 2:',
+        min=0, max=100)
+    comprehension_q6c = models.IntegerField(
+        label='The other chooses to stay in both Period 1 and Period 2:',
+        min=0, max=100)
+    comprehension_q7 = models.StringField(
         choices=[['true', 'True'], ['false', 'False']],
-        label='', widget=widgets.RadioSelect)
+        label='At the end of the experiment, one game will be randomly selected for payment at the rate of 1 point = 0.5 dollar.',
+        widget=widgets.RadioSelect)
+    
 
 
 # --- Helper functions ---
@@ -72,8 +91,6 @@ def creating_session(subsession: Subsession):
         group.your_state = draw_state(random.randint(1, C.RAND_MAX))
 
 
-
-
 class Welcome(Page):
     pass
 
@@ -81,36 +98,96 @@ class Intro1(Page):
     pass
 
 class Intro2(Page):
-    @staticmethod
-    def vars_for_template(player: Player):
-        return dict(
-            state=player.group.your_state,
-            delayed_a=C.ENDOWMENT - C.DELAY_COST,
-        )
-
-class Intro3(Page):
     pass
 
-class ComprehensionCheck(Page):
-    form_model = 'player'
-    form_fields = [
-        'comprehension_q1', 'comprehension_q2', 'comprehension_q3',
-        'comprehension_q4_a', 'comprehension_q4_ba', 'comprehension_q4_bb',
-        'comprehension_q5_a', 'comprehension_q5_ba', 'comprehension_q5_bb',
-        'comprehension_q6_a', 'comprehension_q6_ba', 'comprehension_q6_bb',
-        'comprehension_q7_a', 'comprehension_q7_ba', 'comprehension_q7_bb',
-        'comprehension_q8',
-    ]
+class Intro3Low(Page):
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(sw_payoff=C.ENDOWMENT - C.DELAY_COST)
+
+class Intro3Med(Page):
+    allow_back_button = True
 
     @staticmethod
     def vars_for_template(player: Player):
-        return dict(delayed_a=C.ENDOWMENT - C.DELAY_COST)
+        return dict(sw_payoff=C.ENDOWMENT - C.DELAY_COST)
 
+    
+class Intro3High(Page):
+    allow_back_button = True
+    
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(sw_payoff=C.ENDOWMENT - C.DELAY_COST)
 
+class Intro4(Page):
+    pass
+
+class Intro5(Page):
+    pass
+
+class Intro6(Page):
+    pass
 
 class WaitForAll(WaitPage):
     wait_for_all_groups = True
     title_text = 'Please wait'
+    body_text = 'Waiting for all participants.'
+
+# --- Comprehension check pages (one question or group per page) ---
+
+class CQ1(Page):
+    form_model = 'player'
+    form_fields = ['comprehension_q1']
+
+class CQ2(Page):
+    form_model = 'player'
+    form_fields = ['comprehension_q2']
+
+class CQ3(Page):
+    form_model = 'player'
+    form_fields = ['comprehension_q3a', 'comprehension_q3b']
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(sw_payoff=C.ENDOWMENT - C.DELAY_COST)
+    
+class CQ4(Page):
+    form_model = 'player'
+    form_fields = ['comprehension_q4a', 'comprehension_q4b']
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(sw_payoff=C.ENDOWMENT - C.DELAY_COST)
+    
+class CQ5(Page):
+    form_model = 'player'
+    form_fields = ['comprehension_q5a', 'comprehension_q5b', 'comprehension_q5c']
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(sw_payoff=C.ENDOWMENT - C.DELAY_COST)
+    
+class CQ6(Page):
+    form_model = 'player'
+    form_fields = ['comprehension_q6a', 'comprehension_q6b', 'comprehension_q6c']
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(sw_payoff=C.ENDOWMENT - C.DELAY_COST)
+    
+class CQ7(Page):
+    form_model = 'player'
+    form_fields = ['comprehension_q7']
+
+
+
+class WaitForAll2(WaitPage):
+    wait_for_all_groups = True
+    title_text = 'Please wait'
     body_text = 'Waiting for all participants to finish the comprehension check.'
 
-page_sequence = [Welcome, Intro1, Intro2, Intro3, ComprehensionCheck, WaitForAll]
+page_sequence = [Welcome, Intro1, Intro2, Intro3Low, Intro3Med, Intro3High, Intro4, Intro5, Intro6, WaitForAll, 
+                 CQ1, CQ2, CQ3, CQ4, CQ5, CQ6, CQ7, WaitForAll2]
+
+

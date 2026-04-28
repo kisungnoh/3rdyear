@@ -1,0 +1,302 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Comprehension Check{{ endblock }}
+
+{{ block content }}
+<style>
+:root {
+    --high-color:  #2E7D32;
+    --card-bg:    #ffffff;
+    --page-bg:    #ffffff;
+    --border:     #dde1e7;
+    --text:       #1a1f2e;
+    --muted:      #6b7280;
+    --accent:     #37474f;
+    --radius:     10px;
+    --shadow:     0 2px 8px rgba(0,0,0,0.08);
+}
+
+body, .otree-body {
+    background: var(--page-bg) !important;
+    color: var(--text) !important;
+}
+
+.sample-screen {
+    border: 2px solid #0277bd;
+    border-radius: 12px;
+    padding: 16px;
+    background: #f4f5f7;
+    margin: 24px auto;
+    justify-content: center;
+    max-width: 800px;
+}
+
+.sample-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #0277bd;
+    text-transform: uppercase;
+    margin: 0 -16px 10px -16px;
+    padding: 0 16px 8px 16px;
+    border-bottom: 1.5px solid #0277bd;
+}
+
+/* ── Context bar ── */
+.context-bar {
+    background: var(--card-bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 18px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--shadow);
+}
+.ctx-badge {
+    background: var(--accent);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+}
+.step-indicator { display: flex; align-items: center; gap: 4px; }
+.step {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 14px; border-radius: 20px;
+    font-size: 14px; font-weight: 600;
+}
+.step.active   { background: #e1f5fe; color: #0277bd; }
+.step.inactive { color: #b0b8c4; }
+.step-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+}
+.step.active .step-num   { background: #0277bd; color: #fff; }
+.step.inactive .step-num { background: #e0e0e0; color: #9aa0a8; }
+.step-arrow { color: #c8cdd4; font-size: 14px; }
+
+/* ── Card panel ── */
+.card-panel {
+    background: var(--card-bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    width: 80%;
+    margin: 12px auto 24px;
+    justify-content: center;
+}
+.card-panel-header {
+    background: #f8f9fb;
+    border-bottom: 0.5px solid var(--border);
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+}
+.card-panel-body { padding: 16px; }
+
+/* ── Payoff table (matches FirstStage exactly) ── */
+.payoff-three {
+    display: flex;
+    justify-content: center;
+    padding: 8px;
+}
+.payoff-col {
+    width: 100%;
+    max-width: 480px;
+    margin-bottom: 12px;
+}
+.payoff-col-head {
+    padding: 9px 12px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    border-bottom: 1.5px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #ffffff;
+}
+.state-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+
+.payoff-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    table-layout: fixed;
+}
+.payoff-table th, .payoff-table td {
+    border: 0.5px solid var(--border);
+    padding: 10px 8px;
+    text-align: center;
+    color: var(--text);
+}
+.payoff-table thead th {
+    background: #f8f9fb;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+}
+.payoff-table .row-header {
+    background: #f8f9fb;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text);
+    text-align: center;
+    padding-left: 8px;
+}
+.payoff-table col.col-label  { width: 60px; }
+.payoff-table col.col-action { width: 90px; }
+.payoff-table col.col-data   { width: auto; }
+/* .my-payoff { font-weight: 700; color: #0000ff; } */
+
+/* ── Row highlight on hover ── */
+td.cell-highlighted {
+    background: #e8f0fe !important;
+    transition: background 0.15s;
+}
+td.cell-highlighted .my-payoff {
+    color: #0000ff;
+}
+.switch-trigger {
+    cursor: default;
+    border-radius: 4px;
+    padding: 2px 4px;
+    transition: background 0.15s;
+}
+.switch-trigger:hover { background: #f0f4ff; }
+
+.payoff-legend {
+    padding: 6px 0;
+    border-top: 0.5px solid var(--border);
+    background: #ffffff;
+    font-size: 13px;
+    color: var(--muted);
+    display: grid;
+    grid-template-columns: auto auto auto;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* ── Decision mock ── */
+.mock-choice {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.mock-radio {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+}
+
+</style>
+
+<div class="card-panel" id="high-payoff-wrap">
+    <div class="card-panel-header">Payoff Table</div>
+    <div class="payoff-three">
+        <div class="payoff-col">
+            <div class="payoff-col-head">
+                <span class="state-dot" style="background:var(--high-color);"></span>
+                <span style="color:var(--high-color);">High State</span>
+            </div>
+            <table class="payoff-table">
+                <colgroup>
+                    <col class="col-label">
+                    <col class="col-action">
+                    <col class="col-data">
+                    <col class="col-data">
+                    <col class="col-data">
+                </colgroup>
+                <thead>
+                    <tr><th class="row-header" rowspan="2" colspan="2"></th><th colspan="3" style="font-weight:500;">Other</th></tr>
+                    <tr><th>W</th><th>SW</th><th>SS</th></tr>
+                </thead>
+                <tbody>
+                    <tr data-row="W">
+                        <td class="row-header" rowspan="3" style="font-weight:700; white-space:nowrap;"><span class="my-payoff">You</span></td>
+                        <td class="row-header">W</td>
+                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.ENDOWMENT}})</td>
+                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.ENDOWMENT}})</td>
+                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.SUCCESS_PAYOFF}})</td>
+                    </tr>
+                    <tr data-row="SW">
+                        <td class="row-header">SW</td>
+                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.ENDOWMENT}})</td>
+                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.ENDOWMENT}})</td>
+                        <td>(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.SUCCESS_PAYOFF}})</td>
+                    </tr>
+                    <tr data-row="SS">
+                        <td class="row-header">SS</td>
+                        <td>(<span class="my-payoff">{{C.SUCCESS_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
+                        <td>(<span class="my-payoff">{{C.SUCCESS_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
+                        <td>(<span class="my-payoff">{{C.SUCCESS_PAYOFF}}</span>, {{C.SUCCESS_PAYOFF}})</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<br>
+<p style="font-size:12px; color:#6b7280; margin-bottom:20px;">Question 4 of 7</p>
+<p><strong>Suppose the bank's state is High. How many points do you receive in the following cases?</strong></p>
+    {{ formfield 'comprehension_q4a' }}
+    <div id="fb-q4a" style="display:none; color:#c62828; background:#fff3e0; border:1px solid #e65100; border-radius:6px; padding:8px 14px; margin-bottom:8px;"></div>
+
+    {{ formfield 'comprehension_q4b' }}
+    <div id="fb-q4b" style="display:none; color:#c62828; background:#fff3e0; border:1px solid #e65100; border-radius:6px; padding:8px 14px; margin-bottom:8px;"></div>
+
+<div style="text-align:center; padding-top:20px;">{{ next_button }}</div>
+<script>
+document.querySelector('form').addEventListener('submit', function(e) {
+    var inpA = document.querySelector('input[name="comprehension_q4a"]');
+    var inpB = document.querySelector('input[name="comprehension_q4b"]');
+    var fbA = document.getElementById('fb-q4a');
+    var fbB = document.getElementById('fb-q4b');
+    var hasError = false;
+
+    // Reset
+    fbA.style.display = 'none';
+    fbB.style.display = 'none';
+
+    var valA = inpA ? inpA.value.trim() : '';
+    var valB = inpB ? inpB.value.trim() : '';
+
+    if (valA === '') {
+        e.preventDefault();
+        fbA.textContent = 'Please enter an answer for this question.';
+        fbA.style.display = 'block';
+        hasError = true;
+    } else if (valA !== '10') {
+        e.preventDefault();
+        fbA.textContent = 'Incorrect. If you choose to stay in Period 1 and to withdraw in Period 2, the relevant row in the table is SW. You receive 10 points, regardless of the other\'s choice.';
+        fbA.style.display = 'block';
+        hasError = true;
+    }
+
+    if (valB === '') {
+        e.preventDefault();
+        fbB.textContent = 'Please enter an answer for this question.';
+        fbB.style.display = 'block';
+        hasError = true;
+    } else if (valB !== '18') {
+        e.preventDefault();
+        fbB.textContent = 'Incorrect. If you choose to stay in both Period 1 and in Period 2, the relevant row in the table is SS. You receive 18 points, regardless of the other\'s choice.';
+        fbB.style.display = 'block';
+        hasError = true;
+    }
+});
+</script>
+{{ endblock }}

@@ -50,16 +50,16 @@ class Player(BasePlayer):
     comprehension_q6_med  = models.IntegerField(label='Medium (%)', min=0, max=100)
     comprehension_q6_high = models.IntegerField(label='High (%)', min=0, max=100)
     comprehension_q7 = models.StringField(
-        choices=[['stage1-only', 'Action A in only Stage 1'],
-                 ['stage2-only', 'Action A in only Stage 2 (BA)'],
-                 ['either', 'Action A in either Stage 1 or Stage 2 (A or BA)']],
-        label='In Stage 1, you will be informed of the number of Pre-Bank depositors who chose:',
+        choices=[['stage1-only', 'Withdrew only in Period 1 (W)'],
+                 ['stage2-only', 'Withdrew only in Period 2 (SW)'],
+                 ['either', 'Withdrew in either Period 1 or Period 2 (W or SW)']],
+        label='In Period 1, you will be informed of the number of Pre-Bank customers who:',
         widget=widgets.RadioSelect)
     comprehension_q8 = models.StringField(
-        choices=[['a-stage1', 'Only if you choose action A in Stage 1'],
-                 ['b-stage1', 'Only if you choose action B in Stage 1 and move to Stage 2'],
-                 ['both-a', 'Only if both you and the other depositor choose action A in Stage 1'],
-                 ['both-b', 'Only if both you and the other depositor choose action B in Stage 1 and move to Stage 2']],
+        choices=[['a-stage1', 'Only if you withdrew in Period 1 (W)'],
+                 ['b-stage1', 'Only if you stayed in Period 1 and moved to Period 2'],
+                 ['both-a', 'Only if both you and the other participant withdrew in Period 1'],
+                 ['both-b', 'Only if both you and the other participant stayed in Period 1 and moved to Period 2']],
         label='You receive a message from the Observer:',
         widget=widgets.RadioSelect)
     comprehension_q9 = models.StringField(
@@ -77,6 +77,8 @@ class Intro1(Page):
         )
 
 class Intro2(Page):
+    allow_back_button = True
+
     @staticmethod
     def vars_for_template(_player: Player):
         return dict(
@@ -84,24 +86,46 @@ class Intro2(Page):
             delayed_a=C.ENDOWMENT - C.DELAY_COST,
         )
 
-class Intro2b(Page):
+class Intro3_correlation(Page):
+    allow_back_button = True
+
+    @staticmethod
+    def vars_for_template(_player: Player):
+        return dict(
+            unmatched_corr=(100 - C.STATE_CORR) // 2,
+            delayed_a=C.ENDOWMENT - C.DELAY_COST,
+        )
+
+class Intro4_prebank_action(Page):
+    allow_back_button = True
+
+    @staticmethod
+    def vars_for_template(_player: Player):
+        return dict(
+            unmatched_corr=(100 - C.STATE_CORR) // 2,
+            delayed_a=C.ENDOWMENT - C.DELAY_COST,
+        )
+    
+class Intro5_observer_message(Page):
+    allow_back_button = True
+
+    @staticmethod
+    def vars_for_template(_player: Player):
+        return dict(
+            unmatched_corr=(100 - C.STATE_CORR) // 2,
+            delayed_a=C.ENDOWMENT - C.DELAY_COST,
+        )
+
+class Intro6(Page):
     pass
 
-class Intro2c_mockupB(Page):
+class Intro7(Page):
     @staticmethod
     def vars_for_template(_player: Player):
         return dict(
             unmatched_corr=(100 - C.STATE_CORR) // 2,
             delayed_a=C.ENDOWMENT - C.DELAY_COST,
         )
-
-class Intro3(Page):
-    @staticmethod
-    def vars_for_template(_player: Player):
-        return dict(
-            unmatched_corr=(100 - C.STATE_CORR) // 2,
-        )
-
 
 # --- Comprehension check pages (one question or group per page) ---
 
@@ -154,4 +178,5 @@ class CQ9(Page):
     form_fields = ['comprehension_q9']
 
 
-page_sequence = [Intro1, Intro2, Intro2b, Intro2c_mockupB, Intro3, CQ1, CQ2, CQ3, CQ4, CQ5, CQ6, CQ7, CQ8, CQ9]
+page_sequence = [Intro1, Intro2, Intro3_correlation, Intro4_prebank_action, Intro5_observer_message, Intro6, Intro7, 
+                 CQ1, CQ2, CQ3, CQ4, CQ5, CQ6, CQ7, CQ8, CQ9]

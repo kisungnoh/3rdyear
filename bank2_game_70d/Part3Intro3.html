@@ -1,0 +1,409 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Part 3 Instructions{{ endblock }}
+
+{{ block content }}
+
+<style>
+/* ── Binary slider ── */
+.demo-slider-section-title { font-size: 15px; font-weight: 600; color: var(--text,#1a1f2e); margin-bottom: 6px; }
+.demo-slider-wrap          { margin: 18px 0 8px; }
+.demo-labels-row           { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+.demo-end                  { min-width: 60px; }
+.demo-end.left             { text-align: left; }
+.demo-end.right            { text-align: right; }
+.demo-h-label              { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+.demo-h-pct                { font-size: 26px; font-weight: 600; min-height: 32px; }
+.demo-track-wrap           { position: relative; height: 20px; }
+.demo-track-bg             { position: absolute; top: 50%; left: 0; right: 0; height: 12px; transform: translateY(-50%); border-radius: 6px; pointer-events: none; background: #e8eaed; }
+input.demo-range           { position: absolute; top: 50%; left: 0; width: 100%; transform: translateY(-50%); -webkit-appearance: none; appearance: none; background: transparent; outline: none; margin: 0; height: 20px; cursor: pointer; }
+input.demo-range::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; background: #37474f; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+input.demo-range::-moz-range-thumb     { width: 24px; height: 24px; border-radius: 50%; background: #37474f; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+.demo-caption              { font-size: 14px; color: #888; text-align: center; margin-top: 10px; }
+.knob-hidden::-webkit-slider-thumb { opacity: 0 !important; }
+.knob-hidden::-moz-range-thumb     { opacity: 0 !important; }
+
+/* ── Tri-region state belief ── */
+.tri-demo-labels    { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+.tri-demo-col       { text-align: center; min-width: 60px; }
+.tri-demo-name      { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+.tri-demo-pct       { font-size: 26px; font-weight: 600; min-height: 32px; }
+.tri-demo-track-wrap { position: relative; height: 20px; cursor: pointer; user-select: none; margin-bottom: 4px; }
+.tri-demo-track-bg  { position: absolute; top: 50%; left: 0; right: 0; height: 12px; transform: translateY(-50%); border-radius: 6px; background: #e8eaed; }
+.tri-demo-knob      { position: absolute; top: 50%; width: 24px; height: 24px; border-radius: 50%; background: #37474f; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); transform: translate(-50%, -50%); cursor: grab; }
+.tri-demo-knob.knob-hidden { opacity: 0; }
+
+/* ── Step indicator ── */
+.step-indicator { display: flex; align-items: center; gap: 4px; margin-bottom: 14px; }
+.step           { display: flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 20px; font-size: 14px; font-weight: 600; }
+.step.active    { background: #e1f5fe; color: #0277bd; }
+.step.inactive  { color: #b0b8c4; }
+.step-num       { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; }
+.step.active  .step-num  { background: #0277bd; color: #fff; }
+.step.inactive .step-num { background: #e0e0e0; color: #9aa0a8; }
+.step-arrow { color: #c8cdd4; font-size: 14px; }
+
+/* ── Vertical tabs ── */
+.vtab-card {
+    border: 1px solid #dde1e7;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: flex;
+    min-height: 280px;
+    margin-bottom: 28px;
+    overflow: hidden;
+    background: #fff;
+}
+.vtab-list {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    width: 200px;
+    border-right: 1.5px solid #dde1e7;
+    background: #f8f9fb;
+}
+.vtab {
+    padding: 16px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+    border-left: 3px solid transparent;
+    transition: color 0.15s, background 0.15s;
+    line-height: 1.4;
+}
+.vtab:hover  { color: #1a1f2e; background: #eef0f4; }
+.vtab.active { color: #1a1f2e; background: #ffffff; border-left: 3px solid #37474f; }
+.vtab-task-num { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #9aa0a8; margin-bottom: 2px; }
+.vtab.active .vtab-task-num { color: #37474f; }
+.vtab-content { flex: 1; padding: 20px 24px; }
+.vtab-panel   { display: none; }
+.vtab-panel.active { display: block; }
+
+/* ── Demo slider box ── */
+.demo-row {
+    border: 0.5px solid #dde1e7;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    overflow: hidden;
+    background: #ffffff;
+    max-width: 500px;
+    margin: 12px auto 8px;
+}
+.demo-row-header {
+    background: #f8f9fb;
+    border-bottom: 0.5px solid #dde1e7;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #6b7280;
+}
+.demo-row-body { padding: 16px; }
+
+/* ── Tab feedback ── */
+.feedback-box {
+    display: none;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: #fff3e0;
+    border: 1px solid #e65100;
+    border-radius: 6px;
+    color: #c62828;
+    font-size: 14px;
+}
+
+/* ── Collapsible payment rule ── */
+.payment-rule-toggle    { display: inline-block; margin-top: 12px; color: #1976D2; cursor: pointer; text-decoration: underline; user-select: none; }
+.payment-rule-box       { display: none; border-left: 4px solid #0277bd; background: #f5f9ff; padding: 14px 18px; margin-top: 10px; line-height: 1.6; }
+.payment-rule-box h6    { margin: 0 0 8px; font-size: 14px; color: #37474f; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.payment-rule-box ul    { margin: 8px 0 8px 20px; padding: 0; }
+.payment-rule-box li    { margin-bottom: 6px; }
+.payment-rule-highlight { background: #e3f0fb; font-size: 18px; border-radius: 4px; padding: 8px 12px; margin-top: 20px; }
+
+/* ── Sample screen wrapper ── */
+.sample-screen {
+    border: 2px solid #0277bd;
+    border-radius: 12px;
+    padding: 12px;
+    background: #f4f5f7;
+    margin: 0 auto 24px;
+    max-width: 500px;
+}
+.sample-label {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #0277bd;
+    text-transform: uppercase;
+    margin: 0 -12px 10px -12px;
+    padding: 0 16px 8px 16px;
+    border-bottom: 2px solid #0277bd;
+}
+.ss-context-bar {
+    background: #fff;
+    border: 0.5px solid #dde1e7;
+    border-radius: 10px;
+    padding: 8px 18px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.ss-ctx-badge {
+    background: #37474f;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 4px 14px;
+    border-radius: 20px;
+    white-space: nowrap;
+    letter-spacing: 0.04em;
+}
+.ss-card {
+    background: #fff;
+    border: 0.5px solid #dde1e7;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+.ss-card-header {
+    background: #f8f9fb;
+    border-bottom: 0.5px solid #dde1e7;
+    padding: 10px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #6b7280;
+}
+.ss-card-body { padding: 16px; }
+.ss-payoff-three { display: grid; grid-template-columns: 1fr 1fr 1fr; }
+.ss-payoff-col { border-right: 0.5px solid #dde1e7; }
+.ss-payoff-col:last-child { border-right: none; }
+.ss-payoff-col-head {
+    padding: 9px 12px;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.05em;
+    border-bottom: 1.5px solid #dde1e7;
+    display: flex; align-items: center; gap: 6px;
+    background: #fff;
+}
+.ss-state-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.ss-payoff-table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
+.ss-payoff-table th, .ss-payoff-table td { border: 0.5px solid #dde1e7; padding: 8px 4px; text-align: center; }
+.ss-payoff-table thead th { background: #f8f9fb; font-size: 13px; font-weight: 600; }
+.ss-payoff-table .ss-row-header { background: #f8f9fb; font-weight: 600; font-size: 13px; text-align: center; padding-left: 4px; }
+.ss-payoff-table col.ss-col-label  { width: 40px; }
+.ss-payoff-table col.ss-col-action { width: 50px; }
+.ss-payoff-legend {
+    padding: 6px 0; border-top: 0.5px solid #dde1e7; background: #fff;
+    font-size: 12px; color: #6b7280;
+    display: grid; grid-template-columns: auto auto auto; justify-content: center; gap: 20px;
+}
+.ss-bottom-row {
+    display: grid;
+    grid-template-columns: 200px 1fr 1fr;
+    gap: 10px;
+    align-items: start;
+}
+.ss-prebank-body {
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center; text-align: center; padding: 20px 12px; gap: 4px;
+}
+.ss-prebank-number { font-size: 52px; font-weight: 700; color: #000; line-height: 1.1; }
+.ss-prebank-sub { font-size: 14px; font-weight: 600; color: #1a1f2e; margin-top: 2px; }
+.ss-mock-choice { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+.ss-mock-radio { display: flex; align-items: center; gap: 10px; font-size: 15px; font-weight: 500; cursor: pointer; }
+.ss-slider-title { font-size: 15px; font-weight: 600; color: #1a1f2e; margin-bottom: 6px; }
+.ss-slider-hint { font-size: 13px; color: #6b7280; margin-bottom: 12px; }
+.ss-h-labels-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+.ss-h-end { min-width: 60px; }
+.ss-h-end.left  { text-align: left; }
+.ss-h-end.right { text-align: right; }
+.ss-h-label { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+.ss-h-pct   { font-size: 26px; font-weight: 600; min-height: 32px; }
+.ss-h-track-wrap { position: relative; height: 20px; }
+.ss-h-track-bg {
+    position: absolute; top: 50%; left: 0; right: 0;
+    height: 12px; transform: translateY(-50%);
+    border-radius: 6px; pointer-events: none; background: #e8eaed;
+}
+input.ss-h-range {
+    position: absolute; top: 50%; left: 0; width: 100%;
+    transform: translateY(-50%);
+    -webkit-appearance: none; appearance: none;
+    background: transparent; outline: none; margin: 0; height: 20px; cursor: pointer;
+}
+input.ss-h-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: #37474f; border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+input.ss-h-range::-moz-range-thumb {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: #37474f; border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+.ss-tri-labels-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+.ss-tri-side { min-width: 44px; }
+.ss-tri-side.left  { text-align: left; }
+.ss-tri-side.right { text-align: right; }
+.ss-tri-center { text-align: center; flex: 1; }
+.ss-tri-name { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+.ss-tri-pct  { font-size: 26px; font-weight: 600; min-height: 32px; }
+.ss-tri-track-outer {
+    position: relative; height: 12px; border-radius: 6px;
+    background: #e8eaed; cursor: pointer; user-select: none;
+}
+.ss-tri-fill { position: absolute; inset: 0; border-radius: 6px; pointer-events: none; background: #e8eaed; }
+.ss-tri-knob {
+    position: absolute; top: 50%;
+    width: 24px; height: 24px; border-radius: 50%;
+    background: #37474f; border: 2px solid #fff;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+    transform: translate(-50%, -50%); cursor: grab; z-index: 2;
+}
+.ss-tri-knob.knob-hidden { opacity: 0; pointer-events: none; }
+.ss-beliefs-divider { border: none; border-top: 0.5px solid #dde1e7; margin: 16px 0; }
+</style>
+<p>
+    In this part, you will play <strong>{{ part3_rounds }} more games</strong> and make the same decisions as before, with additional tasks.
+</p>
+
+<br>
+<h5>Belief about the state of your bank</h5>
+<p>
+    You will report your belief about the bank's state by moving another slider. You will click twice to set both knobs, then dragging either knob to adjust your belief. The percentage on the left indicates how likely you think it is that your bank is in the <strong>Low</strong> state, the percentage in the middle indicates how likely you think it is that your bank is in the <strong>Medium</strong> state, and the percentage on the right indicates how likely you think it is that your bank is in the <strong>High</strong> state.
+</p>
+<p>Once all three values are displayed, you can freely move either knob to adjust your beliefs for each state.</p>
+
+<div class="sample-screen">
+    <!-- Context bar -->
+    <div class="ss-context-bar">
+
+        <div class="step-indicator" style="margin-bottom:0;">
+            <div class="step active"><div class="step-num">1</div>Period 1</div>
+            <div class="step-arrow">›</div>
+            <div class="step inactive"><div class="step-num">2</div>Period 2</div>
+        </div>
+    </div>
+
+    <!-- Beliefs -->
+    <div class="ss-card">
+
+        <div class="ss-card-body">
+
+            <!-- State belief tri-region slider -->
+            <div class="ss-slider-title">How likely do you think your bank is in each state?</div>
+            <p class="ss-slider-hint">This is an example slider. Click the track and move the slider twice to see all three values.</p>
+            <div class="ss-tri-labels-row">
+                <div class="ss-tri-side left">
+                    <div class="ss-tri-name" style="color:#C62828;">Low</div>
+                    <div class="ss-tri-pct" id="ss_pct_low" style="color:#C62828;"></div>
+                </div>
+                <div class="ss-tri-center">
+                    <div class="ss-tri-name" style="color:#E65100;">Medium</div>
+                    <div class="ss-tri-pct" id="ss_pct_med" style="color:#E65100;"></div>
+                </div>
+                <div class="ss-tri-side right">
+                    <div class="ss-tri-name" style="color:#2E7D32;">High</div>
+                    <div class="ss-tri-pct" id="ss_pct_high" style="color:#2E7D32;"></div>
+                </div>
+            </div>
+            <div class="ss-tri-track-outer" id="ss_tri_track">
+                <div class="ss-tri-fill" id="ss_tri_fill"></div>
+                <div class="ss-tri-knob knob-hidden" id="ss_knob_low"></div>
+                <div class="ss-tri-knob knob-hidden" id="ss_knob_high"></div>
+            </div>
+        </div>
+    </div>
+</div><!-- /sample-screen -->
+
+<br>
+<div style="margin-top: 30px;">{{ next_button }}</div>
+
+<script>
+(function () {
+
+    /* ── Sample screen: tri-region state-belief slider ── */
+    var trackEl   = document.getElementById('ss_tri_track');
+    var fillEl    = document.getElementById('ss_tri_fill');
+    var knobLow   = document.getElementById('ss_knob_low');
+    var knobHigh  = document.getElementById('ss_knob_high');
+    var pctLowEl  = document.getElementById('ss_pct_low');
+    var pctMedEl  = document.getElementById('ss_pct_med');
+    var pctHighEl = document.getElementById('ss_pct_high');
+
+    var lowPct = null, highPct = null, dragging = null, phase = 0;
+
+    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+    function pctFromEvent(e) {
+        var rect = trackEl.getBoundingClientRect();
+        var cx = e.touches ? e.touches[0].clientX : e.clientX;
+        return clamp(Math.round((cx - rect.left) / rect.width * 100), 0, 100);
+    }
+    function updateDisplay() {
+        if (lowPct === null) return;
+        knobLow.style.left = lowPct + '%';
+        if (highPct !== null) knobHigh.style.left = highPct + '%';
+        var low  = lowPct;
+        var high = highPct !== null ? 100 - highPct : null;
+        var med  = highPct !== null ? highPct - lowPct : null;
+        if (highPct !== null) {
+            fillEl.style.background =
+                'linear-gradient(to right,' +
+                ' #C62828 0%, #C62828 ' + low + '%,' +
+                ' #E65100 ' + low + '%, #E65100 ' + highPct + '%,' +
+                ' #2E7D32 ' + highPct + '%, #2E7D32 100%)';
+        } else {
+            fillEl.style.background =
+                'linear-gradient(to right,' +
+                ' #C62828 0%, #C62828 ' + low + '%,' +
+                ' #e8eaed ' + low + '%, #e8eaed 100%)';
+        }
+        pctLowEl.textContent = low + '%';
+        if (highPct !== null) { pctHighEl.textContent = high + '%'; pctMedEl.textContent = med + '%'; }
+    }
+
+    trackEl.addEventListener('mousedown', function(e) {
+        var p = pctFromEvent(e);
+        if (phase === 0)      { lowPct = p; phase = 1; knobLow.classList.remove('knob-hidden'); dragging = 'low'; }
+        else if (phase === 1) { highPct = clamp(p, lowPct, 100); phase = 2; knobHigh.classList.remove('knob-hidden'); dragging = 'high'; }
+        else                  { dragging = Math.abs(p - lowPct) <= Math.abs(p - highPct) ? 'low' : 'high'; }
+        updateDisplay();
+    });
+    document.addEventListener('mousemove', function(e) {
+        if (!dragging) return;
+        var p = pctFromEvent(e);
+        if (dragging === 'low') lowPct  = clamp(p, 0, highPct !== null ? highPct : 100);
+        else                    highPct = clamp(p, lowPct, 100);
+        updateDisplay();
+    });
+    document.addEventListener('mouseup', function() { dragging = null; });
+
+    trackEl.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        var p = pctFromEvent(e);
+        if (phase === 0)      { lowPct = p; phase = 1; knobLow.classList.remove('knob-hidden'); dragging = 'low'; }
+        else if (phase === 1) { highPct = clamp(p, lowPct, 100); phase = 2; knobHigh.classList.remove('knob-hidden'); dragging = 'high'; }
+        else                  { dragging = Math.abs(p - lowPct) <= Math.abs(p - highPct) ? 'low' : 'high'; }
+        updateDisplay();
+    }, { passive: false });
+    document.addEventListener('touchmove', function(e) {
+        if (!dragging) return; e.preventDefault();
+        var p = pctFromEvent(e);
+        if (dragging === 'low') lowPct  = clamp(p, 0, highPct !== null ? highPct : 100);
+        else                    highPct = clamp(p, lowPct, 100);
+        updateDisplay();
+    }, { passive: false });
+    document.addEventListener('touchend', function() { dragging = null; });
+
+}());
+</script>
+
+{{ endblock }}

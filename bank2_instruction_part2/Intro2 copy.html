@@ -1,721 +1,145 @@
 {{ extends "global/Page.html" }}
-{{ block title }}Part 2 Instructions (2 of 3){{ endblock }}
+{{ block title }}Part 2 Instructions - Today's Experiment{{ endblock }}
 
 {{ block content }}
 
 <style>
 :root {
-    --card-bg:  #ffffff;
-    --page-bg:  #ffffff;
-    --border:   #dde1e7;
-    --text:     #1a1f2e;
-    --muted:    #6b7280;
-    --radius:   10px;
-    --shadow:   0 2px 8px rgba(0,0,0,0.08);
+    --border: #dde1e7;
+    --text:   #1a1f2e;
+    --muted:  #6b7280;
 }
-
-body, .otree-body {
-    background: var(--page-bg) !important;
-    color: var(--text) !important;
-}
-
-/* ── Shared card ── */
-.card-panel {
-    background: var(--card-bg);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    overflow: hidden;
-}
-.card-panel-header {
-    background: #f8f9fb;
-    border-bottom: 0.5px solid var(--border);
-    padding: 10px 16px;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--muted);
-}
-
-/* ── Payoff tables ── */
-.payoff-zone { margin-bottom: 12px; }
-.payoff-three {
-    display: flex;
-    gap: 0;
-}
-.payoff-col {
-    flex: 1;
-    border-right: 0.5px solid var(--border);
-    padding: 12px 14px;
-}
-.payoff-col:last-child { border-right: none; }
-/* ── Cell highlight on hover ── */
-td.cell-highlighted {
-    background: #e8f0fe !important;
-    transition: background 0.15s;
-}
-td.cell-highlighted .my-payoff {
-    font-size: 14px;
-    font-weight: 600;
-    color: #0000ff;
-}
-/* ── Cell trigger (list items) ── */
-.switch-trigger {
-    cursor: default;
-    border-radius: 4px;
-    padding: 2px 4px;
-    transition: background 0.15s;
-}
-.switch-trigger:hover { background: #f0f4ff; }
-.payoff-col-label {
-    font-size: 13px;
-    font-weight: 700;
-    text-align: center;
-    padding-bottom: 8px;
-    color: var(--text);
-}
-.payoff-table {
-    width: 100%;
+.info-table {
     border-collapse: collapse;
-    font-size: 13px;
-    table-layout: fixed;
-}
-.payoff-table th, .payoff-table td {
-    border: 0.5px solid var(--border);
-    padding: 7px 4px;
-    text-align: center;
-    color: var(--text);
-}
-.payoff-table thead th {
-    background: #f8f9fb;
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--text);
-}
-.payoff-table .row-header {
-    background: #f8f9fb;
-    font-weight: 600;
-    font-size: 12px;
-    color: var(--text);
-    text-align: center;
-}
-/* Column widths — main payoff tables */
-.payoff-table col.col-label  { width: 34px; }
-.payoff-table col.col-action { width: 56px; }
-.payoff-table col.col-data   { width: auto; }
-/* Column widths — observer payoff tables */
-.payoff-table col.obs-col-action { width: 36px; }
-.payoff-table col.obs-col-data   { width: auto; }
-/* N/A rows (action A not available in Stage 2) */
-.payoff-table .row-na {
-    background: #f4f5f7;
-    color: #c8cdd4;
-    font-size: 12px;
-}
-
-
-/* ── Vertical text tabs ── */
-.vtab-list {
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    width: 200px;
-    border-right: 1.5px solid var(--border);
-    background: #f8f9fb;
-}
-.vtab {
-    padding: 14px 16px;
-    font-size: 13px;
-    font-weight: 600;
-    text-align: left;
-    cursor: pointer;
-    border: none;
-    background: transparent;
-    color: var(--muted);
-    border-left: 3px solid transparent;
-    transition: color 0.15s, background 0.15s;
-    line-height: 1.4;
-}
-.vtab:hover { color: var(--text); background: #eef0f4; }
-.vtab.active {
-    color: var(--text);
-    background: #ffffff;
-    border-left: 3px solid var(--text);
-}
-.vtab-content { flex: 1; padding: 16px 20px; }
-.vtab-panel { display: none; }
-.vtab-panel.active { display: block; }
-
-/* ── Match page-level h5 ── */
-h5 {
-    font-size: 1.25rem;
-    font-weight: 500;
-    line-height: 1.2;
-    margin-bottom: 0.5rem;
-}
-
-.feedback-box {
-    display: none;
-    margin-top: 8px;
-    padding: 8px 12px;
-    background: #fff3e0;
-    border: 1px solid #e65100;
-    border-radius: 6px;
-    color: #c62828;
     font-size: 14px;
+    margin: 0 auto;
 }
-.payoff-legend {
-    padding: 6px 0;
-    border-top: 0.5px solid var(--border);
-    background: #ffffff;
-    font-size: 12px;
-    color: var(--muted);
-    display: grid;
-    grid-template-columns: auto auto auto;
-    justify-content: center;
-    gap: 20px;
+.info-table th, .info-table td {
+    border: 0.5px solid var(--border);
+    padding: 8px 18px;
+    text-align: center;
+}
+.info-table thead th {
+    background: #f8f9fb;
+    font-size: 14px;
+    font-weight: 600;
+}
+.info-table .row-header {
+    background: #f8f9fb;
+    font-weight: 600;
+    font-size: 14px;
 }
 </style>
 
 <br>
-<h5>Differences (New features)</h5>
-<p>In the previous experiment, participants made decisions as bank depositors in 40 matches. In each of today's matches, one of those 40 matches will be randomly selected, and you will see what happened to the bank. Since this bank comes from the previous experiment, we call it the <strong>Pre-Bank</strong>. The bank you are assigned to today is referred to as <strong>your bank</strong>. <b>Note that a new Pre-Bank will be randomly drawn in each match today.</b></p>
-<p>Below describes three new features in today's experiment.</p>
+<p>Today's experiment is similar to Part 1, but with a key difference.</p>
+<p><strong>Note:</strong> Any quantitative information below (tables) will be shown to you when you make decisions. You do not need to memorize the numbers.</p>
 
 <br>
-<div class="card-panel" style="margin-bottom: 30px; display: flex; min-height: 300px;">
+<h5>Bank State Is Unknown</h5>
+<p>
+    In the previous experiment (Part 1), participants each played 40 games. In each game, two participants made decisions at a bank. That bank had a state (<strong>Low</strong>, <strong>Medium</strong>, or <strong>High</strong>), and participants knew the state when making decisions.
+</p>
+<p>
+    In today's experiment, you are also a depositor in a bank. Unlike the previous experiment, however, <strong>you will not be told the state of your bank.</strong> You need to make decisions without knowing whether your bank is in a Low, Medium, or High state.
+</p>
+<p>
+    Instead, your bank's state is determined as follows:
+    <ul>
+        <li>At the start of each game, one game from the previous experiment is randomly picked. The bank from that past game will be called the <strong>Pre-Bank</strong> to distinguish it from <strong>your bank</strong> in today's experiment.</li>
+        <li>Your bank's state is then randomly determined based on the Pre-Bank's state, as shown in the table below.</li>
+    </ul>
 
-    <!-- Vertical tab list -->
-    <div class="vtab-list">
-        <button type="button" class="vtab active" data-vtarget="vtab-state">1) How the State Is Determined</button>
-        <button type="button" class="vtab"         data-vtarget="vtab-prebank">2) Pre-Bank Actions</button>
-        <button type="button" class="vtab"         data-vtarget="vtab-observer">3) Observer's Message</button>
-    </div>
-
-    <!-- Tab panels -->
-    <div class="vtab-content">
-
-        <!-- ── TAB 1: How the State Is Determined ── -->
-        <div class="vtab-panel active" id="vtab-state">
-            <h5>How the State Is Determined</h5>
-            <p>As we saw in Part 1, the Pre-Bank was in Low, Medium, or High state, determined with the following probabilities:</p>
-            <table style="width:320px; border-collapse:collapse; font-size:14px; margin-bottom:28px; margin-left:auto; margin-right:auto; table-layout:fixed;">
-                <colgroup>
-                    <col style="width:160px;">
-                    <col style="width:160px;">
-                </colgroup>
-                <thead>
-                    <tr>
-                        <th style="background:#f8f9fb; border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; font-weight:600; color:#1a1f2e;">Pre-Bank state</th>
-                        <th style="background:#f8f9fb; border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; font-weight:600; color:#1a1f2e;">Probability</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; color:#1a1f2e; background:#ffffff;">Low</td>
-                        <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; color:#1a1f2e; background:#ffffff;">{{C.LOW_PROB}}%</td>
-                    </tr>
-                    <tr>
-                        <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; color:#1a1f2e; background:#ffffff;">Medium</td>
-                        <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; color:#1a1f2e; background:#ffffff;">{{C.MEDIUM_PROB}}%</td>
-                    </tr>
-                    <tr>
-                        <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; color:#1a1f2e; background:#ffffff;">High</td>
-                        <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; color:#1a1f2e; background:#ffffff;">{{C.HIGH_PROB}}%</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <p>Your bank will also be in Low, Medium, or High state. However, the state of your bank is determined as follows:</p>
-
-            <div style="margin: 16px 0 24px 0;">
-                <table style="border-collapse:collapse; font-size:14px; margin-left:auto; margin-right:auto; table-layout:fixed; width:520px;">
-                    <colgroup>
-                        <col style="width:80px;">
-                        <col style="width:80px;">
-                        <col style="width:120px;">
-                        <col style="width:120px;">
-                        <col style="width:120px;">
-                    </colgroup>
-                    <thead>
-                        <tr>
-                            <th rowspan="2" colspan="2" style="background:#f8f9fb; border:0.5px solid #dde1e7; padding:9px 10px;"></th>
-                            <th colspan="3" style="background:#f8f9fb; border:0.5px solid #dde1e7; padding:9px 10px; text-align:center; font-weight:600; color:#1a1f2e;">Pre-Bank state</th>
-                        </tr>
-                        <tr>
-                            <th style="background:#f8f9fb; border:0.5px solid #dde1e7; padding:9px 10px; text-align:center; font-weight:600; color:#1a1f2e;">Low</th>
-                            <th style="background:#f8f9fb; border:0.5px solid #dde1e7; padding:9px 10px; text-align:center; font-weight:600; color:#1a1f2e;">Medium</th>
-                            <th style="background:#f8f9fb; border:0.5px solid #dde1e7; padding:9px 10px; text-align:center; font-weight:600; color:#1a1f2e;">High</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td rowspan="3" style="background:#f8f9fb; border:0.5px solid #dde1e7; padding:9px 10px; text-align:center; font-weight:600; color:#1a1f2e; vertical-align:middle;">Your<br>bank</td>
-                            <td style="background:#f8f9fb; border:0.5px solid #dde1e7; padding:9px 10px; text-align:center; font-weight:600; color:#1a1f2e;">Low</td>
-                            <td style="border:0.5px solid #dde1e7; padding:9px 10px; text-align:center; background:#ffffff; color:#1a1f2e;">{{C.STATE_CORR}}%</td>
-                            <td style="border:0.5px solid #dde1e7; padding:9px 10px; text-align:center; background:#ffffff; color:#1a1f2e;">{{unmatched_corr}}%</td>
-                            <td style="border:0.5px solid #dde1e7; padding:9px 10px; text-align:center; background:#ffffff; color:#1a1f2e;">{{unmatched_corr}}%</td>
-                        </tr>
-                        <tr>
-                            <td style="background:#f8f9fb; border:0.5px solid #dde1e7; padding:9px 10px; text-align:center; font-weight:600; color:#1a1f2e;">Medium</td>
-                            <td style="border:0.5px solid #dde1e7; padding:9px 10px; text-align:center; background:#ffffff; color:#1a1f2e;">{{unmatched_corr}}%</td>
-                            <td style="border:0.5px solid #dde1e7; padding:9px 10px; text-align:center; background:#ffffff; color:#1a1f2e;">{{C.STATE_CORR}}%</td>
-                            <td style="border:0.5px solid #dde1e7; padding:9px 10px; text-align:center; background:#ffffff; color:#1a1f2e;">{{unmatched_corr}}%</td>
-                        </tr>
-                        <tr>
-                            <td style="background:#f8f9fb; border:0.5px solid #dde1e7; padding:9px 10px; text-align:center; font-weight:600; color:#1a1f2e;">High</td>
-                            <td style="border:0.5px solid #dde1e7; padding:9px 10px; text-align:center; background:#ffffff; color:#1a1f2e;">{{unmatched_corr}}%</td>
-                            <td style="border:0.5px solid #dde1e7; padding:9px 10px; text-align:center; background:#ffffff; color:#1a1f2e;">{{unmatched_corr}}%</td>
-                            <td style="border:0.5px solid #dde1e7; padding:9px 10px; text-align:center; background:#ffffff; color:#1a1f2e;">{{C.STATE_CORR}}%</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <p>In short, your bank is likely to be in the same state as the Pre-Bank with <strong>70% probability</strong>, and in either one of the other two states with <strong>15% probability</strong> each.</p>
-
-            <p><strong>IMPORTANT:</strong> Unlike the previous experiment, you will <b>NOT</b> know the state of your bank when you make your decisions. You will not know the state of the Pre-Bank, either. <strong>Thus, you should consider that your bank may be in any one of the three states when making decisions.</strong></p>
-
-            <br>
-            <p>To proceed, click <a href="#" class="goto-tab" data-goto="vtab-prebank" style="color:#0000ff; font-weight:500; text-decoration:none;">here</a>, or the second tab on the left.</p>
-        </div>
-
-        <!-- ── TAB 2: Pre-Bank Actions ── -->
-        <div class="vtab-panel" id="vtab-prebank">
-            <h5 style="margin-top:0;">Pre-Bank Actions</h5>
-
-            <div style="display: flex; padding: 20px 0px; justify-content: center;">
-                <div style="border: 1px solid #ccc; padding: 20px 30px; display: inline-block;">
-                <table style="border-collapse: collapse;">
-                    <thead>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td style="padding-bottom: 8px;">
-                        <span style="padding: 0 24px; text-decoration: underline; font-weight: bold;">Stage 1</span>
-                        </td>
-                        <td></td>
-                        <td style="text-align: center; padding-bottom: 8px;">
-                        <span style="text-decoration: underline; font-weight: bold;">Stage 2</span>
-                        </td>
-                        <td style="text-align: left; padding-bottom: 8px; padding-left: 16px; font-size: 0.9em;">(label for each path)</td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <!-- Row 1: Stage 1 action A -->
-                    <tr style="height: 44px;">
-                        <td rowspan="3" style="position: relative; min-width: 90px; padding-right: 12px; white-space: nowrap;">
-                        <span style="position: absolute; top: 44px; left: 0;">Depositor:</span>
-                        </td>
-
-                        <td rowspan="3" style="padding: 0; width: 16px; position: relative;">
-                        <div style="position: absolute; top: 22px; left: 0; width: 16px; height: 22px;
-                                    border-top: 1.5px solid black;
-                                    border-left: 1.5px solid black;
-                                    border-radius: 6px 0 0 0;"></div>
-                        <div style="position: absolute; bottom: 44px; left: 0; width: 16px; height: 44px;
-                                    border-bottom: 1.5px solid black;
-                                    border-left: 1.5px solid black;
-                                    border-radius: 0 0 0 6px;"></div>
-                        </td>
-
-                        <td style="padding: 0 16px; vertical-align: middle; white-space: nowrap;">&#x2022; action A</td>
-                        <td></td>
-                        <td></td>
-                        <td style="padding-left: 36px; vertical-align: middle;">: <em>A</em></td>
-                    </tr>
-
-                    <!-- Row 2: Stage 1 action B → Stage 2 action A -->
-                    <tr style="height: 44px;">
-                        <td rowspan="2" style="padding: 0 16px; vertical-align: middle; white-space: nowrap;">
-                        &#x2022; action B
-                        <span style="display: inline-flex; align-items: center; margin-left: 8px;">
-                            <span style="display: inline-block; width: 60px; height: 1.5px; background: #555;
-                                        position: relative; vertical-align: middle;">
-                            <span style="position: absolute; right: -1px; top: 50%;
-                                        transform: translateY(-50%);
-                                        border-top: 4px solid transparent;
-                                        border-bottom: 4px solid transparent;
-                                        border-left: 6px solid #555;"></span>
-                            </span>
-                        </span>
-                        </td>
-
-                        <td rowspan="2" style="padding: 0; width: 16px; position: relative;">
-                        <div style="position: absolute; top: 22px; left: 0; width: 16px; height: 22px;
-                                    border-top: 1.5px solid black;
-                                    border-left: 1.5px solid black;
-                                    border-radius: 6px 0 0 0;"></div>
-                        <div style="position: absolute; bottom: 22px; left: 0; width: 16px; height: 22px;
-                                    border-bottom: 1.5px solid black;
-                                    border-left: 1.5px solid black;
-                                    border-radius: 0 0 0 6px;"></div>
-                        </td>
-
-                        <td style="padding: 0 12px; vertical-align: middle; white-space: nowrap;">&#x2022; action A</td>
-                        <td style="padding-left: 36px; vertical-align: middle;">: <em>BA</em></td>
-                    </tr>
-
-                    <!-- Row 3: Stage 2 action B -->
-                    <tr style="height: 44px;">
-                        <td style="padding: 0 12px; vertical-align: middle; white-space: nowrap;">&#x2022; action B</td>
-                        <td style="padding-left: 36px; vertical-align: middle;">: <em>BB</em></td>
-                    </tr>
-                    </tbody>
-                </table>
-                </div>
-            </div>
-
-            <p>
-                You do not observe the bank states in today's experiment, but you will be given other piece of information that may help you make your decisions.</p>
-            <p>
-                In <strong>Stage 1</strong>, you will see the <strong>A-count</strong>: the number of depositors in the Pre-Bank who chose action A in either Stage 1 (<b><em>A</em></b>) or Stage 2 (<b><em>BA</em></b>). Each bank had two depositors, so the A-count can be 0, 1, or 2.</p>
-            <p>
-                This information may help you get a better idea of the Pre-Bank's state, which may also help you infer the likely state of your bank. Recall that the state of Pre-Bank and that of your bank are related, as described in 1) How the State is Determined.
-            </p>
-            <p><strong>Note:</strong> A new Pre-Bank is randomly selected each match today, and the A-count you see each time is likely to be from different participants from the previous experiment.</p>
-            
-            <br>
-            <p>To proceed, click <a href="#" class="goto-tab" data-goto="vtab-observer" style="color:#0000ff; font-weight:500; text-decoration:none;">here</a>, or the third tab on the left.</p>
-        </div>
-
-        <!-- ── TAB 3: Observer's Message ── -->
-        <div class="vtab-panel" id="vtab-observer">
-            <h5 style="margin-top:0;">Observer's Message</h5>
-            <p>
-                If you choose action B in Stage 1, you will receive a message from an <strong>Observer</strong> (a computerized agent) in <strong>Stage 2</strong>.
-                This message may help you make your decision.
-            </p>
-
-            <div style="display: flex; padding: 20px 0px; justify-content: center;">
-                <div style="border: 1px solid #ccc; padding: 20px 30px 70px 50px; display: inline-block;">
-                <table style="border-collapse: collapse;">
-                    <thead>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td style="padding-bottom: 8px;">
-                        <span style="padding: 0 24px; text-decoration: underline; font-weight: bold;">Stage 1</span>
-                        </td>
-                        <td></td>
-                        <td style="text-align: center; padding-bottom: 8px;">
-                        <span style="text-decoration: underline; font-weight: bold;">Stage 2</span>
-                        </td>
-                        <td style="text-align: left; padding-bottom: 8px; padding-left: 16px; font-size: 0.9em;">(label for each path)</td>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <!-- Row 1: Stage 1 action A -->
-                    <tr style="height: 44px;">
-                        <td rowspan="3" style="position: relative; min-width: 56px; padding-right: 12px; white-space: nowrap;">
-                        <span style="position: absolute; top: 44px; left: 0;">You:</span>
-                        </td>
-
-                        <td rowspan="3" style="padding: 0; width: 16px; position: relative;">
-                        <div style="position: absolute; top: 22px; left: 0; width: 16px; height: 22px;
-                                    border-top: 1.5px solid black;
-                                    border-left: 1.5px solid black;
-                                    border-radius: 6px 0 0 0;"></div>
-                        <div style="position: absolute; bottom: 44px; left: 0; width: 16px; height: 44px;
-                                    border-bottom: 1.5px solid black;
-                                    border-left: 1.5px solid black;
-                                    border-radius: 0 0 0 6px;"></div>
-                        </td>
-
-                        <td style="padding: 0 16px; vertical-align: middle; white-space: nowrap;">&#x2022; action A</td>
-                        <td></td>
-                        <td></td>
-                        <td style="padding-left: 36px; vertical-align: middle;">: <em>A</em></td>
-                    </tr>
-
-                    <!-- Row 2: Stage 1 action B → Stage 2 action A -->
-                    <tr style="height: 44px;">
-                        <td rowspan="2" style="padding: 0 16px; vertical-align: middle; white-space: nowrap; position: relative;">
-                        &#x2022; action B
-                        <span style="display: inline-flex; align-items: center; margin-left: 8px;">
-                            <span style="display: inline-block; width: 60px; height: 1.5px; background: #555;
-                                        position: relative; vertical-align: middle;">
-                            <span style="position: absolute; right: -1px; top: 50%;
-                                        transform: translateY(-50%);
-                                        border-top: 4px solid transparent;
-                                        border-bottom: 4px solid transparent;
-                                        border-left: 6px solid #555;"></span>
-                            </span>
-                        </span>
-                        <!-- Upward arrow -->
-                        <div style="position: absolute; left: 130px; top: calc(50% + 15px);
-                                    width: 1.5px; height: 40px; background: #1565c0;">
-                            <span style="position: absolute; top: -1px; left: 50%;
-                                         transform: translateX(-50%);
-                                         border-left: 4px solid transparent;
-                                         border-right: 4px solid transparent;
-                                         border-bottom: 6px solid #1565c0;"></span>
-                        </div>
-                        <!-- Message text -->
-                        <div style="position: absolute; top: calc(50% + 55px); text-align: center; color: #1565c0; white-space: nowrap;">
-                            Receives a message from Observer: <br> <em>&ldquo;Left&rdquo;</em>, or <em>&ldquo;Right&rdquo;</em>
-                        </div>
-                        </td>
-
-                        <td rowspan="2" style="padding: 0; width: 16px; position: relative;">
-                        <div style="position: absolute; top: 22px; left: 0; width: 16px; height: 22px;
-                                    border-top: 1.5px solid black;
-                                    border-left: 1.5px solid black;
-                                    border-radius: 6px 0 0 0;"></div>
-                        <div style="position: absolute; bottom: 22px; left: 0; width: 16px; height: 22px;
-                                    border-bottom: 1.5px solid black;
-                                    border-left: 1.5px solid black;
-                                    border-radius: 0 0 0 6px;"></div>
-                        </td>
-
-                        <td style="padding: 0 12px; vertical-align: middle; white-space: nowrap;">&#x2022; action A</td>
-                        <td style="padding-left: 36px; vertical-align: middle;">: <em>BA</em></td>
-                    </tr>
-
-                    <!-- Row 3: Stage 2 action B -->
-                    <tr style="height: 44px;">
-                        <td style="padding: 0 12px; vertical-align: middle; white-space: nowrap;">&#x2022; action B</td>
-                        <td style="padding-left: 36px; vertical-align: middle;">: <em>BB</em></td>
-                    </tr>
-
-                    </tbody>
-                </table>
-                </div>
-            </div>
-            
-            <p>The message will be: <br>
-            <span style="display:inline-block; font-size:12px; font-weight:600; color:#3949ab;
-                             background:#e8eaf6; border:1px solid #9fa8da; border-radius:4px; padding:2px 8px;">
-                    &#9654; hover a line to highlight the relevant table cells
-            </span></p>
-            <ul>
-                <li class="switch-trigger" data-cells="panel-obs-low:all panel-obs-med:A"><strong>&ldquo;Left&rdquo;</strong> in either of the following cases:
-                    <ul style="margin-top: 4px;">
-                        <li>the state of your bank is Low</li>
-                        <li>the state of your bank is Medium, and the other chose action A in Stage 1</li>
-                    </ul>
-                </li>
-                <li class="switch-trigger" data-cells="panel-obs-med:BA,BB panel-obs-high:all" style="margin-top: 6px;"><strong>&ldquo;Right&rdquo;</strong> otherwise:
-                    <ul style="margin-top: 4px;">
-                        <li>the state of your bank is High</li>
-                        <li>the state of your bank is Medium, and the other also chose action B in Stage 1</li>
-                    </ul>
-                </li>
-            </ul>
-            <p>Hovering over lines above highlights the relevant payoff cells below. Since you will only see the message in Stage 2, only the payoffs from BA or BB are shown.</p>
-            <p>The message does not reveal which specific case triggered it. However, the Observer always reports truthfully, so you can rely on the message.</p>
-            <p><strong>NOTE:</strong> The Observer's message is about <strong><em>your bank</em></strong>.
-            <p><strong>NOTE:</strong> This message is sent in Stage 2. You will <strong>NOT</strong> receive it if you choose action A in Stage 1.</p>
-
-                    <!-- ── Observer payoff tables ── -->
-            <div id="obs-payoff-wrap" class="card-panel payoff-zone" style="margin-bottom:16px;">
-                <div class="card-panel-header">Payoff Tables (Stage 2)</div>
-                <div class="payoff-three">
-
-                    <!-- LOW -->
-                    <div class="payoff-col" id="panel-obs-low">
-                        <div class="payoff-col-label">Low</div>
-                        <table class="payoff-table">
-                            <colgroup>
-                                <col class="obs-col-action">
-                                <col class="obs-col-data">
-                                <col class="obs-col-data">
-                                <col class="obs-col-data">
-                            </colgroup>
-                            <thead>
-                                <tr><th></th><th>A</th><th>BA</th><th>BB</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr data-row="A">
-                                    <td class="row-header">A</td>
-                                    <td class="row-na"></td>
-                                    <td class="row-na"></td>
-                                    <td class="row-na"></td>
-                                </tr>
-                                <tr data-row="BA">
-                                    <td class="row-header">BA</td>
-                                    <td data-col="A">(<span class="my-payoff">{{delayed_a}}</span>, {{C.ENDOWMENT}})</td>
-                                    <td data-col="BA">(<span class="my-payoff">{{delayed_a}}</span>, {{delayed_a}})</td>
-                                    <td data-col="BB">(<span class="my-payoff">{{delayed_a}}</span>, {{C.FAIL_PAYOFF}})</td>
-                                </tr>
-                                <tr data-row="BB">
-                                    <td class="row-header">BB</td>
-                                    <td data-col="A">(<span class="my-payoff">{{C.FAIL_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
-                                    <td data-col="BA">(<span class="my-payoff">{{C.FAIL_PAYOFF}}</span>, {{delayed_a}})</td>
-                                    <td data-col="BB">(<span class="my-payoff">{{C.FAIL_PAYOFF}}</span>, {{C.FAIL_PAYOFF}})</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- MEDIUM -->
-                    <div class="payoff-col" id="panel-obs-med">
-                        <div class="payoff-col-label">Medium</div>
-                        <table class="payoff-table">
-                            <colgroup>
-                                <col class="obs-col-action">
-                                <col class="obs-col-data">
-                                <col class="obs-col-data">
-                                <col class="obs-col-data">
-                            </colgroup>
-                            <thead>
-                                <tr><th></th><th>A</th><th>BA</th><th>BB</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr data-row="A">
-                                    <td class="row-header">A</td>
-                                    <td class="row-na"></td>
-                                    <td class="row-na"></td>
-                                    <td class="row-na"></td>
-                                </tr>
-                                <tr data-row="BA">
-                                    <td class="row-header">BA</td>
-                                    <td data-col="A">(<span class="my-payoff">{{delayed_a}}</span>, {{C.ENDOWMENT}})</td>
-                                    <td data-col="BA">(<span class="my-payoff">{{delayed_a}}</span>, {{delayed_a}})</td>
-                                    <td data-col="BB">(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.FAIL_PAYOFF}})</td>
-                                </tr>
-                                <tr data-row="BB">
-                                    <td class="row-header">BB</td>
-                                    <td data-col="A">(<span class="my-payoff">{{C.FAIL_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
-                                    <td data-col="BA">(<span class="my-payoff">{{C.FAIL_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
-                                    <td data-col="BB">(<span class="my-payoff">{{C.SUCCESS_PAYOFF}}</span>, {{C.SUCCESS_PAYOFF}})</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- HIGH -->
-                    <div class="payoff-col" id="panel-obs-high">
-                        <div class="payoff-col-label">High</div>
-                        <table class="payoff-table">
-                            <colgroup>
-                                <col class="obs-col-action">
-                                <col class="obs-col-data">
-                                <col class="obs-col-data">
-                                <col class="obs-col-data">
-                            </colgroup>
-                            <thead>
-                                <tr><th></th><th>A</th><th>BA</th><th>BB</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr data-row="A">
-                                    <td class="row-header">A</td>
-                                    <td class="row-na"></td>
-                                    <td class="row-na"></td>
-                                    <td class="row-na"></td>
-                                </tr>
-                                <tr data-row="BA">
-                                    <td class="row-header">BA</td>
-                                    <td data-col="A">(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.ENDOWMENT}})</td>
-                                    <td data-col="BA">(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.ENDOWMENT}})</td>
-                                    <td data-col="BB">(<span class="my-payoff">{{C.ENDOWMENT}}</span>, {{C.SUCCESS_PAYOFF}})</td>
-                                </tr>
-                                <tr data-row="BB">
-                                    <td class="row-header">BB</td>
-                                    <td data-col="A">(<span class="my-payoff">{{C.SUCCESS_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
-                                    <td data-col="BA">(<span class="my-payoff">{{C.SUCCESS_PAYOFF}}</span>, {{C.ENDOWMENT}})</td>
-                                    <td data-col="BB">(<span class="my-payoff">{{C.SUCCESS_PAYOFF}}</span>, {{C.SUCCESS_PAYOFF}})</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                </div>
-                <div class="payoff-legend">
-                    <span><b>A</b>: action A (Stage 1)</span>
-                    <span><b>BA</b>: action B (Stage 1) &rarr; action A (Stage 2)</span>
-                    <span><b>BB</b>: action B (Stage 1) &rarr; action B (Stage 2)</span>
-                </div>
-            </div>
-        </div>
-
-    </div>
+<div>
+    <table class="info-table">
+        <colgroup>
+            <col style="width: 20px;">
+            <col style="width: 80px;">
+            <col style="width: 90px;">
+            <col style="width: 90px;">
+            <col style="width: 90px;">
+        </colgroup>
+        <thead>
+            <tr>
+                <th class="row-header" rowspan="2" colspan="2"></th>
+                <th colspan="3">Pre-Bank state</th>
+            </tr>
+            <tr>
+                <th>Low</th>
+                <th>Medium</th>
+                <th>High</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="row-header" rowspan="3" style="writing-mode:vertical-rl; transform:rotate(180deg); font-weight:700; color:#3949ab; white-space:nowrap;">Your bank</td>
+                <td class="row-header">Low</td>
+                <td>{{C.STATE_CORR}}%</td>
+                <td>{{unmatched_corr}}%</td>
+                <td>{{unmatched_corr}}%</td>
+            </tr>
+            <tr>
+                <td class="row-header">Medium</td>
+                <td>{{unmatched_corr}}%</td>
+                <td>{{C.STATE_CORR}}%</td>
+                <td>{{unmatched_corr}}%</td>
+            </tr>
+            <tr>
+                <td class="row-header">High</td>
+                <td>{{unmatched_corr}}%</td>
+                <td>{{unmatched_corr}}%</td>
+                <td>{{C.STATE_CORR}}%</td>
+            </tr>
+        </tbody>
+    </table>
 </div>
+</p>
 
-<div id="tab-feedback" class="feedback-box"></div>
+<p>
+    Each row shows the probability that your bank is in a given state, depending on the Pre-Bank's state. In a word, your bank is in the same state as the Pre-Bank with <strong>{{C.STATE_CORR}}% probability</strong>, and in one of the other two states with <strong>{{unmatched_corr}}% probability</strong> each.
+</p>
+<br>
+<p>In today's experiment, <strong>you will also not be told the Pre-Bank's state</strong>. Remember that the Pre-Bank's state was randomly drawn with the following probabilities:</p>
+    <table style="width:300px; border-collapse:collapse; font-size:14px; margin-bottom:28px; margin-left:auto; margin-right:auto; table-layout:fixed;">
+        <colgroup>
+            <col style="width:150px;">
+            <col style="width:150px;">
+        </colgroup>
+        <thead>
+            <tr>
+                <th style="background:#f8f9fb; border:0.5px solid #dde1e7; padding:8px 18px; text-align:center; font-weight:600; color:#1a1f2e;">Pre-Bank state</th>
+                <th style="background:#f8f9fb; border:0.5px solid #dde1e7; padding:8px 18px; text-align:center; font-weight:600; color:#1a1f2e;">Probability</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; color:#1a1f2e; background:#ffffff;">Low</td>
+                <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; color:#1a1f2e; background:#ffffff;">{{C.LOW_PROB}}%</td>
+            </tr>
+            <tr>
+                <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center;color:#1a1f2e; background:#ffffff;">Medium</td>
+                <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; color:#1a1f2e; background:#ffffff;">{{C.MEDIUM_PROB}}%</td>
+            </tr>
+            <tr>
+                <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center;color:#1a1f2e; background:#ffffff;">High</td>
+                <td style="border:0.5px solid #dde1e7; padding:9px 14px; text-align:center; color:#1a1f2e; background:#ffffff;">{{C.HIGH_PROB}}%</td>
+            </tr>
+        </tbody>
+    </table>
 
+<br>
+<p><strong>In summary:</strong></p>
+<ul style="line-height: 1.8;">
+    <li>At the start of each game, a <strong>new Pre-Bank</strong> is randomly picked. It will be different every game.</li>
+    <li>Both the Pre-Bank's state and your bank's state will be <strong>unknown</strong> to you.</li>
+    <li>Your bank's state <strong>depends on</strong> the Pre-Bank's state.</li>
+    <li>The probability of each Pre-Bank state may give you a clue about what state your bank is likely to be in.</li>
+    <li>Tables above will be shown to you when you make decisions.</li>
+</ul>
 
-<div style="text-align:center; padding-top:30px;">
+<div style="display:flex; justify-content:center; gap:12px; padding-top:10px;">
+    {{ back_button }}
     {{ next_button }}
 </div>
-
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-
-    /* ── Goto tab links ── */
-    document.querySelectorAll('.goto-tab').forEach(function(a) {
-        a.addEventListener('click', function(e) {
-            e.preventDefault();
-            var btn = document.querySelector('.vtab[data-vtarget="' + a.dataset.goto + '"]');
-            if (btn) btn.click();
-        });
-    });
-
-    /* ── Vertical text tabs ── */
-    var tabsVisited = { 'vtab-state': true, 'vtab-prebank': false, 'vtab-observer': false };
-    document.querySelectorAll('.vtab').forEach(function(tab) {
-        tab.addEventListener('click', function() {
-            document.querySelectorAll('.vtab').forEach(function(t) { t.classList.remove('active'); });
-            document.querySelectorAll('.vtab-panel').forEach(function(p) { p.classList.remove('active'); });
-            tab.classList.add('active');
-            document.getElementById(tab.dataset.vtarget).classList.add('active');
-            tabsVisited[tab.dataset.vtarget] = true;
-        });
-    });
-
-    /* ── Observer tab: cell-level highlight on hover ── */
-    document.querySelectorAll('.switch-trigger').forEach(function(li) {
-        var specs = (li.dataset.cells || '').split(' ').filter(Boolean);
-
-        function getCells() {
-            var cells = [];
-            specs.forEach(function(spec) {
-                var parts = spec.split(':');
-                var panelId = parts[0];
-                var cols = parts[1] === 'all' ? ['A', 'BA', 'BB'] : parts[1].split(',');
-                var panel = document.getElementById(panelId);
-                if (!panel) return;
-                cols.forEach(function(col) {
-                    panel.querySelectorAll('td[data-col="' + col + '"]:not(.row-na)').forEach(function(td) {
-                        cells.push(td);
-                    });
-                });
-            });
-            return cells;
-        }
-
-        li.addEventListener('mouseenter', function() {
-            document.querySelectorAll('#obs-payoff-wrap td.cell-highlighted').forEach(function(td) {
-                td.classList.remove('cell-highlighted');
-            });
-            getCells().forEach(function(td) { td.classList.add('cell-highlighted'); });
-        });
-        li.addEventListener('mouseleave', function() {
-            document.querySelectorAll('#obs-payoff-wrap td.cell-highlighted').forEach(function(td) {
-                td.classList.remove('cell-highlighted');
-            });
-        });
-    });
-
-    /* ── Next button validation ── */
-    var nextBtn = document.querySelector('button[type=submit], .otree-btn-next');
-
-    if (nextBtn) {
-        nextBtn.addEventListener('click', function(e) {
-            var tabFeedback = document.getElementById('tab-feedback');
-            var allTabsVisited = tabsVisited['vtab-state'] && tabsVisited['vtab-prebank'] && tabsVisited['vtab-observer'];
-            if (!allTabsVisited) {
-                tabFeedback.innerHTML = 'Please click and read all three tabs before continuing.';
-                tabFeedback.style.display = 'block';
-                e.preventDefault();
-                e.stopImmediatePropagation();
-            } else {
-                tabFeedback.style.display = 'none';
-            }
-        });
-    }
-});
-</script>
 
 {{ endblock }}

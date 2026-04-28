@@ -1,0 +1,164 @@
+{{ extends "global/Page.html" }}
+{{ block title }}Part 2 Instructions{{ endblock }}
+
+{{ block content }}
+
+<style>
+.demo-row {
+    display: grid;
+    grid-template-columns: 400px;
+    gap: 12px;
+    align-items: start;
+    border: 1px solid #dde1e7;
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 0 auto 20px;
+    width: fit-content;
+}
+
+/* Demo slider — matches the actual belief slider in Period 1 */
+.demo-slider-section-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+}
+.demo-slider-hint {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 12px;
+}
+.demo-slider-wrap { margin: 18px 0 24px; }
+.demo-labels-row { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 8px; }
+.demo-end { min-width: 60px; }
+.demo-end.left  { text-align: left; }
+.demo-end.right { text-align: right; }
+.demo-h-label { font-size: 13px; font-weight: 600; letter-spacing: 0.04em; }
+.demo-h-pct   { font-size: 26px; font-weight: 600; min-height: 32px; }
+.demo-track-wrap { position: relative; height: 20px; }
+.demo-track-bg { position: absolute; top: 50%; left: 0; right: 0; height: 12px; transform: translateY(-50%); border-radius: 6px; pointer-events: none; background: #e8eaed; }
+input.demo-range { position: absolute; top: 50%; left: 0; width: 100%; transform: translateY(-50%); -webkit-appearance: none; appearance: none; background: transparent; outline: none; margin: 0; height: 20px; cursor: pointer; }
+input.demo-range::-webkit-slider-thumb { -webkit-appearance: none; width: 24px; height: 24px; border-radius: 50%; background: #37474f; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+input.demo-range::-moz-range-thumb { width: 24px; height: 24px; border-radius: 50%; background: #37474f; border: 2px solid #fff; box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+.demo-caption { font-size: 14px; color: #888; text-align: center; margin-top: 10px; }
+.knob-hidden::-webkit-slider-thumb { opacity: 0 !important; }
+.knob-hidden::-moz-range-thumb     { opacity: 0 !important; }
+
+/* Step indicator (reused from game pages) */
+.step-indicator { display: flex; align-items: center; gap: 4px; margin-bottom: 10px; }
+.step {
+    display: flex; align-items: center; gap: 6px;
+    padding: 5px 14px; border-radius: 20px;
+    font-size: 14px; font-weight: 600;
+}
+.step.active   { background: #e1f5fe; color: #0277bd; }
+.step.inactive { color: #b0b8c4; }
+.step.done     { color: #b0b8c4; }
+.step-num {
+    width: 20px; height: 20px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+}
+.step.active .step-num           { background: #0277bd; color: #fff; }
+.step.inactive .step-num,
+.step.done     .step-num         { background: #e0e0e0; color: #9aa0a8; }
+.step-arrow { color: #c8cdd4; font-size: 14px; }
+
+/* Collapsible payment rule */
+.payment-rule-toggle {
+    display: inline-block;
+    margin-top: 12px;
+    color: #1976D2;
+    cursor: pointer;
+    text-decoration: underline;
+    user-select: none;
+}
+.payment-rule-box {
+    display: none;
+    border-left: 4px solid #1976D2;
+    background: #f5f9ff;
+    padding: 14px 18px;
+    margin-top: 10px;
+    line-height: 1.6;
+}
+.payment-rule-box h6 { margin: 0 0 8px; font-size: 14px; color: #37474f; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; }
+.payment-rule-box ul { margin: 8px 0 8px 20px; padding: 0; }
+.payment-rule-box li { margin-bottom: 6px; }
+.payment-rule-highlight { background: #e3f0fb; font-size: 18px; border-radius: 4px; padding: 8px 12px; margin-top: 20px; }
+</style>
+<br>
+<p>
+    In this part, you will play <strong>{{ part2_rounds }} more games</strong> and make the same decisions as before, with one additional task. 
+</p>
+<p>On the same screen where you choose to withdraw or stay in <strong>Period 1</strong>, you will also report your belief about what the other participant will choose in Period 1.</p>
+<p>You will indicate your belief using a slider. Below is a preview of how the slider appears on the actual screen.</p>
+
+<!-- Demo slider — same layout as the actual belief slider in Period 1 -->
+<div class="demo-row">
+    <div class="step-indicator">
+        <div class="step active"><div class="step-num">1</div>Period 1</div>
+        <div class="step-arrow">›</div>
+        <div class="step inactive"><div class="step-num">2</div>Period 2</div>
+    </div>
+    <div class="demo-slider-section-title">How likely do you think the other participant will choose to withdraw or stay in Period 1?</div>
+    <div class="demo-slider-wrap">
+        <div class="demo-labels-row">
+            <div class="demo-end left">
+                <div class="demo-h-label" style="color:#5e35b1;">Withdraw</div>
+                <div class="demo-h-pct" id="demo_pct_a" style="color:#5e35b1;">&nbsp;</div>
+            </div>
+            <div class="demo-end right">
+                <div class="demo-h-label" style="color:#00838f;">Stay</div>
+                <div class="demo-h-pct" id="demo_pct_b" style="color:#00838f;">&nbsp;</div>
+            </div>
+        </div>
+        <div class="demo-track-wrap">
+            <div class="demo-track-bg" id="demo_track"></div>
+            <input type="range" class="demo-range knob-hidden" id="demo_slider" min="0" max="100" step="1" value="40">
+        </div>
+        <div class="demo-caption">This is an example slider. Click the track and move the slider.</div>
+    </div>
+</div>
+
+<p>
+    You will report your belief by moving the slider. The percentage on the left indicates how likely you think it is that the other participant will choose to withdraw, while the percentage on the right indicates how likely you think it is that the other participant will choose to stay.
+</p>
+
+<div style="margin-top: 30px;">{{ next_button }}</div>
+
+<script>
+(function () {
+    var slider = document.getElementById('demo_slider');
+    var track  = document.getElementById('demo_track');
+    var valEl  = document.getElementById('demo_val');
+
+    var pctA    = document.getElementById('demo_pct_a');
+    var pctB    = document.getElementById('demo_pct_b');
+    var touched = false;
+
+    function update(v) {
+        track.style.background =
+            'linear-gradient(to right, #5e35b1 ' + v + '%, #00838f ' + v + '%)';
+        pctA.textContent = v + '%';
+        pctB.textContent = (100 - v) + '%';
+    }
+
+    function onFirstTouch() {
+        if (!touched) {
+            touched = true;
+            slider.classList.remove('knob-hidden');
+            update(parseInt(slider.value));
+        }
+    }
+    slider.addEventListener('mousedown', onFirstTouch);
+    slider.addEventListener('touchstart', onFirstTouch);
+    slider.addEventListener('input', function () { update(parseInt(this.value)); });
+
+    document.getElementById('rule_toggle').addEventListener('click', function () {
+        var box = document.getElementById('rule_box');
+        box.style.display = (box.style.display === 'block') ? 'none' : 'block';
+    });
+}());
+</script>
+
+{{ endblock }}

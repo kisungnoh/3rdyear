@@ -77,33 +77,62 @@ def creating_session(subsession: Subsession):
 class Welcome(Page):
     pass
 
+class Intro0(Page):
+    pass
+
 class Intro1(Page):
     pass
 
 class Intro2(Page):
+    pass
+
+class Intro3Low_1(Page):
     @staticmethod
     def vars_for_template(player: Player):
-        return dict(
-            state=player.group.your_state,
-            delayed_a=C.ENDOWMENT - C.DELAY_COST,
-        )
+        return dict(sw_payoff=C.ENDOWMENT - C.DELAY_COST)
 
-class Intro3(Page):
+class Intro3Low_2(Page):
+    allow_back_button = True
+
     @staticmethod
     def vars_for_template(player: Player):
-        return dict(
-            state=player.group.your_state,
-            delayed_a=C.ENDOWMENT - C.DELAY_COST,
-        )
+        return dict(sw_payoff=C.ENDOWMENT - C.DELAY_COST)
+    
+class Intro3Med(Page):
+    allow_back_button = True
 
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(sw_payoff=C.ENDOWMENT - C.DELAY_COST)
+
+    
+class Intro3High(Page):
+    allow_back_button = True
+    
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(sw_payoff=C.ENDOWMENT - C.DELAY_COST)
+
+class Intro4(Page):
+    pass
+
+class Intro5(Page):
+    pass
+
+class Intro6(Page):
+    pass
 
 class WaitForAll(WaitPage):
     wait_for_all_groups = True
     title_text = 'Please wait'
     body_text = 'Waiting for all participants.'
 
+# --- Comprehension check pages (one question or group per page) ---
 
 
-# Original instruction sequence:
-page_sequence = [Welcome, Intro1, Intro2, Intro3, WaitForAll]
+
+
+page_sequence = [Welcome, Intro0, Intro1, Intro2, 
+                 Intro3Low_1, Intro3Low_2, Intro3Med, Intro3High, 
+                 Intro4, Intro5, Intro6, WaitForAll]
 
