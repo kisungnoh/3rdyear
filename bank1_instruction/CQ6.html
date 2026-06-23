@@ -250,7 +250,7 @@ td.cell-highlighted .my-payoff {
 </div>
 <br>
 <p style="font-size:12px; color:#6b7280; margin-bottom:20px;">Question 6 of 7</p>
-<p><strong>Suppose the bank's state is Medium. If you choose to stay in both Period 1 and Period 2, how many points do you receive in the following cases?</strong></p>
+<p><strong>Suppose the bank's state is Medium. If you choose to stay in both Period 1 and Period 2 (SS), how many points do you receive in the following cases?</strong></p>
     {{ formfield 'comprehension_q6a' }}
         <div id="fb-q6a" style="display:none; color:#c62828; background:#fff3e0; border:1px solid #e65100; border-radius:6px; padding:8px 14px; margin-bottom:8px;"></div>
 
@@ -263,59 +263,66 @@ td.cell-highlighted .my-payoff {
 
 <div style="text-align:center; padding-top:20px;">{{ next_button }}</div>
 <script>
-document.querySelector('form').addEventListener('submit', function(e) {
-    var inpA = document.querySelector('input[name="comprehension_q6a"]');
-    var inpB = document.querySelector('input[name="comprehension_q6b"]');
-    var inpC = document.querySelector('input[name="comprehension_q6c"]');
-    var fbA = document.getElementById('fb-q6a');
-    var fbB = document.getElementById('fb-q6b');
-    var fbC = document.getElementById('fb-q6c');
-    var hasError = false;
+document.addEventListener("DOMContentLoaded", function () {
 
-    // Reset
-    fbA.style.display = 'none';
-    fbB.style.display = 'none';
-    fbC.style.display = 'none';
+    const nextButton = document.querySelector(".otree-btn-next");
 
-    var valA = inpA ? inpA.value.trim() : '';
-    var valB = inpB ? inpB.value.trim() : '';
-    var valC = inpC ? inpC.value.trim() : '';
+    const errA = document.getElementById('fb-q6a');
+    const errB = document.getElementById('fb-q6b');
+    const errC = document.getElementById('fb-q6c');
 
-    if (valA === '') {
-        e.preventDefault();
-        fbA.textContent = 'Please enter an answer for this question.';
-        fbA.style.display = 'block';
-        hasError = true;
-    } else if (valA !== '0') {
-        e.preventDefault();
-        fbA.textContent = 'Incorrect. If you choose to stay in both Period 1 and Period 2, the relevant row in the table is SS. You receive 0 points, if the other chooses to withdraw in Period 1 (W).';
-        fbA.style.display = 'block';
-        hasError = true;
-    }
+    nextButton.addEventListener("click", function (e) {
 
-    if (valB === '') {
-        e.preventDefault();
-        fbB.textContent = 'Please enter an answer for this question.';
-        fbB.style.display = 'block';
-        hasError = true;
-    } else if (valB !== '0') {
-        e.preventDefault();
-        fbB.textContent = 'Incorrect. If you choose to stay in both Period 1 and Period 2, the relevant row in the table is SS. You receive 0 points, if the other chooses to stay in Period 1 and to withdraw in Period 2 (SW).';
-        fbB.style.display = 'block';
-        hasError = true;
-    }
+        const valA = document.querySelector('input[name="comprehension_q6a"]').value.trim();
+        const valB = document.querySelector('input[name="comprehension_q6b"]').value.trim();
+        const valC = document.querySelector('input[name="comprehension_q6c"]').value.trim();
 
-    if (valC === '') {
-        e.preventDefault();
-        fbC.textContent = 'Please enter an answer for this question.';
-        fbC.style.display = 'block';
-        hasError = true;
-    } else if (valC !== '18') {
-        e.preventDefault();
-        fbC.textContent = 'Incorrect. If you choose to stay in both Period 1 and Period 2, the relevant row in the table is SS. You receive 18 points, if the other also chooses to stay in both Period 1 and Period 2 (SS).';
-        fbC.style.display = 'block';
-        hasError = true;
-    }
+        // reset
+        errA.style.display = "none";
+        errB.style.display = "none";
+        errC.style.display = "none";
+
+        let hasError = false;
+
+        // A = 0
+        if (valA === "") {
+            e.preventDefault();
+            errA.textContent = "Please enter an answer.";
+            errA.style.display = "block";
+            hasError = true;
+        } else if (parseInt(valA, 10) !== 0) {
+            e.preventDefault();
+            errA.textContent = "Incorrect. The relevant row in the table is SS. You receive 0 points, if the other withdraws in Period 1 (W).";
+            errA.style.display = "block";
+            hasError = true;
+        }
+
+        // B = 0
+        if (valB === "") {
+            e.preventDefault();
+            errB.textContent = "Please enter an answer.";
+            errB.style.display = "block";
+            hasError = true;
+        } else if (parseInt(valB, 10) !== 0) {
+            e.preventDefault();
+            errB.textContent = "Incorrect. The relevant row in the table is SS. You receive 0 points, if the other stays in Period 1 and withdraws in Period 2 (SW).";
+            errB.style.display = "block";
+            hasError = true;
+        }
+
+        // C = 18
+        if (valC === "") {
+            e.preventDefault();
+            errC.textContent = "Please enter an answer.";
+            errC.style.display = "block";
+            hasError = true;
+        } else if (parseInt(valC, 10) !== 18) {
+            e.preventDefault();
+            errC.textContent = "Incorrect. The relevant row in the table is SS. You receive 18 points, if the other also stays in both Period 1 and Period 2 (SS).";
+            errC.style.display = "block";
+            hasError = true;
+        }
+    });
 });
 </script>
 {{ endblock }}

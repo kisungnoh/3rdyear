@@ -1,0 +1,37 @@
+<div style="background:#ffffff; border:2.5px solid #7986cb; border-radius:10px; overflow:hidden; box-shadow:0 2px 8px rgba(121,134,203,0.15); margin-top:40px; max-width:900px; margin-left:auto; margin-right:auto;">
+
+    <!-- Card header -->
+    <div style="background:#f8f9fb; border-bottom:1px solid #7986cb; padding:10px 16px; font-size:11px; font-weight:700; letter-spacing:0.07em; text-transform:uppercase; color:#7986cb;">
+        Reminder
+    </div>
+
+    <div style="padding:20px 24px;">
+        
+        <ol>
+            <li style="margin-bottom: 20px;">You will start a game with a randomly paired participant, who is likely to change from game to game.</li>
+            <li style="margin-bottom: 20px;">The bank state is randomly determined with the following probabilities:
+                <ul>
+                    <li>Low with 15% probability</li>
+                    <li>Medium with 70% probability</li>
+                    <li>High with 15% probability</li>
+                </ul>
+            </li>
+            <li style="margin-bottom: 20px;">Based on the bank state, the payoff table is displayed. The letters in the table represent the sequence of decisions across two periods.
+                <ul>
+                    <li><b>W</b>: Withdraw (Period 1) </li>
+                    <li><b>SW</b>: Stay (Period 1) → Withdraw (Period 2)</li>
+                    <li><b>SS</b>: Stay (Period 1) → Stay (Period 2)</li>
+                </ul>
+            </li>
+            <li style="margin-bottom: 20px;">Given the payoff table, you and the other participant make decisions up to two periods:
+                <ul>
+                    <li>In Period 1, both you and the other participant simultaneously choose either to withdraw or to stay.</li>
+                    <li>If you choose to stay in Period 1, you will move to Period 2, where you again choose whether to withdraw or stay. The same applies to the other participant if they stay in Period 1.</li>
+                </ul>
+            </li>
+            <li style="margin-bottom: 20px;">At the end of each game, you will be told how many points you received, along with the other participant's decision.</li>
+            <li>At the end of the experiment, one game is randomly selected for payment (1 point = {{C.REAL_WORLD_CURRENCY_PER_POINT}} dollar).</li>
+        </ol>
+    </div>
+</div>
+

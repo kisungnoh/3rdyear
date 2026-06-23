@@ -106,7 +106,7 @@ details.pay-rule[open] summary::before { content: '▼'; }
     <div class="card-panel-body">
         <div class="pay-row"><span class="pay-key">Selected game</span><span class="pay-val">Game {{ bel_round }}</span></div>
         <div class="pay-row"><span class="pay-key">State</span><span class="pay-val">{{ bel_state }}</span></div>
-        <div class="pay-row"><span class="pay-key">Your reported belief</span><span class="pay-val">Withdraw: {{ bel_s1_a }}%  / Stay: {{ bel_s1_b }}%</span></div>
+        <div class="pay-row"><span class="pay-key">Your reported belief</span><span class="pay-val">Withdraw: {{ bel_s1_withdraw }}%  / Stay: {{ bel_s1_stay }}%</span></div>
         <div class="pay-row"><span class="pay-key">Other participant actually chose</span><span class="pay-val">{{ if bel_s1_other_action == 'withdraw' }}Withdraw{{ else }}Stay{{ endif }} in Period 1</span></div>
         <div class="pay-earned">Earnings: {{ bel_s1_payoff }} points (${{ bel_s1_payoff_usd }})</div>
 
@@ -115,9 +115,9 @@ details.pay-rule[open] summary::before { content: '▼'; }
             <div class="pay-rule-body">
                 <p>Two numbers were randomly drawn between 0 and 100: <strong>{{ bel_s1_draw1 }}</strong> and <strong>{{ bel_s1_draw2 }}</strong>.</p>
                 {{ if bel_s1_other_action == 'withdraw' }}
-                <p>The other participant chose <strong>Withdraw</strong> in Period 1. You are rewarded if your reported <strong>belief for Withdraw ({{ bel_s1_a }}%)</strong> is larger than at least one of the two numbers.</p>
+                <p>The other participant chose <strong>Withdraw</strong> in Period 1. You are rewarded if your reported <strong>belief for Withdraw ({{ bel_s1_withdraw }}%)</strong> is larger than at least one of the two numbers.</p>
                 {{ else }}
-                <p>The other participant chose <strong>Stay</strong> in Period 1. You are rewarded if your reported <strong>belief for Stay ({{ bel_s1_b }}%)</strong> is larger than at least one of the two numbers.</p>
+                <p>The other participant chose <strong>Stay</strong> in Period 1. You are rewarded if your reported <strong>belief for Stay ({{ bel_s1_stay }}%)</strong> is larger than at least one of the two numbers.</p>
                 {{ endif }}
                 <p>
                 {{ if bel_s1_rewarded }}
@@ -132,21 +132,11 @@ details.pay-rule[open] summary::before { content: '▼'; }
     </div>
 </div>
 
-<!-- BRET -->
-<div class="card-panel">
-    <div class="card-panel-header">Part 3</div>
-    <div class="card-panel-body">
-        <div class="pay-row"><span class="pay-key">Boxes collected</span><span class="pay-val">{{ bret_boxes_collected }}</span></div>
-        <div class="pay-row"><span class="pay-key">Bomb collected</span><span class="pay-val">{{ if bret_bomb }}<span class="tag-no">Yes</span>{{ else }}<span class="tag-yes">No</span>{{ endif }}</span></div>
-        <div class="pay-earned">Earnings: ${{ bret_payoff_usd }}</div>
-    </div>
-</div>
-
 <!-- Total -->
 <div class="card-panel">
     <div class="card-panel-header">Total Payment</div>
     <div class="card-panel-body">
-        <div class="pay-row"><span class="pay-key">Total earnings</span><span class="pay-val">${{ p1_payoff_usd }} + ${{ p2_payoff_usd }} + ${{ bel_s1_payoff_usd }} + ${{ bret_payoff_usd }} = ${{ total_earnings_usd }}</span></div>
+        <div class="pay-row"><span class="pay-key">Total earnings</span><span class="pay-val">${{ p1_payoff_usd }} + ${{ p2_payoff_usd }} + ${{ bel_s1_payoff_usd }}  = ${{ total_earnings_usd }}</span></div>
         <div class="pay-row"><span class="pay-key">Participation fee</span><span class="pay-val">${{ C.PARTICIPATION_FEE }}</span></div>
         <div class="pay-earned">Total payment: ${{ total_payment }}</div>
     </div>

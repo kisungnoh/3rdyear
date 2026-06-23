@@ -8,16 +8,30 @@
 <div id="cq-error" style="display:none; color:#c62828; background:#fff3e0; border:1px solid #e65100; border-radius:6px; padding:8px 14px; margin-bottom:8px;"></div>
 <div style="text-align:center; padding-top:20px;">{{ next_button }}</div>
 <script>
-document.querySelector('form').addEventListener('submit', function(e) {
-    var sel = document.querySelector('input[name="comprehension_q1"]:checked');
-    var err = document.getElementById('cq-error');
-    if (!sel) {
-        e.preventDefault(); err.textContent = 'Please select an answer.'; err.style.display = 'block'; return;
-    }
-    if (sel.value !== 'new') {
-        e.preventDefault(); err.textContent = 'Incorrect.'; err.style.display = 'block'; return;
-    }
-    err.style.display = 'none';
+document.addEventListener("DOMContentLoaded", function () {
+    const nextButton = document.querySelector(".otree-btn-next");
+    const err = document.getElementById("cq-error");
+
+    nextButton.addEventListener("click", function (e) {
+
+        const sel = document.querySelector('input[name="comprehension_q1"]:checked');
+
+        if (!sel) {
+            e.preventDefault();
+            err.textContent = "Please select an answer.";
+            err.style.display = "block";
+            return;
+        }
+
+        if (sel.value !== "new") {
+            e.preventDefault();
+            err.textContent = "Incorrect.";
+            err.style.display = "block";
+            return;
+        }
+
+        err.style.display = "none";
+    });
 });
 </script>
 {{ endblock }}

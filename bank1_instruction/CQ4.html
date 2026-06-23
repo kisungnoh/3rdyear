@@ -260,43 +260,49 @@ td.cell-highlighted .my-payoff {
 
 <div style="text-align:center; padding-top:20px;">{{ next_button }}</div>
 <script>
-document.querySelector('form').addEventListener('submit', function(e) {
-    var inpA = document.querySelector('input[name="comprehension_q4a"]');
-    var inpB = document.querySelector('input[name="comprehension_q4b"]');
-    var fbA = document.getElementById('fb-q4a');
-    var fbB = document.getElementById('fb-q4b');
-    var hasError = false;
+document.addEventListener("DOMContentLoaded", function () {
 
-    // Reset
-    fbA.style.display = 'none';
-    fbB.style.display = 'none';
+    const nextButton = document.querySelector(".otree-btn-next");
+    const errA = document.getElementById("fb-q4a");
+    const errB = document.getElementById("fb-q4b");
 
-    var valA = inpA ? inpA.value.trim() : '';
-    var valB = inpB ? inpB.value.trim() : '';
+    nextButton.addEventListener("click", function (e) {
 
-    if (valA === '') {
-        e.preventDefault();
-        fbA.textContent = 'Please enter an answer for this question.';
-        fbA.style.display = 'block';
-        hasError = true;
-    } else if (valA !== '10') {
-        e.preventDefault();
-        fbA.textContent = 'Incorrect. If you choose to stay in Period 1 and to withdraw in Period 2, the relevant row in the table is SW. You receive 10 points, regardless of the other\'s choice.';
-        fbA.style.display = 'block';
-        hasError = true;
-    }
+        const valA = document.querySelector('input[name="comprehension_q4a"]').value.trim();
+        const valB = document.querySelector('input[name="comprehension_q4b"]').value.trim();
 
-    if (valB === '') {
-        e.preventDefault();
-        fbB.textContent = 'Please enter an answer for this question.';
-        fbB.style.display = 'block';
-        hasError = true;
-    } else if (valB !== '18') {
-        e.preventDefault();
-        fbB.textContent = 'Incorrect. If you choose to stay in both Period 1 and in Period 2, the relevant row in the table is SS. You receive 18 points, regardless of the other\'s choice.';
-        fbB.style.display = 'block';
-        hasError = true;
-    }
+        errA.style.display = "none";
+        errB.style.display = "none";
+
+        let hasError = false;
+
+        // Q4a
+        if (valA === "") {
+            e.preventDefault();
+            errA.textContent = "Please enter an answer.";
+            errA.style.display = "block";
+            hasError = true;
+        } else if (parseInt(valA, 10) !== 10) {
+            e.preventDefault();
+            errA.textContent = "Incorrect. If you stay in Period 1 and withdraw in Period 2, the relevant row in the table is SW. You receive 10 points, regardless of the other\'s choice.";
+            errA.style.display = "block";
+            hasError = true;
+        }
+
+        // Q4b
+        if (valB === "") {
+            e.preventDefault();
+            errB.textContent = "Please enter an answer.";
+            errB.style.display = "block";
+            hasError = true;
+        } else if (parseInt(valB, 10) !== 18) {
+            e.preventDefault();
+            errB.textContent = "Incorrect. If you stay in both Period 1 and Period 2, the relevant row in the table is SS. You receive 18 points, regardless of the other\'s choice.";
+            errB.style.display = "block";
+            hasError = true;
+        }
+
+    });
 });
 </script>
 {{ endblock }}

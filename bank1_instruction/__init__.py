@@ -31,7 +31,7 @@ class Player(BasePlayer):
         widget=widgets.RadioSelect)
     comprehension_q2 = models.StringField(
         choices=[['fixed', 'You receive 10, regardless of the state of the bank or the other\'s choice.'],
-                 ['depends', 'It depends on the state of the bank or the other\'s choice.']],
+                 ['depends', 'Your payoff depends on the state of the bank or the other\'s choice.']],
         label='If you choose to withdraw in Period 1,',
         widget=widgets.RadioSelect)
     comprehension_q3a = models.IntegerField(
@@ -100,13 +100,17 @@ class Intro1(Page):
 class Intro2(Page):
     pass
 
+class Intro3(Page):
+    @staticmethod
+    def vars_for_template(player: Player):
+        return dict(sw_payoff=C.ENDOWMENT - C.DELAY_COST)
+
 class Intro3Low(Page):
     @staticmethod
     def vars_for_template(player: Player):
         return dict(sw_payoff=C.ENDOWMENT - C.DELAY_COST)
 
 class Intro3Med(Page):
-    allow_back_button = True
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -114,7 +118,6 @@ class Intro3Med(Page):
 
     
 class Intro3High(Page):
-    allow_back_button = True
     
     @staticmethod
     def vars_for_template(player: Player):
@@ -187,7 +190,7 @@ class WaitForAll2(WaitPage):
     title_text = 'Please wait'
     body_text = 'Waiting for all participants to finish the comprehension check.'
 
-page_sequence = [Welcome, Intro1, Intro2, Intro3Low, Intro3Med, Intro3High, Intro4, Intro5, Intro6, WaitForAll, 
+page_sequence = [Welcome, Intro1, Intro2, Intro3, Intro3Low, Intro3High, Intro3Med, Intro4, Intro5, Intro6, WaitForAll, 
                  CQ1, CQ2, CQ3, CQ4, CQ5, CQ6, CQ7, WaitForAll2]
 
 

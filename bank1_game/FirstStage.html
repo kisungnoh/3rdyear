@@ -413,8 +413,8 @@ input.h-range::-moz-range-thumb {
     <div class="card-panel">
         <div class="card-panel-header">Your Decision — Period 1</div>
         <div class="card-panel-body">
-            <p>This is <b>Period 1</b>. You have {{ C.ENDOWMENT }} points in the bank.</p>
-            <p><b>If you choose to withdraw:</b> you will get {{ C.ENDOWMENT }}.</p>
+            <p>This is <b>Period 1</b>. You have {{ C.ENDOWMENT }} points deposited in the bank, which is in the <b>{{ state }}</b> state.</p>
+            <p><b>If you choose to withdraw:</b> you will receive {{ C.ENDOWMENT }}.</p>
             <p><b>If you choose to stay:</b> you will move to Period 2 and make a choice again.</p>
             <p>You won't see the other's choice until the end of the game.</p>
         </div>
@@ -465,7 +465,7 @@ input.h-range::-moz-range-thumb {
     {{ next_button }}
 </div>
 
-
+{{ include 'bank1_game/Reminder.html' }}
 <p>&nbsp;</p>
 
 

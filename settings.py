@@ -1,21 +1,10 @@
 from os import environ
 SESSION_CONFIG_DEFAULTS = dict(real_world_currency_per_point=1.0, participation_fee=0.0)
 SESSION_CONFIGS = [
-                dict(name='bret', display_name='bret', num_demo_participants=2, app_sequence=['bret']),
-
                 dict(name='bank1_instruction', display_name='bank1_instruction', num_demo_participants=2, app_sequence=['bank1_instruction']),
                 dict(name='bank1_game', display_name='bank1_game', num_demo_participants=2, app_sequence=['bank1_game']),
                 dict(name='bank1_postgame', display_name='bank1_postgame', num_demo_participants=2, app_sequence=['bank1_postgame']),
-                dict(name='bank1', display_name='bank1', num_demo_participants=2, app_sequence=['bank1_instruction','bank1_game','bret','bank1_postgame']),
-               
-
-                dict(name='bank2_practice', display_name='bank2_practice', num_demo_participants=2, app_sequence=['bank2_practice']),
-                dict(name='bank2_instruction_part1', display_name='bank2_instruction_part1', num_demo_participants=2, app_sequence=['bank2_instruction_part1']),
-                dict(name='bank2_instruction_part2', display_name='bank2_instruction_part2', num_demo_participants=2, app_sequence=['bank2_instruction_part2']),
-                dict(name='bank2_game_70d', display_name='bank2_game_70d', num_demo_participants=2, app_sequence=['bank2_game_70d']),
-                dict(name='bank2_postgame_70d', display_name='bank2_postgame_70d', num_demo_participants=2, app_sequence=['bank2_postgame_70d']),
-
-                dict(name='bank2_pilot', display_name='bank2_pilot', num_demo_participants=2, app_sequence=['bank2_instruction_part1','bank2_instruction_part2','bank2_game_70d', 'bret', 'bank2_postgame_70d'])
+                dict(name='bank1', display_name='bank1', num_demo_participants=2, app_sequence=['bank1_instruction','bank1_game','bank1_postgame'])
                 ]
 LANGUAGE_CODE = 'en'
 REAL_WORLD_CURRENCY_CODE = 'USD'

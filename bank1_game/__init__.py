@@ -6,8 +6,8 @@ class C(BaseConstants):
     # built-in constants
     NAME_IN_URL = 'bank1_game'
     PLAYERS_PER_GROUP = 2
-    PART1_ROUNDS = 1
-    NUM_ROUNDS = 3
+    PART1_ROUNDS = 10
+    NUM_ROUNDS = 30
     # user-defined constants
     ENDOWMENT = 10
     DELAY_COST = 1

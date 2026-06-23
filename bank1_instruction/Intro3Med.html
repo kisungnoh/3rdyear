@@ -5,7 +5,9 @@
 
 <style>
 :root {
+    --low-color:  #C62828;
     --med-color:  #E65100;
+    --high-color:  #2E7D32;
     --card-bg:    #ffffff;
     --page-bg:    #ffffff;
     --border:     #dde1e7;
@@ -265,44 +267,43 @@ td.cell-highlighted .my-payoff {
     </div>
 </div>
 
-<p>The table shows the points you can receive when the bank is in the <strong>Medium</strong> state. Each cell shows (<strong><em>your payoff</em></strong>, other's payoff).</p>
+<p>The letters represent: </p>
+<ul style="margin-top: -8px;">
+    <li><b>W</b>: Withdraw (Period 1) </li>
+    <li><b>SW</b>: Stay (Period 1) → Withdraw (Period 2)</li>
+    <li><b>SS</b>: Stay (Period 1) → Stay (Period 2)</li>
+</ul>
 
-<p>The initials represent the possible decisions across the two periods:</p>
-    <ul style="margin-top: -8px;">
-        <li><b>W</b>: Withdraw (Period 1) </li>
-        <li><b>SW</b>: Stay (Period 1) → Withdraw (Period 2)</li>
-        <li><b>SS</b>: Stay (Period 1) → Stay (Period 2)</li>
-    </ul>
-    
-<p>Given the table, you will make your choice in Period 1. If you choose to stay, then you will move to the next page for Period 2. The other participant may also move to Period 2 or not, depending on their choice in Period 1. The screen in Period 2 will look the same, except that it displays Period 2.</p>
 <hr>
 
 <p>When the state is <b>Medium</b>, you may receive between <b>{{C.FAIL_PAYOFF}} and {{C.SUCCESS_PAYOFF}}</b>:
-<span style="display:inline-block; font-size:12px; font-weight:600; color:#3949ab;
-             background:#e8eaf6; border:1px solid #9fa8da; border-radius:4px; padding:2px 8px; margin-left:8px;">
-    &#9654; hover a line to highlight the table row
-</span>
 </p>
+
 <ul>
-    <li class="switch-trigger" data-rows="med-payoff-wrap:W">If you choose to <b>withdraw</b> in Period 1 (<b>W</b>) → you will receive <b>{{C.ENDOWMENT}}</b>, regardless of the other's choice.</li>
-    <li class="switch-trigger" data-rows="med-payoff-wrap:SW" style="margin-top: 4px;">If you choose to <b>stay</b> in Period 1 <b>and withdraw</b> in Period 2 (<b>SW</b>)
+    <li class="switch-trigger" data-rows="med-payoff-wrap:W">If you choose <b>Withdraw</b> in Period 1 (<b>W</b>) → you will receive <b>{{C.ENDOWMENT}}</b>, regardless of the other's choice.</li>
+    <li class="switch-trigger" data-rows="med-payoff-wrap:SW" style="margin-top: 4px;">If you choose <b>Stay</b> in Period 1 <b>and Withdraw</b> in Period 2 (<b>SW</b>)
         <ul style="margin-top: 4px;">
-            <li>You will receive <b>{{sw_payoff}}</b> if the other chooses to withdraw in either period (W or SW).</li>
-            <li>You will receive <b>{{C.ENDOWMENT}}</b> if the other chooses to stay in both periods (SS).</li>
+            <li>You will receive <b>{{sw_payoff}}</b> if the other withdraws in either period (W or SW).</li>
+            <li>You will receive <b>{{C.ENDOWMENT}}</b> if the other stays in both periods (SS).</li>
         </ul>
     </li>
-    <li class="switch-trigger" data-rows="med-payoff-wrap:SS" style="margin-top: 4px;">If you choose to <b>stay</b> in Period 1 <b>and stay</b> in Period 2 (<b>SS</b>):
+    <li class="switch-trigger" data-rows="med-payoff-wrap:SS" style="margin-top: 4px;">If you choose <b>Stay</b> in Period 1 <b>and Stay</b> in Period 2 (<b>SS</b>):
         <ul style="margin-top: 4px;">
-            <li>You will receive <b>{{C.FAIL_PAYOFF}}</b> if the other chooses to withdraw in either period (W or SW).</li>
-            <li>You will receive <b>{{C.SUCCESS_PAYOFF}}</b> if the other also chooses to stay in both periods (SS).</li>
+            <li>You will receive <b>{{C.FAIL_PAYOFF}}</b> if the other withdraws in either period (W or SW).</li>
+            <li>You will receive <b>{{C.SUCCESS_PAYOFF}}</b> if the other also stays in both periods (SS).</li>
         </ul>
     </li>
 </ul>
 
+<p><span style="display:inline-block; font-size:14px; font-weight:600; color:#3949ab;
+             background:#e8eaf6; border:1px solid #9fa8da; border-radius:4px; padding:2px 8px; margin-left:8px;">
+    &#9654; As you move your mouse over each bullet point, the corresponding payoffs in the table will be highlighted.
+</span></p>
 
+<br>
+<p><em>Note:</em> Unlike in the Low or High state, the payoffs for <b>SW</b> or <b>SS</b> in the <b>Medium</b> state depends on the other participant's decisions as well as your decisions.</p>
 
 <div style="display:flex; justify-content:center; gap:12px; padding-top:10px;">
-    {{ back_button }}
     {{ next_button }}
 </div>
 

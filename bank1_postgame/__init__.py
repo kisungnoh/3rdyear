@@ -40,7 +40,7 @@ class Player(BasePlayer):
     )
 
     # Explanation
-    sw_reason = models.LongStringField(
+    feedback = models.LongStringField(
         blank=True,
         label=""
     )
@@ -99,7 +99,7 @@ class PostSurveyQ2(Page):
 
 class PostSurveyQ3(Page):
     form_model = 'player'
-    form_fields = ['sw_reason']
+    form_fields = ['feedback']
 
 class CRT(Page):
     form_model = 'player'
@@ -130,7 +130,7 @@ class Payment(Page):
         p1_payoff_usd      = round(p1_payoff     * C.REAL_WORLD_CURRENCY_PER_POINT, 2)
         p2_payoff_usd      = round(p2_payoff     * C.REAL_WORLD_CURRENCY_PER_POINT, 2)
         bel_s1_payoff_usd  = round(bel_s1_payoff * C.REAL_WORLD_CURRENCY_PER_POINT, 2)
-        bret_payoff_usd    = player.participant.bret_payoff_dollars or 0.0
+        bret_payoff_usd    = 0.0 #player.participant.bret_payoff_dollars or 0.0
         total_earnings_usd = round((p1_payoff + p2_payoff + bel_s1_payoff) * C.REAL_WORLD_CURRENCY_PER_POINT + bret_payoff_usd, 2)
         total_payment = total_earnings_usd + C.PARTICIPATION_FEE
         player.participant.b1_total_payment = total_payment
@@ -162,9 +162,11 @@ class Payment(Page):
             bel_s1_cond2=bel_s1_cond2,
             bel_s1_rewarded=bel_s1_rewarded,
             
-            bret_payoff_usd=bret_payoff_usd,
+            #bret_boxes_collected=player.participant.bret_boxes_collected,
+            #bret_bomb=player.participant.bret_bomb,
+            #bret_payoff_usd=bret_payoff_usd,
             total_earnings_usd=total_earnings_usd,
             total_payment=total_payment
         )
 
-page_sequence = [PostSurveyQ1, PostSurveyQ2, PostSurveyQ3, CRT, Demographic, Payment]
+page_sequence = [PostSurveyQ1, PostSurveyQ2, PostSurveyQ3, Payment]
